@@ -47,6 +47,7 @@ class Db:
             raise err.ChybaSoubor("Nemohu vytvořit soubor %s! (%s)" % (soubor,e))
         # Vytvoření základní struktury tabulek
         try:
+            self.databaze.text_factory = lambda x: unicode(x, "utf-8", "ignore")
             # Vytvoření tabulky klienti
             self.databaze.execute("""
                 CREATE TABLE klienti (
@@ -103,19 +104,18 @@ class Db:
                         ('cestovne_os_k','15',u'Cestovné - konstanta k'),
                         ('cestovne_os_nastupni_sazba','6',u'Cestovné - Nástupní sazba'),
                         ('cestovne_os_podil_klienta','0.5',u'Cestovné - podíl klienta'),
-                        ('kod_stala_cast','',u'Kód faktury (stálá část)'),
-                        ('kod_promenna_cast','',u'Kód faktury (proměnná část)'),
-                        ('dolni_hranice_poctu_hodin','','Dolní hranice pro počet hodin OS'),
-                        ('horni_hranice_poctu_hodin','','Horní hranice pro počet hodin OS'),
-                        ('adresa','','Adresa uváděná v sestavách'),
-                        ('adresa_dalsi','','Doplňující informace v adrese'),
+                        ('kod_stala_cast','XXXX',u'Kód faktury (stálá část)'),
+                        ('kod_promenna_cast','0000',u'Kód faktury (proměnná část)'),
+                        ('dolni_hranice_poctu_hodin','30','Dolní hranice pro počet hodin OS'),
+                        ('horni_hranice_poctu_hodin','60','Horní hranice pro počet hodin OS'),
+                        ('adresa','Občanské sdružení BENEDIKTUS|Klášterní 60|583 01 Chotěboř','Adresa uváděná v sestavách'),
+                        ('adresa_dalsi','IČ: 70868832|DIČ: CZ70868832|Mobil: +420 731 646 811|E-mail: benediktus@centrum.cz|WWW: benediktus.infobar.cz','Doplňující informace v adrese'),
                         #('','',''),
                         ('vystavil','',u'Kdo vystavil příjmový doklad'))
             for t in nastaveni:
                 self.databaze.execute("""INSERT INTO nastaveni (volba, hodnota, pozn)
                     values (?, ?, ?)""", t)
             self.databaze.commit()
-            self.databaze.text_factory = lambda x: unicode(x, "utf-8", "ignore")
             self.databaze.create_function('spoj', 2, spoj_s_mezerou)
         except sqlite.Error, e:
             log(e)
@@ -144,7 +144,7 @@ class Db:
 
 
     def vloz_klienta(self, jmeno, prijmeni, adresa="", telefon="", 
-            mobil1="", mobil2="", pozn="", os=0, oa=0, km_os="", os_pausal="", os_cena_do="", os_cena_mezi="", os_cena_nad=""):
+            mobil1="", mobil2="", pozn="", os=0, oa=0, km_os="0", os_pausal="0", os_cena_do="0", os_cena_mezi="0", os_cena_nad="0"):
         """Vložení nového klienta do databáze.
             Požadované údaje jsou jméno a příjmení"""
         if jmeno == "":
@@ -154,7 +154,7 @@ class Db:
         try:
             self.databaze.execute("""INSERT INTO 
                 klienti (jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad)
-                values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad))
         except sqlite.Error, e:
             log(e)
@@ -523,9 +523,9 @@ def aktualizace_db_na_novejsi_verzi(soubor):
             # aktualizace z verze 2 na verzi 3
             # přidání položky ḱod_stala_cast a kod_promenna_cast do nastavení
             db.execute("""INSERT INTO nastaveni (volba, hodnota, pozn)
-                    values (?,?,?)""", ('kod_stala_cast', '', 'Kód faktury (stálá část)'))
+                    values (?,?,?)""", ('kod_stala_cast', 'XXXX', 'Kód faktury (stálá část)'))
             db.execute("""INSERT INTO nastaveni (volba, hodnota, pozn)
-                    values (?,?,?)""", ('kod_promenna_cast', '', 'Kód faktury (proměnná část)'))
+                    values (?,?,?)""", ('kod_promenna_cast', '0000', 'Kód faktury (proměnná část)'))
             # nastavení správného čísla aktuální verze
             db.execute("""UPDATE nastaveni SET hodnota=? WHERE volba=?""", (3, "verze"))
             db.commit()
@@ -537,10 +537,10 @@ def aktualizace_db_na_novejsi_verzi(soubor):
         elif stara_verze_db < 4:
             # aktualizace z verze 3 na verzi 4
             # přidání položek dolni_hranice_poctu_hodin, horni_hranice_poctu_hodin, adresa a adresa_dalsi do nastaveni
-            nastaveni = (('dolni_hranice_poctu_hodin','','Dolní hranice pro počet hodin OS'),
-                        ('horni_hranice_poctu_hodin','','Horní hranice pro počet hodin OS'),
-                        ('adresa','','Adresa uváděná v sestavách'),
-                        ('adresa_dalsi','','Doplňující informace v adrese'))
+            nastaveni = (('dolni_hranice_poctu_hodin','30','Dolní hranice pro počet hodin OS'),
+                        ('horni_hranice_poctu_hodin','60','Horní hranice pro počet hodin OS'),
+                        ('adresa','Občanské sdružení BENEDIKTUS|Klášterní 60|583 01 Chotěboř','Adresa uváděná v sestavách'),
+                        ('adresa_dalsi','IČ: 70868832|DIČ: CZ70868832|Mobil: +420 731 646 811|E-mail: benediktus@centrum.cz|WWW: benediktus.infobar.cz','Doplňující informace v adrese'))
             for t in nastaveni:
                 db.execute("""INSERT INTO nastaveni (volba, hodnota, pozn)
                     values (?, ?, ?)""", t)
