@@ -2,6 +2,7 @@
 #-*- coding: utf-8 -*-
 
 
+import sys
 try:
     import pygtk
     pygtk.require("2.16")
@@ -13,7 +14,6 @@ try:
 except:
     sys.exit(1)
 
-import sys
 import os
 
 import benedat_config as bconf
@@ -23,7 +23,8 @@ import benedat_gui as gui
 
 def main():
     # jako pracovní adresář nastavíme adresář se skriptem
-    os.chdir(os.path.dirname(sys.argv[0]))
+    if os.path.dirname(sys.argv[0]):
+        os.chdir(os.path.dirname(sys.argv[0]))
 
     # načtení/vytvoření konfigurace 
     konf = bconf.Konfigurace("benedat.conf")
