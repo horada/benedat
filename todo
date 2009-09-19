@@ -1,0 +1,89 @@
++ * Kontrola uložení souboru
+
+- * Výběr záznamů na jedno kliknutí
+
++ * žazení výběru klientů v comboboxech
+
++ * Sestavy - formát data
++ * Sestavy - v případě neexistence dat pro dané období neumožnit vygenerování pdf
++ * Sestavy - aktuální datum
+
++ * možnost výběru klienta přes tlačítko
++ * zobrazení kalendáře při zadávání datumu (přes tlačítko)
+? * u záznamů brát při doplňování datumu potaz na nastavení v roletkách pro filtr
++ * u záznamů upozornit při zadání jiného datumu než nahoře nastaveného
++ * u záznamů upozornit při zadání stejného záznamu se stejným klientem i datumem
++ * u záznamů při napsání '+' do datumu přičíst jeden den
+    + Opravit chybu při překročení měsíce
++ * při zadání času brát formát hhmm (např 1015 - 10:15)
+
++ * ujednotit výpisy datumů
+
++ * při zadávání klienta doplnit i kilometry (pokud nejsou zadány tak 0)
+
++ * Doplňování jmen u záznamů v pořadí Příjmení Jméno i Jméno Příjmení
+
++ * více řádků adresy (v sestavě - řádky v db odděleny znakem |)
+
++ * kód u faktury
++ * kdo fakturu vydává (Vystavil: )
+ 
++ * Podrobnější popis co je fakturováno
+
++ * více možností účtování v podobě více skupin klientů (vyřešeno nastavením cen pro každého jednotlivého klienta)
+
+- * export dat
+
+- * ujednotit kódy v benedat_cas.py
+
+- * v okně pro vytváření sestav zobrazit statistiku
+
++ * při uložení položky překontrolovat datum a časy (stejně jako při opuštění editačního pole)
+Vzhled pokladního dokladu:
+
++ * Editovatelné položky Adresy Benediktu
+        předělej Mobil prosím na: +420 731 646 811
++ * dodělat datum vystavení - aby se tam generoval aktuální datum
++ * datum platby - nechat prázdné políčko, aby se to tam eventuelně mohlo dopsat tužkou
++ * "Firma není plátce DPH" tam taky radši dej
++ * před výpis hodin a dopravy: "Účtujeme Vám za odlehčovací službu - X/2009" - zkus to nějak udělat, aby se vypisovalo s měsícem a rokem, za kterej se výpis dělá
++ * na konec výpisu: "Vystavil:"  a "Podpis odběratele:"
+
++ * číslování dokladů: "29HP9999" stálý text je pravděpodobně "2", pak je poslední číslo roku "9", pak je stálý text "HP", pak bude následovat číselná řada od 1001 do 9999
+
++ * export v jiném modulu
++ * import do POHODY
+- * při importu do POHODY zachovat kod dokladu
+
++ * Upravit počet 60 hodin na variabilní číslo
+
++ * do ceny přidat další hranici
+
++ * zmenšit písmo výpisu - aby se vešlo alespoň 31 položek na stránku
+
++ * Výpis pro účetnictví
+
++ * Možnost kopie stávající databáze na nové místo bez záznamů klientů
+
++ * Chybu při ukládání klienta (hodnoty cen mezi, nad)
+
+
+
+
+Nezvýrazněný nadpis
++	* Hotový úkol
++   . podúkol
+-	* Nezačatý úkol
+-   . podúkol může být i tady
+?	* Nevím, neznám, neumím, něco chybí, možná hotovo
+x	* Úkol zrušen
+    
+    Tento odstavec patří k nezrušenému úkolu.
+	Ta mezera tu opravdu je...
+
+	Toto je již nezvýrazněný odstavec.
+
+
+
+vim:syntax=sivitodo:
+
