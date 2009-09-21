@@ -53,7 +53,7 @@ Vzhled pokladního dokladu:
 
 + * export v jiném modulu
 + * import do POHODY
-- * při importu do POHODY zachovat kod dokladu
++ * při importu do POHODY zachovat kod dokladu
 
 + * Upravit počet 60 hodin na variabilní číslo
 

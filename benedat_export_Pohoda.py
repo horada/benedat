@@ -185,16 +185,17 @@ class xmlDokument(xml.Document):
         vch_number = self.createElement("vch:number")
         vch_voucherHeader.appendChild(vch_number)
         # proměnná část kódu
-        typ_id = self.createElement("typ:id")
-        typ_id.appendChild(self.createTextNode(kod_promenna_cast))
-        vch_number.appendChild(typ_id)
+#        typ_id = self.createElement("typ:id")
+#        typ_id.appendChild(self.createTextNode(kod_promenna_cast))
+#        vch_number.appendChild(typ_id)
         # stálá část kódu
-        typ_ids = self.createElement("typ:ids")
-        typ_ids.appendChild(self.createTextNode(kod_stala_cast))
-        vch_number.appendChild(typ_ids)
+#        typ_ids = self.createElement("typ:ids")
+#        typ_ids.appendChild(self.createTextNode(kod_stala_cast))
+#        vch_number.appendChild(typ_ids)
         # kontrola duplicity dokladu
         typ_numberRequested = self.createElement("typ:numberRequested")
         typ_numberRequested.setAttribute("checkDuplicity", self.konf.volba('kontrola_duplicity'))
+        typ_numberRequested.appendChild(self.createTextNode(str(kod_stala_cast) + str(kod_promenna_cast)))
         vch_number.appendChild(typ_numberRequested)
         
         # datum vystavení
@@ -300,9 +301,9 @@ class xmlDokument(xml.Document):
 def test():
     """testovací vytvoření xml"""
     doc = xmlDokument(id="BD09")
-    doc.pridani_dokladu(id="29HP50037", id_dokladu="9999",
-            kod_promenna_cast="50037", kod_stala_cast="29HP",
-            datum_vystaveni="2009-09-18", datum_platby="2009-09-18",
+    doc.pridani_dokladu(id="29HP5037", id_dokladu="9999",
+            kod_promenna_cast="5037", kod_stala_cast="29HP",
+            datum_vystaveni="2009-09-21", datum_platby="2009-09-21",
             text="Účtujeme Vám za odlehčovací službu - 09/2009",
             jmeno="František Trávníček", adresa="Horní Dolní 232",
             cena="1313")
