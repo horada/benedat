@@ -1,13 +1,3 @@
-#!/usr/bin/env python
-#-*- coding: utf-8 -*-
-
-"Modul pro logování a vypisování testovacích hlášek"
-
-#
-# $Date$
-# $Revision$
-#
-
 #
 # BeneDat - program pro výpočet ceny za poskytnuté služby klientům občanského sdružení
 # 
@@ -27,8 +17,3 @@
 # Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # 
 
-
-
-def log(text):
-    pass
-    print text
