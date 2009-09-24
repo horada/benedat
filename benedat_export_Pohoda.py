@@ -98,7 +98,7 @@ class xmlDokument(xml.Document):
         self.konf.nacteni_konfigurace_ze_souboru()
 
         default_konf_volby = {  'pokladna': "HP",
-                                'kontrola_duplicity': "true",
+                                #'kontrola_duplicity': "true",
                                 'kod_predkontace': "6023-odleh",
                                 'kod_cleneni_dph': "nonSubsume",
                                 'kod_strediska': "0011-vl.zd",
@@ -220,7 +220,7 @@ class xmlDokument(xml.Document):
 #        vch_number.appendChild(typ_ids)
         # kontrola duplicity dokladu
         typ_numberRequested = self.createElement("typ:numberRequested")
-        typ_numberRequested.setAttribute("checkDuplicity", self.konf.volba('kontrola_duplicity'))
+        typ_numberRequested.setAttribute("true")
         typ_numberRequested.appendChild(self.createTextNode(str(kod_stala_cast) + str(kod_promenna_cast)))
         vch_number.appendChild(typ_numberRequested)
         

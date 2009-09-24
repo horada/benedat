@@ -1,0 +1,73 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{czech}
+\usepackage{listings}
+\usepackage[top=2cm, bottom=3cm]{geometry}
+
+\lstnewenvironment{kodConf}
+    {}
+    {}
+
+\newcommand{\tl}[1]{\emph{#1}}
+
+    \begin{document}
+\author{Daniel Horák}
+\title{Nápověda k programu BeneDat}
+\maketitle
+\tableofcontents
+
+
+\section{Úvod}
+Program BeneDat je určen ke zjednodušení výpočtu ceny pro klienty za využité služby občanského
+sdružení. V současné verzi umožňuje zaznamenávat dny a hodiny využívání odlehčovací služby a s tím
+související dopravu klienta. Z těchto hodnot dojde při generování sestavy k výpočtu celkové ceny,
+vygenerování pdf souboru se sestavou (zároveň sloužící jako příjmový pokladní doklad) a xml souboru
+který je možno použít k exportu dat do účetního programu Pohoda.
+\section{Práce s programem BeneDat}
+\subsection{Před prvním spuštěním}
+Instalace programu je popsána na jiném místě, zde pouze zmíním některé věci které je dobré (spíše
+nutné) nastavit v konfiguračním souboru. Pokud jste ještě program BeneDat nespustili, konfigurační
+soubor ještě pravděpodobně není vytvořen. Spusťte tedy program BeneDat a hned jej zase můžete
+ukončit. V hlavním adresáři programu (tam kde se nachází například soubor benedat.py) by jste měli
+nalézt soubor benedat.conf se zhruba takovýmto obsahem:
+\begin{verbatim}
+  kod_cinnosti="odl"
+  ico="0000"
+  pokladna="HP"
+  kod_strediska="0011-vl.zd"
+  kod_predkontace="6023-odleh"
+  poznamka_k_exportu="Převod dat z programu BeneDat"
+  kontrola_duplicity="true"
+  kod_cleneni_dph="nonSubsume"
+  otevreny_soubor="None"
+  aplikace="BeneDat"
+\end{verbatim} 
+Zde je potřeba pozměnit některé volby pro správné fungování exportu do programu
+Pohoda.
+\subparagraph{kod\_cinnosti} kód činnosti jaký bude přiřazen dokladu
+\subparagraph{ico} ičo organizace (pokud není uvedeno správě, při exportu do Pohody dostaneme
+chybové hlášení ve smyslu \emph{tato položka není určena pro tuto účetní jednotku}.
+\subparagraph{pokladna} kód pokladny
+\subparagraph{kod\_strediska} kód střediska
+\subparagraph{kod\_predkontace} kód předkontace
+\subparagraph{poznamka\_k\_exportu} poznámka uvedená u exportu
+%\subparagraph{kontrola\_duplicity}
+\subparagraph{kod\_cleneni\_dph} kód členění dph
+\subparagraph{otevreny\_soubor} naposledy otevřený soubor (není potřeba upravovat -- nastavuje se
+automaticky)
+\subparagraph{aplikace} hodnota který bude u exportu do Pohody uvedena v kolonce aplikace 
+Editaci souboru můžeme provést libovolným jednoduchým textovým editorem (například PSPad, notepad a
+podobně).
+
+
+\subsection{První spuštění}
+\subsection{Vytvoření nové -- otevření stávající databáze}
+Stiskem příslušného tlačítka \tl{Nový} nebo \tl{Otevřít} vytvoříme/otevřeme databázový soubor. Celá
+databáze je uložena v jednom souboru s příponou db.
+\subsection{Základní nastavení}
+Při vytvoření nové databáze případně při změně některých údajů je potřeba provést nastavení
+konkrétní databáze. Toto nastavení je dostupné po rozbalení položky \tl{Pokročilé} v hlavním okně
+programu a stiskem příslušného tlačítka \tl{Nastavení}.
+
+
+\end{document}

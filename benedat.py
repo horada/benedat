@@ -59,7 +59,7 @@ def main():
 
     # nastavení dalších konfiguračních voleb
     default_konf_volby = {  'pokladna': "HP",
-                            'kontrola_duplicity': "true",
+                            #'kontrola_duplicity': "true",
                             'kod_predkontace': "6023-odleh",
                             'kod_cleneni_dph': "nonSubsume",
                             'kod_strediska': "0011-vl.zd",
