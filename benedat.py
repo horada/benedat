@@ -56,7 +56,22 @@ def main():
     konf.nacteni_konfigurace_ze_souboru()
     if not konf.volba("otevreny_soubor"):
         konf["otevreny_soubor"] = None
-   
+
+    # nastavení dalších konfiguračních voleb
+    default_konf_volby = {  'pokladna': "HP",
+                            'kontrola_duplicity': "true",
+                            'kod_predkontace': "6023-odleh",
+                            'kod_cleneni_dph': "nonSubsume",
+                            'kod_strediska': "0011-vl.zd",
+                            'kod_cinnosti': "odl",
+                            'ico': "0000",
+                            'aplikace': "BeneDat",
+                            'poznamka_k_exportu': "Převod dat z programu BeneDat"}
+    for volba in default_konf_volby.keys():
+        if not konf.volba(volba):
+            konf[volba] = default_konf_volby[volba]
+
+  
 
     benedat = gui.BenedatHlavniOkno("benedat_gui.glade", konf)
     gtk.main()
