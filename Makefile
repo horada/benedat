@@ -12,7 +12,7 @@ PYTHON_SOUBORY=benedat.py benedat_cas.py benedat_chyby.py benedat_config.py bene
 GLADE_SOUBOR=benedat_gui.glade
 FONTY=fonts/LinLibertine_Bd.ttf fonts/LinLibertine_BI.ttf fonts/LinLibertineC_Re.ttf fonts/LinLibertine_It.ttf fonts/LinLibertine_Re.ttf
 JAGPDF_SOUBORY=jagpdf.py _jagpdf.pyd 
-IKONA=Benedat.png
+IKONA=Benedat.png Benedat.ico
 
 
 PROHLIZEC=gnome-open
