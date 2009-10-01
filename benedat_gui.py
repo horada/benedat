@@ -47,6 +47,7 @@ import re
 import string
 import locale
 import subprocess
+import unicodedata
 
 
 import benedat_config as bconf
@@ -1685,7 +1686,8 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
 
         
         if self.vsichni:
-            soubor = self.dotaz_ulozeni_sestavy()
+            sablona_nazvu="Sestava_" + str(self.mesic) + "_" + str(self.rok)
+            soubor = self.dotaz_ulozeni_sestavy(sablona_nazvu=sablona_nazvu)
             if soubor != -1 and soubor:    
                 if os.name == 'posix':
                     # vytvoření pdfka uděláme spuštěním benedat_sestavy.py jako scriptu
@@ -1710,7 +1712,10 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
             if not self.klient > 0:
                 return 
         
-        soubor = self.dotaz_ulozeni_sestavy()
+        sablona_nazvu="Sestava_" \
+                + bez_diakritiky_a_mezer(BenedatDB.db.klient_jmeno_podle_id(self.klient, vystup=2)) \
+                + "_" + str(self.mesic) + "_" + str(self.rok)
+        soubor = self.dotaz_ulozeni_sestavy(sablona_nazvu=sablona_nazvu)
         if soubor != -1 and soubor:    
             if os.name == 'posix':
                 # vytvoření pdfka uděláme spuštěním benedat_sestavy.py jako scriptu
@@ -1732,7 +1737,7 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
                 sestava.sestava_pdf(str(self.klient), str(self.mesic), str(self.rok), soubor, datum_vystaveni=datum_vystaveni, datum_platby=datum_platby, vystavil=vystavil)
                 
 
-    def dotaz_ulozeni_sestavy(self):
+    def dotaz_ulozeni_sestavy(self, sablona_nazvu=None):
         """Zobrazení a zpracování dialogu pro uložení sestavy vytvořené sestavy"""
 
         # filtry pro zobrazované soubory
@@ -1748,6 +1753,10 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
         self.wUlozeniSestavy.set_filter(filtr_pdf)
         
         self.wUlozeniSestavy.set_do_overwrite_confirmation(True)
+
+        #přednastavení názvu souboru
+        if sablona_nazvu:
+            self.wUlozeniSestavy.set_current_name(sablona_nazvu)
 
         navratova_hodnota = self.wUlozeniSestavy.run()
         
@@ -1953,6 +1962,17 @@ def bez_none(text):
     else:
         return str(text)
 
+def bez_diakritiky_a_mezer(text):
+    tmp = unicodedata.normalize('NFKD', text)
+    text = ''
+    for c in tmp:
+        if not unicodedata.combining(c):
+            if c == " ":
+                pass
+#                text += "_"    
+            else :
+                text += c
+    return text
 
 
 

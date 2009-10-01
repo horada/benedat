@@ -68,7 +68,7 @@ Vzhled pokladního dokladu:
 
 + * Chybu při ukládání klienta (hodnoty cen mezi, nad)
 
-- * Nabídnout název souboru při ukládání sestavy (měnící se podle data
++ * Nabídnout název souboru při ukládání sestavy (měnící se podle data)
 
 + * opravit chybu: jiné číslo (kód) sestavy v pdf a xml
 
