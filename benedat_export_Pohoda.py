@@ -220,7 +220,7 @@ class xmlDokument(xml.Document):
 #        vch_number.appendChild(typ_ids)
         # kontrola duplicity dokladu
         typ_numberRequested = self.createElement("typ:numberRequested")
-        typ_numberRequested.setAttribute("true")
+        typ_numberRequested.setAttribute("checkDuplicity","true")
         typ_numberRequested.appendChild(self.createTextNode(str(kod_stala_cast) + str(kod_promenna_cast)))
         vch_number.appendChild(typ_numberRequested)
         

@@ -177,9 +177,6 @@ class Sestavy():
         kod_stala_cast = str(self.db.nastaveni(volba="kod_stala_cast")[1])
         kod_promenna_cast = str(self.db.nastaveni(volba="kod_promenna_cast")[1])
         kod = kod_stala_cast + kod_promenna_cast
-        kod_promenna_cast = str(int(kod_promenna_cast) + 1).rjust(4, '0')
-        self.db.zmen_nastaveni(volba="kod_promenna_cast", hodnota=kod_promenna_cast)
-        self.db.commit()
         
         # vyplnění sestavy
         s.adresa_l((self.db.nastaveni('adresa')[1],))
@@ -217,6 +214,10 @@ class Sestavy():
             cena=str(data_souhrn[4]))
 
         
+        # aktualizace kódu
+        kod_promenna_cast = str(int(kod_promenna_cast) + 1).rjust(4, '0')
+        self.db.zmen_nastaveni(volba="kod_promenna_cast", hodnota=kod_promenna_cast)
+        self.db.commit()
 
         
 

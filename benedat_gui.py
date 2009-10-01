@@ -1335,6 +1335,10 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
 
     def on_btZaznamyOSUlozit_clicked(self, widget):
         """Obsloužení tlačítka Uložit"""
+        if not self.urcit_id_klienta_z_textu(self.edWidgety['Klient'].get_text()):
+            self.edWidgety['Klient'].grab_focus()
+            return
+        self.korekce_klienta(self.edWidgety['Klient'])
         self.korekce_datumu(self.edWidgety['Datum'])
         self.korekce_casu(self.edWidgety['CasOd'],'cas_od')
         self.korekce_casu(self.edWidgety['CasDo'],'cas_do')

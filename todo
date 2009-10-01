@@ -10,7 +10,8 @@
 
 + * možnost výběru klienta přes tlačítko
 + * zobrazení kalendáře při zadávání datumu (přes tlačítko)
-? * u záznamů brát při doplňování datumu potaz na nastavení v roletkách pro filtr
++ * u záznamů brát při doplňování datumu potaz na (nastavení v roletkách pro filtr nebo) předchozího nastavení
+
 + * u záznamů upozornit při zadání jiného datumu než nahoře nastaveného
 + * u záznamů upozornit při zadání stejného záznamu se stejným klientem i datumem
 + * u záznamů při napsání '+' do datumu přičíst jeden den
@@ -67,7 +68,17 @@ Vzhled pokladního dokladu:
 
 + * Chybu při ukládání klienta (hodnoty cen mezi, nad)
 
+- * Nabídnout název souboru při ukládání sestavy (měnící se podle data
 
++ * opravit chybu: jiné číslo (kód) sestavy v pdf a xml
+
+- * ošetřit zadávání blbostí v přidávání klientů
+
++ * ikony
+
+? * možnost změnit délku proměnné části kódu dokladu
+
++ * Chybový dialog či jiné ošetření nezadání jména u záznamů
 
 
 Nezvýrazněný nadpis

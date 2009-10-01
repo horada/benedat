@@ -110,7 +110,10 @@ def preved_datum(datum_text, format=0,predchozi = None):
         datum_text = datum_plus(predchozi['den'] + '.' + predchozi['mesic'] + '.' + predchozi['rok'], -1)
 #        datum = [str(int(predchozi['den'])-1).rjust(2,'0'), predchozi['mesic'], predchozi['rok']]
 #    print datum_text + "\t",
-    datum = preved_datum_na_seznam_ddmmrrrr(datum_text)
+    if predchozi:
+        datum = preved_datum_na_seznam_ddmmrrrr(datum_text, mesic=predchozi['mesic'], rok=predchozi['rok'])
+    else:
+        datum = preved_datum_na_seznam_ddmmrrrr(datum_text)
     if datum:
         if format == 0:
             return str(int(datum[0])) + "." + str(int(datum[1])) + "." + str(int(datum[2]))

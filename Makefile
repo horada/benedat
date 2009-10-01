@@ -26,7 +26,7 @@ nic:
 
 # vytvoření zip archivu
 zip:
-	zip $(ZIP_NAME) $(PYTHON_SOUBORY) $(GLADE_SOUBOR) $(FONTY) $(JAGPDF_SOUBORY)
+	zip $(ZIP_NAME) $(PYTHON_SOUBORY) $(GLADE_SOUBOR) $(FONTY) #$(JAGPDF_SOUBORY)
 
 # odstranění pomocných souborů
 clean:
