@@ -12,6 +12,7 @@ PYTHON_SOUBORY=benedat.py benedat_cas.py benedat_chyby.py benedat_config.py bene
 GLADE_SOUBOR=benedat_gui.glade
 FONTY=fonts/LinLibertine_Bd.ttf fonts/LinLibertine_BI.ttf fonts/LinLibertineC_Re.ttf fonts/LinLibertine_It.ttf fonts/LinLibertine_Re.ttf
 JAGPDF_SOUBORY=jagpdf.py _jagpdf.pyd 
+IKONA=Benedat.png
 
 
 PROHLIZEC=gnome-open
@@ -26,7 +27,7 @@ nic:
 
 # vytvoření zip archivu
 zip:
-	zip $(ZIP_NAME) $(PYTHON_SOUBORY) $(GLADE_SOUBOR) $(FONTY) #$(JAGPDF_SOUBORY)
+	zip $(ZIP_NAME) $(PYTHON_SOUBORY) $(GLADE_SOUBOR) $(FONTY) $(IKONA) #$(JAGPDF_SOUBORY)
 
 # odstranění pomocných souborů
 clean:
