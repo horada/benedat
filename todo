@@ -80,6 +80,8 @@ Vzhled pokladního dokladu:
 
 + * Chybový dialog či jiné ošetření nezadání jména u záznamů
 
++ * po vytvoření sestavy zavřít okno
+
 
 Nezvýrazněný nadpis
 +	* Hotový úkol

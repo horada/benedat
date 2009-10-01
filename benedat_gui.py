@@ -1686,7 +1686,7 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
 
         
         if self.vsichni:
-            sablona_nazvu="Sestava_" + str(self.mesic) + "_" + str(self.rok)
+            sablona_nazvu="Sestava_" + str(self.mesic) + "_" + str(self.rok) + ".pdf"
             soubor = self.dotaz_ulozeni_sestavy(sablona_nazvu=sablona_nazvu)
             if soubor != -1 and soubor:    
                 if os.name == 'posix':
@@ -1706,6 +1706,9 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
                     sestava = bsestavy.Sestavy(BenedatDB.db)
 #               print sestava.sestava_text(str(self.klient), str(self.mesic), str(self.rok))
                     sestava.sestavy_pdf(str(self.mesic), str(self.rok), soubor, datum_vystaveni=datum_vystaveni, datum_platby=datum_platby, vystavil=vystavil)
+
+            # zavření okna pro sestavy
+            self.destroy()
                     
             return
         else:
@@ -1714,7 +1717,7 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
         
         sablona_nazvu="Sestava_" \
                 + bez_diakritiky_a_mezer(BenedatDB.db.klient_jmeno_podle_id(self.klient, vystup=2)) \
-                + "_" + str(self.mesic) + "_" + str(self.rok)
+                + "_" + str(self.mesic) + "_" + str(self.rok) + ".pdf"
         soubor = self.dotaz_ulozeni_sestavy(sablona_nazvu=sablona_nazvu)
         if soubor != -1 and soubor:    
             if os.name == 'posix':
@@ -1735,6 +1738,9 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
                 sestava = bsestavy.Sestavy(BenedatDB.db)
 #               print sestava.sestava_text(str(self.klient), str(self.mesic), str(self.rok))
                 sestava.sestava_pdf(str(self.klient), str(self.mesic), str(self.rok), soubor, datum_vystaveni=datum_vystaveni, datum_platby=datum_platby, vystavil=vystavil)
+
+        # zavření okna pro sestavy
+        self.destroy()
                 
 
     def dotaz_ulozeni_sestavy(self, sablona_nazvu=None):

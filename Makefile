@@ -31,7 +31,7 @@ zip:
 
 # odstranění pomocných souborů
 clean:
-	rm $(DOCASNE_SOUBORY)
+	rm $(DOCASNE_SOUBORY) $(ZIP_NAME)
 
 # odstranění pomocných souborů včetně dočasných souborů vimu
 clean-all:
