@@ -316,6 +316,7 @@ class xmlDokument(xml.Document):
 
     def to_xml_soubor(self, soubor="Sestava.xml", debug=False):
         """Uloží do xml souboru"""
+        soubor = soubor.decode("utf-8")
         souborovyobjekt = open(soubor, "w")
         souborovyobjekt.write(self.to_xml(debug))
         souborovyobjekt.close()

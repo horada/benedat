@@ -120,7 +120,7 @@ class BenedatHlavniOkno(BenedatGladeFile,BenedatDB):
 
         # otevření minule otevřené databáze
         if self.konf.volba("otevreny_soubor"):
-            self.databazovy_soubor = self.konf.volba("otevreny_soubor")
+            self.databazovy_soubor = self.konf.volba("otevreny_soubor").decode("utf-8")
             if os.path.isfile(self.databazovy_soubor):
                 self.otevreni_db()
             else:

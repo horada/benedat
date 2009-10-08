@@ -82,6 +82,11 @@ Vzhled pokladního dokladu:
 
 + * po vytvoření sestavy zavřít okno
 
++ * čeština v názvech souborů
+
+- * novější verze jagPDF - jednotné generování pdf ve Windows i Linuxu
+
+
 
 Nezvýrazněný nadpis
 +	* Hotový úkol
