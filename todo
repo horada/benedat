@@ -86,6 +86,23 @@ Vzhled pokladního dokladu:
 
 - * novější verze jagPDF - jednotné generování pdf ve Windows i Linuxu
 
+- * (instalace na Vistách)
+
+- * nevytvoří to XML (asi vyřešeno češtinou)
+- * zaokrouhlení čísel (periodický součet počtu hodin v sestavě)
+- * pokud klient, kterému se cena počítá dle paušálu, přijde za měsíc ve skutečnosti míň hodin, než polovinu maxima, tak platí jen polovinu paušálu
+tzn. aby to umělo: kontrola skutečného počtu hodin za měsíc oproti plánovanému (na papíře nebo spočítat) dřív než v sestavě; eventuelně, aby se tarif změnil automaticky na polovinu, pokud má klient  v měsíci menší počet hodin, než hodnota dle tarifu
+ máme tyto paušály podle domluveného počtu dnů v týdnu:
+domluvený rozsah služby:   
+dnů v týdnu: hod.za měs.: cena za měsíc:
+1  30  900
+2  60  1400
+3  90  1800
+4  120  2100
+5  150  2300
+
+- * chybně se počítají cesty - přičítá to navíc 2 Kč na km (zatím jsem to vyřešil tak, že jsem snížil nástupní sazbu z 6 na 4 Kč)
+- * když se změní něco v tabulce klientů (tarif, km), neprojeví se to v sestavě; - teprve až když uložim celou databázi; nešlo by to udělat, aby se při uložení tabulky klientů uložila celá databáze, nebo něco takovýho?
 
 
 Nezvýrazněný nadpis
