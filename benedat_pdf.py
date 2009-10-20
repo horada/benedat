@@ -323,7 +323,7 @@ class Sestava():
                 self.c.text(x(self._x + 2 * Sestava.sirka_sloupce +
                     (23 - self.regular(12).advance(str(do)))), 
                     y(self._y), str(do))
-                self.c.text(x(self._x + 3 * Sestava.sirka_sloupce), y(self._y), str(celkem))
+                self.c.text(x(self._x + 3 * Sestava.sirka_sloupce), y(self._y), str(round(celkem, 2)))
                 if dovoz:
                     self.c.text(x(self._x + 4 * Sestava.sirka_sloupce), y(self._y), 'x')
                 if odvoz:
@@ -348,7 +348,7 @@ class Sestava():
         self.c.text_font(self.regular(12))
         self._y += self.m_radek
         self.c.text(x(self._x + 0 * Sestava.sirka_sloupce), y(self._y), "odlehčovací služba")
-        self.c.text(x(self._x + 2 * Sestava.sirka_sloupce), y(self._y), str(self.__souhrn[0])+" hodin")
+        self.c.text(x(self._x + 2 * Sestava.sirka_sloupce), y(self._y), str(round(self.__souhrn[0],2))+" hodin")
         self.c.text(x(self._x + 3 * Sestava.sirka_sloupce + 
                     (50 - self.regular(12).advance(str('%0.2f' % self.__souhrn[1])+" kč"))),
                     y(self._y), str('%0.2f' % self.__souhrn[1])+" kč")

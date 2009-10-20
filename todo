@@ -88,9 +88,9 @@ Vzhled pokladního dokladu:
 
 - * (instalace na Vistách)
 
-- * nevytvoří to XML (asi vyřešeno češtinou)
++ * nevytvoří to XML (asi vyřešeno češtinou)
 
-- * zaokrouhlení čísel (periodický součet počtu hodin v sestavě) - pokud to není po čtvrthodinách...
++ * zaokrouhlení čísel (periodický součet počtu hodin v sestavě) - pokud to není po čtvrthodinách...
 
 - * pokud klient, kterému se cena počítá dle paušálu, přijde za měsíc ve skutečnosti míň hodin, než polovinu maxima, tak platí jen polovinu paušálu
 tzn. aby to umělo: kontrola skutečného počtu hodin za měsíc oproti plánovanému (na papíře nebo spočítat) dřív než v sestavě; eventuelně, aby se tarif změnil automaticky na polovinu, pokud má klient  v měsíci menší počet hodin, než hodnota dle tarifu
@@ -104,6 +104,7 @@ dnů v týdnu: hod.za měs.: cena za měsíc:
 5  150  2300
 
 + * chybně se počítají cesty - přičítá to navíc 2 Kč na km (zatím jsem to vyřešil tak, že jsem snížil nástupní sazbu z 6 na 4 Kč) - způsobeno špatným testem na lichá/sudá čísla ( / místo % )
+
 - * když se změní něco v tabulce klientů (tarif, km), neprojeví se to v sestavě; - teprve až když uložim celou databázi; nešlo by to udělat, aby se při uložení tabulky klientů uložila celá databáze, nebo něco takovýho?
 
 
