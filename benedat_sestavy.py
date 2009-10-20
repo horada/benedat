@@ -92,22 +92,34 @@ class Sestavy():
         if vzdalenost_km == None:
             vzdalenost_km = 0
         # zaokrouhlení na vyšší sudé číslo
-        if vzdalenost_km / 2:
+#        print  vzdalenost_km
+        if vzdalenost_km % 2:
             vzdalenost_km += 1
+#        print  vzdalenost_km
         # získání dalších údajů z db (nastavení)
         cestovne_os_cena_za_litr = float(self.db.nastaveni('cestovne_os_cena_za_litr')[1])
+#        print cestovne_os_cena_za_litr
         cestovne_os_exp = float(self.db.nastaveni('cestovne_os_exp')[1])
+#        print cestovne_os_exp
         cestovne_os_k = float(self.db.nastaveni('cestovne_os_k')[1])
+#        print cestovne_os_k
         cestovne_os_nastupni_sazba = float(self.db.nastaveni('cestovne_os_nastupni_sazba')[1])
+#        print cestovne_os_nastupni_sazba
         cestovne_os_podil_klienta = float(self.db.nastaveni('cestovne_os_podil_klienta')[1])
+#        print cestovne_os_podil_klienta
 
         cena = cestovne_os_nastupni_sazba + cestovne_os_podil_klienta * \
             (cestovne_os_k / 100.0 * \
             cestovne_os_cena_za_litr * \
-            pow(vzdalenost_km, cestovne_os_exp))
+            (vzdalenost_km ** cestovne_os_exp))
             
+#        print "========================"
+#        print cena
+        
         # zaokrouhlení ceny
         cena = round(cena, 0)
+#        print cena
+#        print 
 
         return cena
 
