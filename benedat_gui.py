@@ -71,6 +71,13 @@ class BenedatDB:
     def __init__(self):
         pass
 
+    def uloz_db(self):
+        """Uložení změn do databáze."""
+        BenedatDB.db.commit()
+        BenedatDB.ulozeno = True
+
+
+
 
 class BenedatHlavniOkno(BenedatGladeFile,BenedatDB):
     """Hlavní okno (rozcestník) aplikace Benedat"""
@@ -89,7 +96,7 @@ class BenedatHlavniOkno(BenedatGladeFile,BenedatDB):
         signaly = { 'on_wHlavni_destroy': self.konec,
                     'on_btNovaDB_clicked': self.dialog_nova_db,
                     'on_btOtevritDB_clicked': self.dialog_otevri_db,
-                    'on_btUlozDb_clicked': self.uloz_db,
+                    'on_btUlozDb_clicked': self.on_btUlozDb_clicked,
                     'on_btZavriDb_clicked': self.nic,
                     'on_btEditaceZaznamuOS_clicked': self.on_btEditaceZaznamuOS_clicked,
                     'on_btSestavyOS_clicked': self.dialog_sestavy,
@@ -222,11 +229,9 @@ class BenedatHlavniOkno(BenedatGladeFile,BenedatDB):
             self.nastav_statusbar("..." + self.databazovy_soubor[-30:])
            
     
-    def uloz_db(self, widget):
-        """Uložení změn do databáze."""
-        BenedatDB.db.commit()
-        BenedatDB.ulozeno = True
-
+    def on_btUlozDb_clicked(self, widget):
+        """Obsloužení tlačítka pro uložení databáze"""
+        self.uloz_db()
 
     def nastav_odkaz_na_konfiguraci(self, konf):
         self.konf = konf
@@ -842,6 +847,7 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
                 self.nacteni_klientu_z_db()
                 self.vyprazdnit_form()
                 self.aktualni_klient = []
+            self.uloz_db()
         except berr.ChybaPrazdnePole, e:
             self.aktualni_klient = []
     
@@ -856,7 +862,8 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
             self.nacteni_klientu_z_db()
             self.vyprazdnit_form()
             self.aktualni_klient = []
-            self.BenedatDB.ulozeno = False
+            BenedatDB.ulozeno = False
+            self.uloz_db()
 
 
 class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
@@ -1327,6 +1334,7 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
 
     def on_btZaznamyOSZavrit_clicked(self, widget):
         self.destroy()
+        self.uloz_db()
 
     def on_twTabZaznamyOS_row_activated(self, widget, path, view_column):
         """vybrání jednoho záznamu"""
@@ -1940,6 +1948,7 @@ class BenedatOknoNastaveni(BenedatGladeFile, BenedatDB):
             if nastaveni_z_db[key][0] != nastaveni_z_form[key]:
                 BenedatDB.db.zmen_nastaveni(key, nastaveni_z_form[key])
         BenedatDB.ulozeno = False
+        self.uloz_db()
 
 def setrideni_slovniku_podle_obsahu(slovnik):
     """Setřídění slovníku podle hodnot - vrátí seznam klíčů"""

@@ -105,7 +105,7 @@ dnů v týdnu: hod.za měs.: cena za měsíc:
 
 + * chybně se počítají cesty - přičítá to navíc 2 Kč na km (zatím jsem to vyřešil tak, že jsem snížil nástupní sazbu z 6 na 4 Kč) - způsobeno špatným testem na lichá/sudá čísla ( / místo % )
 
-- * když se změní něco v tabulce klientů (tarif, km), neprojeví se to v sestavě; - teprve až když uložim celou databázi; nešlo by to udělat, aby se při uložení tabulky klientů uložila celá databáze, nebo něco takovýho?
++ * když se změní něco v tabulce klientů (tarif, km), neprojeví se to v sestavě; - teprve až když uložim celou databázi; nešlo by to udělat, aby se při uložení tabulky klientů uložila celá databáze, nebo něco takovýho?
 
 
 
