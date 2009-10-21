@@ -35,7 +35,7 @@ import benedat_chyby as err
 from benedat_log import *
 import time
 
-AKTUALNI_VERZE_DB = "4"
+AKTUALNI_VERZE_DB = "5"
 
 class Db:
     def __init__(self, soubor, novy=False):
@@ -91,6 +91,7 @@ class Db:
                     os_cena_do INTEGER ,
                     os_cena_mezi INTEGER ,
                     os_cena_nad INTEGER ,
+                    os_pausalHodin INTEGER ,
                     PRIMARY KEY (id_klienta)
                 );"""
             )
@@ -169,7 +170,7 @@ class Db:
 
 
     def vloz_klienta(self, jmeno, prijmeni, adresa="", telefon="", 
-            mobil1="", mobil2="", pozn="", os=0, oa=0, km_os="0", os_pausal="0", os_cena_do="0", os_cena_mezi="0", os_cena_nad="0"):
+            mobil1="", mobil2="", pozn="", os=0, oa=0, km_os="0", os_pausal="0", os_cena_do="0", os_cena_mezi="0", os_cena_nad="0", os_pausalHodin="0"):
         """Vložení nového klienta do databáze.
             Požadované údaje jsou jméno a příjmení"""
         if jmeno == "":
@@ -178,14 +179,14 @@ class Db:
             raise err.ChybaPrazdnePole("Není zadáno žádné příjmení!")
         try:
             self.databaze.execute("""INSERT INTO 
-                klienti (jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad)
-                values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                (jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad))
+                klienti (jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad, os_pausalHodin)
+                values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)""",
+                (jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad,os_pausalHodin))
         except sqlite.Error, e:
             log(e)
 
     def zmen_klienta(self, id_klienta, jmeno, prijmeni, adresa="", telefon="", 
-            mobil1="", mobil2="", pozn="", os=0, oa=0, km_os="", os_pausal="", os_cena_do="", os_cena_mezi="",  os_cena_nad=""):
+            mobil1="", mobil2="", pozn="", os=0, oa=0, km_os="", os_pausal="", os_cena_do="", os_cena_mezi="",  os_cena_nad="", os_pausalHodin=""):
         """Změna informací o klientovi"""
         if jmeno == "":
             raise err.ChybaPrazdnePole("Není zadáno žádné jméno!")
@@ -193,9 +194,9 @@ class Db:
             raise err.ChybaPrazdnePole("Není zadáno žádné příjmení!")
         try:
             self.databaze.execute("""UPDATE klienti 
-                SET jmeno=?, prijmeni=?, adresa=?, telefon=?, mobil1=?, mobil2=?, pozn=?, os=?, oa=?, km_os=?, os_pausal=?, os_cena_do=?, os_cena_mezi=?, os_cena_nad=?
+                SET jmeno=?, prijmeni=?, adresa=?, telefon=?, mobil1=?, mobil2=?, pozn=?, os=?, oa=?, km_os=?, os_pausal=?, os_cena_do=?, os_cena_mezi=?, os_cena_nad=?, os_pausalHodin=?
                 WHERE id_klienta=?""",
-                (jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad, id_klienta))
+                (jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad, os_pausalHodin, id_klienta))
         except sqlite.Error, e:
             log(e)
 
@@ -210,7 +211,7 @@ class Db:
         """Vrácení všech klientů se všemi informacemi"""
         try:
             vysledek = self.databaze.execute("""SELECT
-                id_klienta, jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os,  os_pausal, os_cena_do, os_cena_mezi, os_cena_nad
+                id_klienta, jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os,  os_pausal, os_cena_do, os_cena_mezi, os_cena_nad, os_pausalHodin
                 FROM klienti""")
             return vysledek.fetchall()
         except sqlite.Error, e:
@@ -258,7 +259,7 @@ class Db:
         """Vrácení konkrétního klienta podle id"""
         try:
             vysledek = self.databaze.execute("""SELECT
-                id_klienta, jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad
+                id_klienta, jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad, os_pausalHodin
                 FROM klienti WHERE id_klienta=?""", (str(id_klienta),)) 
             return vysledek.fetchone()
         except sqlite.Error, e:
@@ -305,7 +306,7 @@ class Db:
     def ceny_os_pro_klienta(self,id_klienta):
         """Vyhledání cen os pro konkrétního klienta"""
         try:
-            vysledek = self.databaze.execute("""SELECT os_pausal, os_cena_do, os_cena_mezi, os_cena_nad
+            vysledek = self.databaze.execute("""SELECT os_pausal, os_cena_do, os_cena_mezi, os_cena_nad, os_pausalHodin
                 FROM klienti WHERE id_klienta=?""", (str(id_klienta),))
             return vysledek.fetchone()
         except sqlite.Error, e:
@@ -580,6 +581,23 @@ def aktualizace_db_na_novejsi_verzi(soubor):
 
             # další kontrola verze db
             aktualizace_db_na_novejsi_verzi(soubor)
+
+
+        elif stara_verze_db < 5:
+            # aktualizace z verze 4 na verzi 5
+            # přidání sloupce os_pausalHodin do tabulky klienti
+            db.execute("""ALTER TABLE klienti ADD COLUMN os_pausalHodin INTEGER ;""")
+            # uklizení
+            db.execute("""UPDATE klienti SET os_pausalHodin='0'""")
+            
+            
+            # nastavení správného čísla aktuální verze
+            db.execute("""UPDATE nastaveni SET hodnota=? WHERE volba=?""", (5, "verze"))
+            db.commit()
+
+            # další kontrola verze db
+            aktualizace_db_na_novejsi_verzi(soubor)
+
 
 
 

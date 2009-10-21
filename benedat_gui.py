@@ -483,6 +483,7 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
                 'Pozn',
                 'Vzdalenost',
                 'NastaveniOS_pausal',
+                'NastaveniOS_pausalHodin',
                 'NastaveniOS_cena_do',
                 'NastaveniOS_cena_mezi',
                 'NastaveniOS_cena_nad']
@@ -662,6 +663,7 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
             self.edWidgety['NastaveniOS_cena_do'].set_text(bez_none(self.aktualni_klient[12]))
             self.edWidgety['NastaveniOS_cena_mezi'].set_text(bez_none(self.aktualni_klient[13]))
             self.edWidgety['NastaveniOS_cena_nad'].set_text(bez_none(self.aktualni_klient[14]))
+            self.edWidgety['NastaveniOS_pausalHodin'].set_text(bez_none(self.aktualni_klient[15]))
         else:
             self.vyprazdnit_form()
 
@@ -683,6 +685,7 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
         self.edWidgety['NastaveniOS_cena_do'].set_text("")
         self.edWidgety['NastaveniOS_cena_mezi'].set_text("")
         self.edWidgety['NastaveniOS_cena_nad'].set_text("")
+        self.edWidgety['NastaveniOS_pausalHodin'].set_text("")
 
     def nacteni_klienta_z_form(self):
         """načtení klienta z form do self.aktualni_klient"""
@@ -701,6 +704,9 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
         tmp_NastaveniOS_cena_nad = self.edWidgety['NastaveniOS_cena_nad'].get_text()
         if not tmp_NastaveniOS_cena_nad: 
             tmp_NastaveniOS_cena_nad = 0
+        tmp_NastaveniOS_pausalHodin = self.edWidgety['NastaveniOS_pausalHodin'].get_text()
+        if not tmp_NastaveniOS_pausalHodin:
+            tmp_NastaveniOS_pausalHodin = 0
         klient = [self.aktualni_klient[0],
                 self.edWidgety['Jmeno'].get_text(),
                 self.edWidgety['Prijmeni'].get_text(),
@@ -715,7 +721,8 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
                 tmp_NastaveniOS_pausal,
                 tmp_NastaveniOS_cena_do,
                 tmp_NastaveniOS_cena_mezi,
-                tmp_NastaveniOS_cena_nad]
+                tmp_NastaveniOS_cena_nad,
+                tmp_NastaveniOS_pausalHodin]
         self.aktualni_klient = klient
 
     def nacteni_noveho_klienta_z_form(self):
@@ -735,6 +742,9 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
         tmp_NastaveniOS_cena_nad = self.edWidgety['NastaveniOS_cena_nad'].get_text()
         if not tmp_NastaveniOS_cena_nad: 
             tmp_NastaveniOS_cena_nad = 0
+        tmp_NastaveniOS_pausalHodin = self.edWidgety['NastaveniOS_pausalHodin'].get_text()
+        if not tmp_NastaveniOS_pausalHodin:
+            tmp_NastaveniOS_pausalHodin = 0
         klient = [0,
                 self.edWidgety['Jmeno'].get_text(),
                 self.edWidgety['Prijmeni'].get_text(),
@@ -749,7 +759,8 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
                 tmp_NastaveniOS_pausal,
                 tmp_NastaveniOS_cena_do,
                 tmp_NastaveniOS_cena_mezi,
-                tmp_NastaveniOS_cena_nad]
+                tmp_NastaveniOS_cena_nad,
+                tmp_NastaveniOS_pausalHodin]
         self.aktualni_klient = klient
 
 
@@ -772,7 +783,8 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
                                 k[11],
                                 k[12],
                                 k[13],
-                                k[14])
+                                k[14],
+                                k[15])
         BenedatDB.ulozeno = False
 
             
@@ -794,7 +806,8 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
                                 k[11],
                                 k[12],
                                 k[13],
-                                k[14])
+                                k[14],
+                                k[15])
         BenedatDB.ulozeno = False
 
         

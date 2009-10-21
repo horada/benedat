@@ -92,7 +92,7 @@ Vzhled pokladního dokladu:
 
 + * zaokrouhlení čísel (periodický součet počtu hodin v sestavě) - pokud to není po čtvrthodinách...
 
-- * pokud klient, kterému se cena počítá dle paušálu, přijde za měsíc ve skutečnosti míň hodin, než polovinu maxima, tak platí jen polovinu paušálu
++ * pokud klient, kterému se cena počítá dle paušálu, přijde za měsíc ve skutečnosti míň hodin, než polovinu maxima, tak platí jen polovinu paušálu
 tzn. aby to umělo: kontrola skutečného počtu hodin za měsíc oproti plánovanému (na papíře nebo spočítat) dřív než v sestavě; eventuelně, aby se tarif změnil automaticky na polovinu, pokud má klient  v měsíci menší počet hodin, než hodnota dle tarifu
  máme tyto paušály podle domluveného počtu dnů v týdnu:
 domluvený rozsah služby:   

@@ -126,25 +126,32 @@ class Sestavy():
     def cena_os(self, pocet_hodin, id_klienta):
         """výpočet celkové ceny za os"""
         pocet_hodin = float(pocet_hodin)
-        (os_pausal, os_cena_do, os_cena_mezi, os_cena_nad) = self.db.ceny_os_pro_klienta(id_klienta)
+        (os_pausal, os_cena_do, os_cena_mezi, os_cena_nad, os_pausalHodin) = self.db.ceny_os_pro_klienta(id_klienta)
         os_pausal = float(os_pausal)
         os_cena_do = float(os_cena_do)
         os_cena_mezi = float(os_cena_mezi)
         os_cena_nad = float(os_cena_nad)
+        os_pausalHodin = float(os_pausalHodin)
         
         dolni_hranice_poctu_hodin = int(self.db.nastaveni('dolni_hranice_poctu_hodin')[1])
         horni_hranice_poctu_hodin = int(self.db.nastaveni('horni_hranice_poctu_hodin')[1])
-
+        
+        # výpočet aktuálního paušálu (v případě méně hodin než polovinu předpokládaného 
+        # počtu se započítá jen polovina paušálu
+        if pocet_hodin < (os_pausalHodin/2):
+            aktualni_os_pausal = os_pausal / 2
+        else :
+            aktualni_os_pausal = os_pausal
 
         if pocet_hodin > horni_hranice_poctu_hodin:
-            cena = os_pausal + (os_cena_nad *  (pocet_hodin - horni_hranice_poctu_hodin)) + \
+            cena = aktualni_os_pausal + (os_cena_nad *  (pocet_hodin - horni_hranice_poctu_hodin)) + \
                                (os_cena_mezi * (horni_hranice_poctu_hodin - dolni_hranice_poctu_hodin)) + \
                                (os_cena_do *   (dolni_hranice_poctu_hodin))
         elif pocet_hodin > dolni_hranice_poctu_hodin:
-            cena = os_pausal + (os_cena_mezi * (pocet_hodin - dolni_hranice_poctu_hodin)) + \
+            cena = aktualni_os_pausal + (os_cena_mezi * (pocet_hodin - dolni_hranice_poctu_hodin)) + \
                                (os_cena_do *   (dolni_hranice_poctu_hodin))
         else:
-            cena = os_pausal + os_cena_do * pocet_hodin
+            cena = aktualni_os_pausal + os_cena_do * pocet_hodin
         return cena
         
 

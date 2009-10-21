@@ -28,7 +28,7 @@
                     <property name="layout_style">spread</property>
                     <child>
                       <widget class="GtkButton" id="btNovaDB">
-                        <property name="label" translatable="yes">gtk-new</property>
+                        <property name="label">gtk-new</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -43,7 +43,7 @@
                     </child>
                     <child>
                       <widget class="GtkButton" id="btOtevritDB">
-                        <property name="label" translatable="yes">gtk-open</property>
+                        <property name="label">gtk-open</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -58,7 +58,7 @@
                     </child>
                     <child>
                       <widget class="GtkButton" id="btUlozDb">
-                        <property name="label" translatable="yes">gtk-save</property>
+                        <property name="label">gtk-save</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
@@ -76,7 +76,7 @@
                     </child>
                     <child>
                       <widget class="GtkButton" id="btZavriDb">
-                        <property name="label" translatable="yes">gtk-close</property>
+                        <property name="label">gtk-close</property>
                         <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -243,7 +243,7 @@
                 <property name="layout_style">spread</property>
                 <child>
                   <widget class="GtkButton" id="btNastaveni">
-                    <property name="label" translatable="yes">gtk-preferences</property>
+                    <property name="label">gtk-preferences</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
@@ -311,7 +311,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btKonec">
-                <property name="label" translatable="yes">gtk-quit</property>
+                <property name="label">gtk-quit</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -356,7 +356,7 @@
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
-          <widget class="GtkHButtonBox" id="hbuttonbox2">
+          <widget class="GtkHButtonBox" id="hbuttonbox7">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
@@ -385,7 +385,7 @@
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="btOtevriDBZrus">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -400,7 +400,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btOtevriDBOK">
-                <property name="label" translatable="yes">gtk-open</property>
+                <property name="label">gtk-open</property>
                 <property name="response_id">-5</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -432,15 +432,15 @@
     <property name="icon">Benedat.png</property>
     <property name="type_hint">normal</property>
     <property name="has_separator">False</property>
-    <property name="action">save</property>
     <property name="do_overwrite_confirmation">True</property>
+    <property name="action">save</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox4">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
-          <widget class="GtkHButtonBox" id="hbuttonbox2">
+          <widget class="GtkHButtonBox" id="hbuttonbox8">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
@@ -468,7 +468,7 @@
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="btNovaDBZrus">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -483,7 +483,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btNovaDBOK">
-                <property name="label" translatable="yes">gtk-save</property>
+                <property name="label">gtk-save</property>
                 <property name="response_id">-5</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -513,7 +513,7 @@
     <property name="icon">Benedat.png</property>
     <signal name="destroy" handler="on_wKlienti_destroy"/>
     <child>
-      <widget class="GtkVBox" id="vbox2">
+      <widget class="GtkVBox" id="vbox3">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">10</property>
@@ -543,7 +543,7 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkVBox" id="vbox3">
+          <widget class="GtkVBox" id="vbox4">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <child>
@@ -551,12 +551,12 @@
                 <property name="visible">True</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <widget class="GtkFrame" id="frame1">
+                  <widget class="GtkFrame" id="frame3">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <widget class="GtkAlignment" id="alignment1">
+                      <widget class="GtkAlignment" id="alignment4">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkEntry" id="eKlienti_Jmeno">
@@ -570,7 +570,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label1">
+                      <widget class="GtkLabel" id="label2">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;Jm&#xE9;no&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -586,12 +586,12 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFrame" id="frame2">
+                  <widget class="GtkFrame" id="frame4">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <widget class="GtkAlignment" id="alignment2">
+                      <widget class="GtkAlignment" id="alignment5">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkEntry" id="eKlienti_Prijmeni">
@@ -605,7 +605,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label2">
+                      <widget class="GtkLabel" id="label3">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;P&#x159;&#xED;jmen&#xED;&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -668,12 +668,12 @@
                 <property name="visible">True</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <widget class="GtkFrame" id="frame4">
+                  <widget class="GtkFrame" id="frame5">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <widget class="GtkAlignment" id="alignment4">
+                      <widget class="GtkAlignment" id="alignment6">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkEntry" id="eKlienti_Telefon">
@@ -703,12 +703,12 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFrame" id="frame5">
+                  <widget class="GtkFrame" id="frame6">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <widget class="GtkAlignment" id="alignment5">
+                      <widget class="GtkAlignment" id="alignment8">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkEntry" id="eKlienti_Mobil1">
@@ -738,12 +738,12 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFrame" id="frame6">
+                  <widget class="GtkFrame" id="frame8">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <widget class="GtkAlignment" id="alignment6">
+                      <widget class="GtkAlignment" id="alignment9">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkEntry" id="eKlienti_Mobil2">
@@ -780,12 +780,12 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkFrame" id="frame8">
+              <widget class="GtkFrame" id="frame9">
                 <property name="visible">True</property>
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">none</property>
                 <child>
-                  <widget class="GtkAlignment" id="alignment8">
+                  <widget class="GtkAlignment" id="alignment10">
                     <property name="visible">True</property>
                     <child>
                       <widget class="GtkEntry" id="eKlienti_Pozn">
@@ -825,10 +825,10 @@
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <widget class="GtkAlignment" id="alignment10">
+                      <widget class="GtkAlignment" id="alignment11">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkVBox" id="vbox4">
+                          <widget class="GtkVBox" id="vbox5">
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
                             <child>
@@ -877,12 +877,12 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFrame" id="frame9">
+                  <widget class="GtkFrame" id="frame11">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <widget class="GtkAlignment" id="alignment9">
+                      <widget class="GtkAlignment" id="alignment12">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkEntry" id="eKlienti_Vzdalenost">
@@ -929,47 +929,92 @@
                     <property name="visible">True</property>
                     <property name="homogeneous">True</property>
                     <child>
-                      <widget class="GtkFrame" id="frame3">
+                      <widget class="GtkVBox" id="vbox22">
                         <property name="visible">True</property>
-                        <property name="label_xalign">0</property>
-                        <property name="shadow_type">none</property>
+                        <property name="orientation">vertical</property>
                         <child>
-                          <widget class="GtkAlignment" id="alignment3">
+                          <widget class="GtkFrame" id="frame12">
                             <property name="visible">True</property>
+                            <property name="label_xalign">0</property>
+                            <property name="shadow_type">none</property>
                             <child>
-                              <widget class="GtkEntry" id="eKlienti_NastaveniOS_pausal">
+                              <widget class="GtkAlignment" id="alignment13">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="max_length">15</property>
-                                <property name="invisible_char">&#x25CF;</property>
-                                <property name="activates_default">True</property>
+                                <child>
+                                  <widget class="GtkEntry" id="eKlienti_NastaveniOS_pausal">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="max_length">15</property>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                    <property name="activates_default">True</property>
+                                  </widget>
+                                </child>
                               </widget>
                             </child>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkLabel" id="label11">
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">Pau&#x161;&#xE1;ln&#xED; cena</property>
-                            <property name="use_markup">True</property>
+                            <child>
+                              <widget class="GtkLabel" id="label11">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Pau&#x161;&#xE1;ln&#xED; cena</property>
+                                <property name="use_markup">True</property>
+                              </widget>
+                              <packing>
+                                <property name="type">label_item</property>
+                              </packing>
+                            </child>
                           </widget>
                           <packing>
-                            <property name="type">label_item</property>
+                            <property name="expand">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkFrame" id="frame23">
+                            <property name="visible">True</property>
+                            <property name="label_xalign">0</property>
+                            <property name="shadow_type">none</property>
+                            <child>
+                              <widget class="GtkAlignment" id="alignment24">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkEntry" id="eKlienti_NastaveniOS_pausalHodin">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">Pokud je celkov&#xFD; po&#x10D;et hodin za m&#x11B;s&#xED;c men&#x161;&#xED; ne&#x17E; polovina zde zadan&#xE9;ho po&#x10D;tu, &#xFA;&#x10D;tuje se polovina pau&#x161;&#xE1;lu.</property>
+                                    <property name="max_length">15</property>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                    <property name="activates_default">True</property>
+                                  </widget>
+                                </child>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label43">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Pau&#x161;&#xE1;ln&#xED; po&#x10D;et hodin</property>
+                                <property name="use_markup">True</property>
+                              </widget>
+                              <packing>
+                                <property name="type">label_item</property>
+                              </packing>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="position">1</property>
                           </packing>
                         </child>
                       </widget>
                       <packing>
-                        <property name="expand">False</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkFrame" id="frame11">
+                      <widget class="GtkFrame" id="frame13">
                         <property name="visible">True</property>
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">none</property>
                         <child>
-                          <widget class="GtkAlignment" id="alignment11">
+                          <widget class="GtkAlignment" id="alignment14">
                             <property name="visible">True</property>
                             <child>
                               <widget class="GtkEntry" id="eKlienti_NastaveniOS_cena_do">
@@ -999,12 +1044,12 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkFrame" id="frame13">
+                      <widget class="GtkFrame" id="frame14">
                         <property name="visible">True</property>
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">none</property>
                         <child>
-                          <widget class="GtkAlignment" id="alignment13">
+                          <widget class="GtkAlignment" id="alignment15">
                             <property name="visible">True</property>
                             <child>
                               <widget class="GtkEntry" id="eKlienti_NastaveniOS_cena_mezi">
@@ -1034,12 +1079,12 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkFrame" id="frame12">
+                      <widget class="GtkFrame" id="frame15">
                         <property name="visible">True</property>
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">none</property>
                         <child>
-                          <widget class="GtkAlignment" id="alignment12">
+                          <widget class="GtkAlignment" id="alignment16">
                             <property name="visible">True</property>
                             <child>
                               <widget class="GtkEntry" id="eKlienti_NastaveniOS_cena_nad">
@@ -1071,7 +1116,7 @@
                   </widget>
                 </child>
                 <child>
-                  <widget class="GtkLabel" id="label3">
+                  <widget class="GtkLabel" id="label15">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">&lt;b&gt;Nastaven&#xED; odleh&#x10D;ovac&#xED; slu&#x17E;by&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
@@ -1093,12 +1138,12 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkHButtonBox" id="hbuttonbox1">
+          <widget class="GtkHButtonBox" id="hbuttonbox9">
             <property name="visible">True</property>
             <property name="layout_style">spread</property>
             <child>
               <widget class="GtkButton" id="btKlientNovy">
-                <property name="label" translatable="yes">gtk-new</property>
+                <property name="label">gtk-new</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1113,7 +1158,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btKlientSmazat">
-                <property name="label" translatable="yes">gtk-delete</property>
+                <property name="label">gtk-delete</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1128,7 +1173,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btKlientUlozit">
-                <property name="label" translatable="yes">gtk-save</property>
+                <property name="label">gtk-save</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
@@ -1145,7 +1190,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btKlientZavrit">
-                <property name="label" translatable="yes">gtk-close</property>
+                <property name="label">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1183,7 +1228,7 @@
     <property name="icon">Benedat.png</property>
     <signal name="destroy" handler="on_wNastaveni_destroy"/>
     <child>
-      <widget class="GtkVBox" id="vbox1">
+      <widget class="GtkVBox" id="vbox6">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
@@ -1191,19 +1236,19 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
-              <widget class="GtkVBox" id="vbox2">
+              <widget class="GtkVBox" id="vbox7">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkFrame" id="frame3">
+                  <widget class="GtkFrame" id="frame16">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <widget class="GtkAlignment" id="alignment3">
+                      <widget class="GtkAlignment" id="alignment17">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkVBox" id="vbox6">
+                          <widget class="GtkVBox" id="vbox8">
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
                             <child>
@@ -1211,7 +1256,7 @@
                                 <property name="visible">True</property>
                                 <property name="homogeneous">True</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label13">
+                                  <widget class="GtkLabel" id="label16">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.89999997615814209</property>
                                     <property name="label" translatable="yes">Doln&#xED; hranice</property>
@@ -1246,7 +1291,7 @@
                                 <property name="visible">True</property>
                                 <property name="homogeneous">True</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label14">
+                                  <widget class="GtkLabel" id="label17">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.89999997615814209</property>
                                     <property name="label" translatable="yes">Horn&#xED; hranice</property>
@@ -1281,7 +1326,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label15">
+                      <widget class="GtkLabel" id="label18">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;Hranice po&#x10D;tu hodin&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -1296,23 +1341,23 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFrame" id="frame2">
+                  <widget class="GtkFrame" id="frame17">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <widget class="GtkAlignment" id="alignment2">
+                      <widget class="GtkAlignment" id="alignment18">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkVBox" id="vbox4">
+                          <widget class="GtkVBox" id="vbox9">
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
                             <child>
-                              <widget class="GtkHBox" id="hbox3">
+                              <widget class="GtkHBox" id="hbox5">
                                 <property name="visible">True</property>
                                 <property name="homogeneous">True</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label6">
+                                  <widget class="GtkLabel" id="label19">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.89999997615814209</property>
                                     <property name="label" translatable="yes">Cestovn&#xE9; - cena za litr</property>
@@ -1342,11 +1387,11 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkHBox" id="hbox4">
+                              <widget class="GtkHBox" id="hbox6">
                                 <property name="visible">True</property>
                                 <property name="homogeneous">True</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label7">
+                                  <widget class="GtkLabel" id="label20">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.89999997615814209</property>
                                     <property name="label" translatable="yes">Cestovn&#xE9; - exp</property>
@@ -1376,11 +1421,11 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkHBox" id="hbox5">
+                              <widget class="GtkHBox" id="hbox7">
                                 <property name="visible">True</property>
                                 <property name="homogeneous">True</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label8">
+                                  <widget class="GtkLabel" id="label21">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.89999997615814209</property>
                                     <property name="label" translatable="yes">Cestovn&#xE9; - konstanta k</property>
@@ -1410,11 +1455,11 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkHBox" id="hbox6">
+                              <widget class="GtkHBox" id="hbox10">
                                 <property name="visible">True</property>
                                 <property name="homogeneous">True</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label9">
+                                  <widget class="GtkLabel" id="label22">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.89999997615814209</property>
                                     <property name="label" translatable="yes">Cestovn&#xE9; - N&#xE1;stupn&#xED; sazba</property>
@@ -1444,11 +1489,11 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkHBox" id="hbox7">
+                              <widget class="GtkHBox" id="hbox11">
                                 <property name="visible">True</property>
                                 <property name="homogeneous">True</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label10">
+                                  <widget class="GtkLabel" id="label23">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.89999997615814209</property>
                                     <property name="label" translatable="yes">Cestovn&#xE9; - pod&#xED;l klienta</property>
@@ -1482,7 +1527,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label11">
+                      <widget class="GtkLabel" id="label24">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;Cestovn&#xE9;&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -1499,7 +1544,7 @@
               </widget>
             </child>
             <child>
-              <widget class="GtkLabel" id="label1">
+              <widget class="GtkLabel" id="label25">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Ceny</property>
               </widget>
@@ -1509,27 +1554,27 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox5">
+              <widget class="GtkVBox" id="vbox10">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkFrame" id="frame1">
+                  <widget class="GtkFrame" id="frame18">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <widget class="GtkAlignment" id="alignment1">
+                      <widget class="GtkAlignment" id="alignment19">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkVBox" id="vbox3">
+                          <widget class="GtkVBox" id="vbox11">
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
                             <child>
-                              <widget class="GtkHBox" id="hbox1">
+                              <widget class="GtkHBox" id="hbox12">
                                 <property name="visible">True</property>
                                 <property name="homogeneous">True</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label4">
+                                  <widget class="GtkLabel" id="label26">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.89999997615814209</property>
                                     <property name="label" translatable="yes">St&#xE1;l&#xE1; &#x10D;&#xE1;st</property>
@@ -1560,11 +1605,11 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkHBox" id="hbox2">
+                              <widget class="GtkHBox" id="hbox13">
                                 <property name="visible">True</property>
                                 <property name="homogeneous">True</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label5">
+                                  <widget class="GtkLabel" id="label27">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.89999997615814209</property>
                                     <property name="label" translatable="yes">Prom&#x11B;nn&#xE1; &#x10D;&#xE1;st (aktu&#xE1;ln&#xED; hodnota)</property>
@@ -1599,7 +1644,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label12">
+                      <widget class="GtkLabel" id="label28">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;K&#xF3;d dokladu&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -1614,23 +1659,23 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFrame" id="frame4">
+                  <widget class="GtkFrame" id="frame19">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <widget class="GtkAlignment" id="alignment4">
+                      <widget class="GtkAlignment" id="alignment20">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkVBox" id="vbox7">
+                          <widget class="GtkVBox" id="vbox12">
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
                             <child>
-                              <widget class="GtkHBox" id="hbox10">
+                              <widget class="GtkHBox" id="hbox14">
                                 <property name="visible">True</property>
                                 <property name="spacing">5</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label16">
+                                  <widget class="GtkLabel" id="label29">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.89999997615814209</property>
                                     <property name="label" translatable="yes">Adresa</property>
@@ -1661,11 +1706,11 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkHBox" id="hbox11">
+                              <widget class="GtkHBox" id="hbox15">
                                 <property name="visible">True</property>
                                 <property name="spacing">5</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label17">
+                                  <widget class="GtkLabel" id="label30">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.89999997615814209</property>
                                     <property name="label" translatable="yes">Dopl&#x148;uj&#xED;c&#xED; informace</property>
@@ -1700,7 +1745,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label18">
+                      <widget class="GtkLabel" id="label31">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;Adresa&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -1720,7 +1765,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="label2">
+              <widget class="GtkLabel" id="label32">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Sestavy</property>
               </widget>
@@ -1736,12 +1781,12 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkHButtonBox" id="hbuttonbox1">
+          <widget class="GtkHButtonBox" id="hbuttonbox10">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="btNastaveni_pouzit">
-                <property name="label" translatable="yes">gtk-apply</property>
+                <property name="label">gtk-apply</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
@@ -1758,7 +1803,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btNastaveni_zrusit">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1773,7 +1818,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btNastaveni_ulozit">
-                <property name="label" translatable="yes">gtk-save</property>
+                <property name="label">gtk-save</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1801,11 +1846,11 @@
     <property name="icon">Benedat.png</property>
     <signal name="destroy" handler="on_wZaznamyOS_destroy"/>
     <child>
-      <widget class="GtkVBox" id="vbox1">
+      <widget class="GtkVBox" id="vbox13">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <widget class="GtkHButtonBox" id="hbuttonbox1">
+          <widget class="GtkHButtonBox" id="hbuttonbox11">
             <property name="visible">True</property>
             <property name="spacing">10</property>
             <property name="layout_style">end</property>
@@ -1825,7 +1870,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="label1">
+              <widget class="GtkLabel" id="label33">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Obdob&#xED;:</property>
@@ -1866,7 +1911,7 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkScrolledWindow" id="scrolledwindow1">
+          <widget class="GtkScrolledWindow" id="scrolledwindow2">
             <property name="width_request">500</property>
             <property name="height_request">350</property>
             <property name="visible">True</property>
@@ -1886,11 +1931,11 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkHBox" id="hbox2">
+          <widget class="GtkHBox" id="hbox16">
             <property name="visible">True</property>
             <property name="spacing">2</property>
             <child>
-              <widget class="GtkVBox" id="vbox2">
+              <widget class="GtkVBox" id="vbox14">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
@@ -1932,7 +1977,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox4">
+              <widget class="GtkVBox" id="vbox15">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
@@ -1972,11 +2017,11 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox3">
+              <widget class="GtkVBox" id="vbox16">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkLabel" id="label4">
+                  <widget class="GtkLabel" id="label34">
                     <property name="visible">True</property>
                     <property name="xalign">0.10000000149011612</property>
                     <property name="label" translatable="yes">&#x10C;as od</property>
@@ -2006,11 +2051,11 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox5">
+              <widget class="GtkVBox" id="vbox17">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkLabel" id="label5">
+                  <widget class="GtkLabel" id="label35">
                     <property name="visible">True</property>
                     <property name="xalign">0.10000000149011612</property>
                     <property name="label" translatable="yes">&#x10C;as do</property>
@@ -2040,11 +2085,11 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox6">
+              <widget class="GtkVBox" id="vbox18">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkLabel" id="label6">
+                  <widget class="GtkLabel" id="label36">
                     <property name="visible">True</property>
                     <property name="xalign">0</property>
                     <property name="label" translatable="yes">Dovoz</property>
@@ -2072,11 +2117,11 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox7">
+              <widget class="GtkVBox" id="vbox19">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkLabel" id="label7">
+                  <widget class="GtkLabel" id="label37">
                     <property name="visible">True</property>
                     <property name="xalign">0</property>
                     <property name="label" translatable="yes">Odvoz</property>
@@ -2105,7 +2150,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btZaznamyOSUlozit">
-                <property name="label" translatable="yes">gtk-save</property>
+                <property name="label">gtk-save</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
@@ -2127,12 +2172,12 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkHButtonBox" id="hbuttonbox3">
+          <widget class="GtkHButtonBox" id="hbuttonbox12">
             <property name="visible">True</property>
             <property name="layout_style">spread</property>
             <child>
               <widget class="GtkButton" id="btZaznamyOSNovy">
-                <property name="label" translatable="yes">gtk-new</property>
+                <property name="label">gtk-new</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -2147,7 +2192,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btZaznamyOSSmazat">
-                <property name="label" translatable="yes">gtk-delete</property>
+                <property name="label">gtk-delete</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -2165,7 +2210,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btZaznamyOSZavrit">
-                <property name="label" translatable="yes">gtk-close</property>
+                <property name="label">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -2186,7 +2231,7 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkStatusbar" id="statusbar1">
+          <widget class="GtkStatusbar" id="statusbar2">
             <property name="visible">True</property>
             <property name="spacing">2</property>
           </widget>
@@ -2203,21 +2248,21 @@
     <property name="icon">Benedat.png</property>
     <signal name="destroy" handler="on_wSestavyOS_destroy"/>
     <child>
-      <widget class="GtkVBox" id="vbox1">
+      <widget class="GtkVBox" id="vbox20">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">10</property>
         <child>
-          <widget class="GtkFrame" id="frame1">
+          <widget class="GtkFrame" id="frame20">
             <property name="visible">True</property>
             <property name="label_xalign">0</property>
             <property name="shadow_type">none</property>
             <child>
-              <widget class="GtkAlignment" id="alignment1">
+              <widget class="GtkAlignment" id="alignment21">
                 <property name="visible">True</property>
                 <property name="left_padding">20</property>
                 <child>
-                  <widget class="GtkHButtonBox" id="hbuttonbox1">
+                  <widget class="GtkHButtonBox" id="hbuttonbox13">
                     <property name="visible">True</property>
                     <property name="spacing">20</property>
                     <property name="layout_style">start</property>
@@ -2248,7 +2293,7 @@
               </widget>
             </child>
             <child>
-              <widget class="GtkLabel" id="label1">
+              <widget class="GtkLabel" id="label38">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Obdob&#xED;</property>
                 <property name="use_markup">True</property>
@@ -2263,16 +2308,16 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkFrame" id="frame2">
+          <widget class="GtkFrame" id="frame21">
             <property name="visible">True</property>
             <property name="label_xalign">0</property>
             <property name="shadow_type">none</property>
             <child>
-              <widget class="GtkAlignment" id="alignment2">
+              <widget class="GtkAlignment" id="alignment22">
                 <property name="visible">True</property>
                 <property name="left_padding">20</property>
                 <child>
-                  <widget class="GtkHButtonBox" id="hbuttonbox2">
+                  <widget class="GtkHButtonBox" id="hbuttonbox14">
                     <property name="visible">True</property>
                     <property name="spacing">30</property>
                     <property name="layout_style">start</property>
@@ -2309,7 +2354,7 @@
               </widget>
             </child>
             <child>
-              <widget class="GtkLabel" id="label2">
+              <widget class="GtkLabel" id="label39">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Klient</property>
                 <property name="use_markup">True</property>
@@ -2324,22 +2369,22 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkFrame" id="frame3">
+          <widget class="GtkFrame" id="frame22">
             <property name="visible">True</property>
             <property name="label_xalign">0</property>
             <property name="shadow_type">none</property>
             <child>
-              <widget class="GtkAlignment" id="alignment3">
+              <widget class="GtkAlignment" id="alignment23">
                 <property name="visible">True</property>
                 <property name="top_padding">5</property>
                 <property name="left_padding">20</property>
                 <child>
-                  <widget class="GtkVBox" id="vbox2">
+                  <widget class="GtkVBox" id="vbox21">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">3</property>
                     <child>
-                      <widget class="GtkHBox" id="hbox1">
+                      <widget class="GtkHBox" id="hbox17">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkButton" id="btSestavyOS_DatVyst">
@@ -2379,7 +2424,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkHBox" id="hbox2">
+                      <widget class="GtkHBox" id="hbox18">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkButton" id="btSestavyOS_DatPlat">
@@ -2419,10 +2464,10 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkHBox" id="hbox3">
+                      <widget class="GtkHBox" id="hbox19">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkLabel" id="label4">
+                          <widget class="GtkLabel" id="label40">
                             <property name="width_request">150</property>
                             <property name="visible">True</property>
                             <property name="xalign">0.89999997615814209</property>
@@ -2455,10 +2500,10 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkHBox" id="hbox4">
+                      <widget class="GtkHBox" id="hbox20">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkLabel" id="label5">
+                          <widget class="GtkLabel" id="label41">
                             <property name="width_request">150</property>
                             <property name="visible">True</property>
                             <property name="xalign">0.89999997615814209</property>
@@ -2496,7 +2541,7 @@
               </widget>
             </child>
             <child>
-              <widget class="GtkLabel" id="label3">
+              <widget class="GtkLabel" id="label42">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Dopl&#x148;uj&#xED;c&#xED; informace</property>
                 <property name="use_markup">True</property>
@@ -2511,13 +2556,13 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkHButtonBox" id="hbuttonbox3">
+          <widget class="GtkHButtonBox" id="hbuttonbox15">
             <property name="visible">True</property>
             <property name="spacing">20</property>
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="btSestavyOS_Zavrit">
-                <property name="label" translatable="yes">gtk-close</property>
+                <property name="label">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -2532,7 +2577,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btSestavyOS_Ulozit">
-                <property name="label" translatable="yes">gtk-save-as</property>
+                <property name="label">gtk-save-as</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
@@ -2578,7 +2623,7 @@
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="btUlozeniSestavy_Zrus">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -2593,7 +2638,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btUlozeniSestavy_OK">
-                <property name="label" translatable="yes">gtk-save</property>
+                <property name="label">gtk-save</property>
                 <property name="response_id">-5</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -2625,16 +2670,16 @@
     <property name="icon">Benedat.png</property>
     <property name="type_hint">normal</property>
     <property name="has_separator">False</property>
+    <property name="do_overwrite_confirmation">True</property>
     <property name="show_hidden">True</property>
     <property name="action">save</property>
-    <property name="do_overwrite_confirmation">True</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox5">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
-          <widget class="GtkHButtonBox" id="hbuttonbox2">
+          <widget class="GtkHButtonBox" id="hbuttonbox16">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
@@ -2662,7 +2707,7 @@
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="btKopieDBZrus">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -2677,7 +2722,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btKopieDBOK">
-                <property name="label" translatable="yes">gtk-save</property>
+                <property name="label">gtk-save</property>
                 <property name="response_id">-5</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
