@@ -107,7 +107,7 @@ dnů v týdnu: hod.za měs.: cena za měsíc:
 
 + * když se změní něco v tabulce klientů (tarif, km), neprojeví se to v sestavě; - teprve až když uložim celou databázi; nešlo by to udělat, aby se při uložení tabulky klientů uložila celá databáze, nebo něco takovýho?
 
-
++ * Zaokrouhlování ceny os
 
 
 

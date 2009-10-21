@@ -152,7 +152,7 @@ class Sestavy():
                                (os_cena_do *   (dolni_hranice_poctu_hodin))
         else:
             cena = aktualni_os_pausal + os_cena_do * pocet_hodin
-        return cena
+        return round(cena, 2)
         
 
 
