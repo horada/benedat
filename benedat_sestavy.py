@@ -70,7 +70,8 @@ class Sestavy():
         # cena os
         data_souhrn[1] = self.cena_os(data_souhrn[0], id_klienta)
         data_souhrn[3] = data_souhrn[2] * self.cena_cesty(id_klienta)
-        data_souhrn[4] = data_souhrn[1] + data_souhrn[3]
+        # celková cena (zaokrouhlená na koruny)
+        data_souhrn[4] = round(data_souhrn[1] + data_souhrn[3], 0)
 
         return data_klient, data_zaznamy, data_souhrn
 
