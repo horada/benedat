@@ -445,7 +445,7 @@ class BenedatHlavniOkno(BenedatGladeFile,BenedatDB):
         
         # kontrola vybraného souboru
         if navratova_hodnota == gtk.RESPONSE_OK and self.wKopieDB.get_filename():
-            soubor = self.wKopieDB.get_filename()
+            soubor = self.wKopieDB.get_filename().decode("utf-8")
             if os.path.splitext(soubor)[1] != ".db":
                 soubor += ".db"
             self.wKopieDB.destroy()
