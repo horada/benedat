@@ -205,7 +205,7 @@ class BenedatHlavniOkno(BenedatGladeFile,BenedatDB):
             soubor = self.wNovaDB.get_filename()
             if os.path.splitext(soubor)[1] != ".db":
                 soubor += ".db"
-            self.databazovy_soubor = soubor
+            self.databazovy_soubor = soubor.decode("utf-8")
             BenedatDB.db_soubor = self.databazovy_soubor
             self.wNovaDB.destroy()
             self.vytvoreni_db()
@@ -278,7 +278,7 @@ class BenedatHlavniOkno(BenedatGladeFile,BenedatDB):
         
         # kontrola vybraného souboru
         if navratova_hodnota == gtk.RESPONSE_OK and self.wOtevritDB.get_filename():
-            self.databazovy_soubor = self.wOtevritDB.get_filename()
+            self.databazovy_soubor = self.wOtevritDB.get_filename().decode("utf-8")
             self.wOtevritDB.destroy()
             self.otevreni_db()
         else:
