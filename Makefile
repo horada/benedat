@@ -11,6 +11,7 @@ ZIP_NAME=$(NAME).zip
 PYTHON_SOUBORY=benedat.py benedat_cas.py benedat_chyby.py benedat_config.py benedat_export_Pohoda.py benedat_gui.py benedat_log.py benedat_pdf.py benedat_sestavy.py benedat_sqlite.py
 GLADE_SOUBOR=benedat_gui.glade
 FONTY=fonts/LinLibertine_Bd.ttf fonts/LinLibertine_BI.ttf fonts/LinLibertineC_Re.ttf fonts/LinLibertine_It.ttf fonts/LinLibertine_Re.ttf
+FONTY_ADR=fonts/
 JAGPDF_SOUBORY=jagpdf.py _jagpdf.pyd 
 IKONA=Benedat.png Benedat.ico
 TVORBA_INSTALACE_CESTA=/home/danda/programovani/Tvorba_instalace_benedat/
@@ -31,7 +32,7 @@ zip:
 	zip $(ZIP_NAME) $(PYTHON_SOUBORY) $(GLADE_SOUBOR) $(FONTY) $(IKONA) #$(JAGPDF_SOUBORY)
 	
 instalator:
-	cp $(PYTHON_SOUBORY) $(GLADE_SOUBOR) $(FONTY) $(IKONA) $(TVORBA_INSTALACE_CESTA)Benedat/benedat/
+	cp -R $(PYTHON_SOUBORY) $(GLADE_SOUBOR) $(IKONA) $(TVORBA_INSTALACE_CESTA)Benedat/benedat/
 	wine /home/danda/.wine/drive_c/Program\ Files/Inno\ Setup\ 5/Compil32.exe /cc "Z:\home\danda\programovani\Tvorba_instalace_benedat\instalace_benedat.iss"
 
 # odstranění pomocných souborů
