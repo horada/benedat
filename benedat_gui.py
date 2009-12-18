@@ -1710,23 +1710,24 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
             sablona_nazvu="Sestava_" + str(self.mesic) + "_" + str(self.rok) + ".pdf"
             soubor = self.dotaz_ulozeni_sestavy(sablona_nazvu=sablona_nazvu)
             if soubor != -1 and soubor:    
-                if os.name == 'posix':
+#                if os.name == 'posix':
                     # vytvoření pdfka uděláme spuštěním benedat_sestavy.py jako scriptu
 #                print [os.path.join(".", "benedat_sestavy.py"), "-d", str(BenedatDB.db_soubor), "-k", str(self.klient), "-m", str(self.mesic), "-r", str(self.rok), "-o", str(soubor)]
-                    proces=subprocess.Popen([os.path.join(".", "benedat_sestavy.py"), 
-                        "-d", str(BenedatDB.db_soubor) , 
-                        "-m", str(self.mesic),
-                        "-r", str(self.rok),
-                        "-o", str(soubor),
-                        "-v", str(datum_vystaveni),
-                        "-p", str(datum_platby),
-                        "-f", str(vystavil)])
+#                    proces=subprocess.Popen([os.path.join(".", "benedat_sestavy.py"), 
+#                        "-d", str(BenedatDB.db_soubor) , 
+#                        "-m", str(self.mesic),
+#                        "-r", str(self.rok),
+#                        "-o", str(soubor),
+#                        "-v", str(datum_vystaveni),
+#                        "-p", str(datum_platby),
+#                        "-f", str(vystavil)])
                     #proces.wait()
-                else:
-                    # Vytvoření sestavy a uložení do souboru
-                    sestava = bsestavy.Sestavy(BenedatDB.db)
+#                else:
+
+                # Vytvoření sestavy a uložení do souboru
+                sestava = bsestavy.Sestavy(BenedatDB.db)
 #               print sestava.sestava_text(str(self.klient), str(self.mesic), str(self.rok))
-                    sestava.sestavy_pdf(str(self.mesic), str(self.rok), soubor, datum_vystaveni=datum_vystaveni, datum_platby=datum_platby, vystavil=vystavil)
+                sestava.sestavy_pdf(str(self.mesic), str(self.rok), soubor, datum_vystaveni=datum_vystaveni, datum_platby=datum_platby, vystavil=vystavil)
 
             # zavření okna pro sestavy
             self.destroy()
@@ -1741,24 +1742,25 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
                 + "_" + str(self.mesic) + "_" + str(self.rok) + ".pdf"
         soubor = self.dotaz_ulozeni_sestavy(sablona_nazvu=sablona_nazvu)
         if soubor != -1 and soubor:    
-            if os.name == 'posix':
+#            if os.name == 'posix':
                 # vytvoření pdfka uděláme spuštěním benedat_sestavy.py jako scriptu
 #                print [os.path.join(".", "benedat_sestavy.py"), "-d", str(BenedatDB.db_soubor), "-k", str(self.klient), "-m", str(self.mesic), "-r", str(self.rok), "-o", str(soubor)]
-                proces=subprocess.Popen([os.path.join(".", "benedat_sestavy.py"), 
-                    "-d", str(BenedatDB.db_soubor) , 
-                    "-k", str(self.klient),
-                    "-m", str(self.mesic),
-                    "-r", str(self.rok),
-                    "-o", str(soubor),
-                    "-v", str(datum_vystaveni),
-                    "-p", str(datum_platby),
-                    "-f", str(vystavil)])
+#                proces=subprocess.Popen([os.path.join(".", "benedat_sestavy.py"), 
+#                    "-d", str(BenedatDB.db_soubor) , 
+#                    "-k", str(self.klient),
+#                    "-m", str(self.mesic),
+#                    "-r", str(self.rok),
+#                    "-o", str(soubor),
+#                    "-v", str(datum_vystaveni),
+#                    "-p", str(datum_platby),
+#                    "-f", str(vystavil)])
             #proces.wait()
-            else:
-                # Vytvoření sestavy a uložení do souboru
-                sestava = bsestavy.Sestavy(BenedatDB.db)
+#            else:
+
+            # Vytvoření sestavy a uložení do souboru
+            sestava = bsestavy.Sestavy(BenedatDB.db)
 #               print sestava.sestava_text(str(self.klient), str(self.mesic), str(self.rok))
-                sestava.sestava_pdf(str(self.klient), str(self.mesic), str(self.rok), soubor, datum_vystaveni=datum_vystaveni, datum_platby=datum_platby, vystavil=vystavil)
+            sestava.sestava_pdf(str(self.klient), str(self.mesic), str(self.rok), soubor, datum_vystaveni=datum_vystaveni, datum_platby=datum_platby, vystavil=vystavil)
 
         # zavření okna pro sestavy
         self.destroy()
