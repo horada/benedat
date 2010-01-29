@@ -37,6 +37,7 @@ import benedat_pdf as bpdf
 import benedat_sqlite as bsqlite
 import benedat_export_Pohoda as bpohoda
 import benedat_cas as bcas
+import benedat_export_csv as bcsv
 
 DEBUG = False
 #DEBUG = True
@@ -51,6 +52,8 @@ class Sestavy():
     def sestava(self, id_klienta, mesic, rok):
         """vygenerování sestavy pro určitého klienta za určité období"""
         # data o klientovi
+        #0           1      2         3       4        5       6       7     8   9   10     11         12          13            14           15 
+        #id_klienta, jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad, os_pausalHodin
         data_klient = self.db.klient_podle_id(id_klienta)
 
         # data záznamů os
@@ -61,7 +64,7 @@ class Sestavy():
         for z in data_zaznamy_z_db:
             zaznam = [z[2], z[3], z[4], rozdil_casu(z[3], z[4]), z[5], z[6]]
             data_zaznamy.append(zaznam)
-
+        
         # souhrn [pocet_hodin, cena_os, pocet_cest, cena_cest, celkem]
         data_souhrn = [0,0,0,0,0]
         for z in data_zaznamy:
@@ -73,7 +76,13 @@ class Sestavy():
         # celková cena (zaokrouhlená na koruny)
         data_souhrn[4] = round(data_souhrn[1] + data_souhrn[3], 0)
 
-        return data_klient, data_zaznamy, data_souhrn
+        # data_dalsi [dovoz, odvoz]
+        data_dalsi = [0, 0]
+        for z in data_zaznamy:
+            data_dalsi[0] += z[4]
+            data_dalsi[1] += z[5]
+
+        return data_klient, data_zaznamy, data_souhrn, data_dalsi
 
 
     def cena_cesty(self, id_klienta):
@@ -160,7 +169,7 @@ class Sestavy():
 
     def sestava_text(self, id_klienta, mesic, rok):
         """vygenerování sestavy do textu"""
-        data_klient, data_zaznamy, data_souhrn = self.sestava(id_klienta, mesic, rok)
+        data_klient, data_zaznamy, data_souhrn, data_dalsi= self.sestava(id_klienta, mesic, rok)
         tmp = ""
         tmp += data_klient[1] + " " + data_klient[2] + "\n"
         tmp += str(data_klient[3]) + "\n"
@@ -192,7 +201,7 @@ class Sestavy():
     def cast_sestavy_pdf(self,s , id_klienta, mesic, rok, datum_vystaveni="", datum_platby="", vystavil=""):
         """Vytvoření obsahu jedné sestavy"""
         # získání dat do sestavy
-        data_klient, data_zaznamy, data_souhrn = self.sestava(id_klienta, mesic, rok)
+        data_klient, data_zaznamy, data_souhrn, data_dalsi = self.sestava(id_klienta, mesic, rok)
         # kód sestavy
         kod_stala_cast = str(self.db.nastaveni(volba="kod_stala_cast")[1])
         kod_promenna_cast = str(self.db.nastaveni(volba="kod_promenna_cast")[1])
@@ -233,6 +242,27 @@ class Sestavy():
             jmeno=data_klient[1] + " " + data_klient[2], adresa=data_klient[3],
             cena=str(data_souhrn[4]))
 
+        # Vyplnění dat do csv
+#        print kod
+#        print kod_promenna_cast
+#        print kod_stala_cast
+#        print datum_vystaveni
+#        print datum_platby
+#        print souhrnny_text
+#        print data_klient
+#        print data_souhrn
+#        print data_dalsi
+        #"Příjmení", "Jméno", "Období", "Kód dokladu", "Počet hodin OS", "Cena za OS", 
+        # "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty", "Cena celkem",
+        # "Vzdálenost v km", "OS paušál", "OS paušál hodin", "OS cena do", "OS cena mezi", "OS cena nad", "OS dolní hranice počtu hodin", "OS horní hranice počtu hodin", "Cena za litr"
+        dolni_hranice_poctu_hodin = int(self.db.nastaveni('dolni_hranice_poctu_hodin')[1])
+        horni_hranice_poctu_hodin = int(self.db.nastaveni('horni_hranice_poctu_hodin')[1])
+        cestovne_os_cena_za_litr = float(self.db.nastaveni('cestovne_os_cena_za_litr')[1])
+        self.csv.zapis_radek((data_klient[1], data_klient[2], str(mesic)+"/"+str(rok), kod, data_souhrn[0], data_souhrn[1],
+            data_dalsi[0], data_dalsi[1], data_souhrn[2], data_souhrn[3], data_souhrn[4], 
+            data_klient[10], data_klient[11], data_klient[15], data_klient[12], data_klient[13], data_klient[14], dolni_hranice_poctu_hodin, horni_hranice_poctu_hodin, cestovne_os_cena_za_litr))
+
+
         
         # aktualizace kódu
         kod_promenna_cast = str(int(kod_promenna_cast) + 1).rjust(4, '0')
@@ -251,6 +281,15 @@ class Sestavy():
 
         # xml pro Pohodu
         self.xml_to_pohoda = bpohoda.xmlDokument(id=str(mesic)+"_"+str(rok))
+
+        # EXPORT DO CSV
+        self.csv = bcsv.Souhrn_csv(soubor=soubor[:-3]+"csv")
+        # názvy sloupců
+        self.csv.zapis_radek(("Příjmení", "Jméno", "Období", "Kód dokladu", "Počet hodin OS", "Cena za OS", 
+                             "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty", "Cena celkem",
+                             "Vzdálenost v km", "OS paušál", "OS paušál hodin", "OS cena do", 
+                             "OS cena mezi", "OS cena nad", "OS dolní hranice počtu hodin", 
+                             "OS horní hranice počtu hodin", "Cena za litr"))
         
         # vyplnění sestavy
         self.cast_sestavy_pdf(s, id_klienta, mesic, rok,datum_vystaveni=datum_vystaveni,datum_platby=datum_platby,vystavil=vystavil)
@@ -262,6 +301,10 @@ class Sestavy():
         # xml pro Pohodu
         self.xml_to_pohoda.to_xml_soubor(soubor=soubor[:-3] + "xml", debug=DEBUG)
 
+
+        # export do csv
+        self.csv.close()
+
     def sestavy_pdf(self, mesic, rok, soubor,datum_vystaveni="",datum_platby="", vystavil=""):
         """Kompletní vytvoření více sestav do jednoho souboru"""
         # soubor pro sestavu
@@ -272,6 +315,17 @@ class Sestavy():
 
         # xml pro Pohodu
         self.xml_to_pohoda = bpohoda.xmlDokument(id=str(mesic)+"_"+str(rok))
+
+        # EXPORT DO CSV
+        self.csv = bcsv.Souhrn_csv(soubor=soubor[:-3]+"csv")
+        # názvy sloupců
+        self.csv.zapis_radek(("Příjmení", "Jméno", "Období", "Kód dokladu", "Počet hodin OS", "Cena za OS", 
+                             "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty", "Cena celkem",
+                             "Vzdálenost v km", "OS paušál", "OS paušál hodin", "OS cena do", 
+                             "OS cena mezi", "OS cena nad", "OS dolní hranice počtu hodin", 
+                             "OS horní hranice počtu hodin", "Cena za litr"))
+
+
 
         # kterých klientů se to týká
         klienti = self.db.klienti_id_jmeno(1, pouze='osz', 
@@ -286,6 +340,10 @@ class Sestavy():
 
         # xml pro Pohodu
         self.xml_to_pohoda.to_xml_soubor(soubor=soubor[:-3] + "xml", debug=DEBUG)
+
+
+        # export do csv
+        self.csv.close()
 
         
 ######
