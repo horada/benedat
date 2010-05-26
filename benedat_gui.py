@@ -1518,7 +1518,7 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
             self.edWidgety[widget] = self.wSestavyOSXml.get_widget("eSestavyOS_" + widget)
 
         self.edWidgety['DatVyst'].set_text(bcas.preved_datum(time.strftime('%d.%m.%Y'),0))
-#        self.edWidgety['DatPlat'].set_text(bcas.preved_datum(time.strftime('%d.%m.%Y'),0))
+        self.edWidgety['DatPlat'].set_text(bcas.preved_datum(time.strftime('%d.%m.%Y'),0))
         self.edWidgety['Vystavil'].set_text(str(BenedatDB.db.nastaveni(volba="vystavil")[1]))
         self.aktualizace_zobrazeneho_kodu_v_okne_sestav()
 

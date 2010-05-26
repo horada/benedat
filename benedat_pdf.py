@@ -88,6 +88,10 @@ class Sestava():
         # datum platby
         self.__datum_platby_nadpis = "Datum platby:"
         self.__datum_platby = ""
+        # Pokladna: Pokladna hlavní
+        self.__pokladna_nadpis = "Pokladna: "
+        self.__pokladna = "Pokladna hlavní";
+
         # firma není plátce dph
         self.__firma_neni_platcem_dph = "Firma není plátce DPH."
         # ZÁZNAMY
@@ -107,6 +111,9 @@ class Sestava():
 
         # PODPIS ODBĚRATELE
         self.__podpis_odberatele_nadpis = "Podpis odběratele:"
+
+        # PODPIS POKLADNÍKA
+        self.__podpis_pokladnika_nadpis = "Podpis pokladníka:"
 
     ############## Funkce k nastavení jednotlivých informací v sestavě ###########
     # HLAVIČKA
@@ -256,7 +263,7 @@ class Sestava():
 #        self.c.text(x(self._x),y(self._y + self.radek), str(tmp_vyska_adresy2))
         tmp_vrsek_datumu = self._y
         #datum vystavení
-        self._y = self.adresa_y + tmp_vyska_adresy + Sestava.mezera - (5 * self.radek)
+        self._y = self.adresa_y + tmp_vyska_adresy + Sestava.mezera - (6 * self.radek)
         self.c.text_font(self.regular(12))
         self.c.text(x(self._x), y(self._y), str(self.__datum_vystaveni_nadpis))
         self.c.text_font(self.bold(12))
@@ -267,6 +274,12 @@ class Sestava():
         self.c.text(x(self._x), y(self._y), str(self.__datum_platby_nadpis))
         self.c.text_font(self.bold(12))
         self.c.text(x(self._x + 100), y(self._y), str(self.__datum_platby))
+        # Pokladna: Pokladna hlavní
+        self._y += self.radek
+        self.c.text_font(self.regular(12))
+        self.c.text(x(self._x), y(self._y), str(self.__pokladna_nadpis))
+        self.c.text_font(self.bold(12))
+        self.c.text(x(self._x + 100), y(self._y), str(self.__pokladna))       
         # firma není plátcem DPH
         self._y += self.radek
         self.c.text_font(self.bold(10))
@@ -366,7 +379,7 @@ class Sestava():
                     y(self._y), str('%0.2f' % self.__souhrn[4])+" kč")
 
         self._x = Sestava.okraje + 1 * Sestava.mezera
-        self._y = self._y + 3 * Sestava.mezera
+        self._y = self._y + 2 * Sestava.mezera
         # čára nad Vystavil:
         self.c.move_to(x(self._x), y(self._y-self.radek))
         self.c.line_to(x(-self._x), y(self._y-self.radek))
@@ -383,6 +396,12 @@ class Sestava():
         self._x = Sestava.a4w/2 + self.okraje + Sestava.mezera
         self.c.text_font(self.regular(12))
         self.c.text(x(self._x), y(self._y), self.__podpis_odberatele_nadpis)
+        # podpis pokladníka
+        self._y += Sestava.mezera*1.5
+        self._x = Sestava.okraje + 2 * Sestava.mezera
+        self.c.text_font(self.regular(12))
+        self.c.text(x(self._x), y(self._y), self.__podpis_pokladnika_nadpis)
+
 
        
 
