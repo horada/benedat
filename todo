@@ -33,7 +33,7 @@
 
 + * více možností účtování v podobě více skupin klientů (vyřešeno nastavením cen pro každého jednotlivého klienta)
 
-- * export dat
++ * export dat
 
 - * ujednotit kódy v benedat_cas.py
 

@@ -8,7 +8,7 @@
 NAME=benedat#nazev programu
 ZIP_NAME=$(NAME).zip
 
-PYTHON_SOUBORY=benedat.py benedat_cas.py benedat_chyby.py benedat_config.py benedat_export_Pohoda.py benedat_gui.py benedat_log.py benedat_pdf.py benedat_sestavy.py benedat_sqlite.py
+PYTHON_SOUBORY=benedat.py benedat_cas.py benedat_chyby.py benedat_config.py benedat_export_Pohoda.py benedat_gui.py benedat_log.py benedat_pdf.py benedat_sestavy.py benedat_sqlite.py benedat_export_csv.py
 GLADE_SOUBOR=benedat_gui.glade
 FONTY=fonts/LinLibertine_Bd.ttf fonts/LinLibertine_BI.ttf fonts/LinLibertineC_Re.ttf fonts/LinLibertine_It.ttf fonts/LinLibertine_Re.ttf
 FONTY_ADR=fonts/
