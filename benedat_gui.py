@@ -1917,7 +1917,8 @@ class BenedatOknoNastaveni(BenedatGladeFile, BenedatDB):
                         'dolni_hranice_poctu_hodin',
                         'horni_hranice_poctu_hodin',
                         'adresa',
-                        'adresa_dalsi']
+                        'adresa_dalsi',
+                        'pokladna']
         
         self.edWidgety = {}
         for pole in self.editacni_pole:
@@ -1950,7 +1951,10 @@ class BenedatOknoNastaveni(BenedatGladeFile, BenedatDB):
         """Načtení hodnot z databáze do editačních polí"""
         nastaveni = BenedatDB.db.nastaveni_slovnik()
         for key in self.editacni_pole:
-            self.edWidgety[key].set_text(nastaveni[key][0])
+            if(key in nastaveni):
+                self.edWidgety[key].set_text(nastaveni[key][0])
+            else :
+                self.edWidgety[key].set_text('')
 
     def ulozeni_hodnot_do_db(self):
         """Uložení zeditovaných hodnot do databáze"""
@@ -1960,8 +1964,11 @@ class BenedatOknoNastaveni(BenedatGladeFile, BenedatDB):
             nastaveni_z_form[key] = self.edWidgety[key].get_text()
 
         for key in nastaveni_z_form.keys():
-            if nastaveni_z_db[key][0] != nastaveni_z_form[key]:
-                BenedatDB.db.zmen_nastaveni(key, nastaveni_z_form[key])
+            if key in nastaveni_z_db:
+                if nastaveni_z_db[key][0] != nastaveni_z_form[key]:
+                    BenedatDB.db.zmen_nastaveni(key, nastaveni_z_form[key])
+            else :
+                BenedatDB.db.pridej_nastaveni(key, nastaveni_z_form[key])
         BenedatDB.ulozeno = False
         self.uloz_db()
 

@@ -206,6 +206,8 @@ class Sestavy():
         kod_stala_cast = str(self.db.nastaveni(volba="kod_stala_cast")[1])
         kod_promenna_cast = str(self.db.nastaveni(volba="kod_promenna_cast")[1])
         kod = kod_stala_cast + kod_promenna_cast
+        # název pokladny
+        pokladna = str(self.db.nastaveni(volba="pokladna")[1])
         
         # vyplnění sestavy
         s.adresa_l((self.db.nastaveni('adresa')[1],))
@@ -213,6 +215,7 @@ class Sestavy():
         s.adresa_r((data_klient[1] + " " + data_klient[2], data_klient[3]))
         s.datum_vystaveni(datum_vystaveni)
         s.datum_platby(datum_platby)
+        s.pokladna(pokladna)
         s.zaznamy(data_zaznamy)
         s.souhrn(data_souhrn)
         s.vystavil(vystavil)

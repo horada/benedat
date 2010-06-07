@@ -160,6 +160,9 @@ class Sestava():
     # datum platby
     def datum_platby(self, tmp):
         self.__datum_platby = tmp
+    # název pokladny
+    def pokladna(self, tmp):
+        self.__pokladna = tmp
     # ZÁZNAMY
     # souhrnný text
     def souhrnny_text(self, tmp):

@@ -1,7 +1,7 @@
 + * sestavy: Datum platby: /aby se přednastavilo aktuální - stejné jako datum vystavení/
 
 + * Dopsat do sestavy: Pokladna: Pokladna hlavní
-- * Možnost změny názvu pokladny (Pokladna hlavní)
++ * Možnost změny názvu pokladny (Pokladna hlavní)
 
 - * 2 klienti platí převodem z účtu, tzn. nevytavujeme jim pokladní doklad, ale fakturu.
 Exportovat fakturu přímo z Benedatu do Pohody asi bude neřešitelný oříšek, protože na vytištěné sestavě musí být variabilní symbol podle čísla faktury, které určí ovšem až Pohoda; takže faktury zatim nebudeme řešit.

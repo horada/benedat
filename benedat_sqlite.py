@@ -35,7 +35,7 @@ import benedat_chyby as err
 from benedat_log import *
 import time
 
-AKTUALNI_VERZE_DB = "5"
+AKTUALNI_VERZE_DB = "6"
 
 class Db:
     def __init__(self, soubor, novy=False):
@@ -137,7 +137,8 @@ class Db:
                         ('adresa','Občanské sdružení BENEDIKTUS|Klášterní 60|583 01 Chotěboř','Adresa uváděná v sestavách'),
                         ('adresa_dalsi','IČ: 70868832|DIČ: CZ70868832|Mobil: +420 731 646 811|E-mail: benediktus@centrum.cz|WWW: benediktus.infobar.cz','Doplňující informace v adrese'),
                         #('','',''),
-                        ('vystavil','',u'Kdo vystavil příjmový doklad'))
+                        ('vystavil','',u'Kdo vystavil příjmový doklad'),
+                        ('pokladna', 'Pokladna hlavní', 'Název pokladny vydávající doklad'))
             for t in nastaveni:
                 self.databaze.execute("""INSERT INTO nastaveni (volba, hodnota, pozn)
                     values (?, ?, ?)""", t)
@@ -488,6 +489,14 @@ class Db:
         except sqlite.Error, e:
             log(e)
 
+    def pridej_nastaveni(self, volba, hodnota, pozn=None):
+        """Přidání položky (volby) do tabulky nastavení"""
+        try:
+            self.databaze.execute("""INSERT INTO nastaveni (volba, hodnota, pozn)
+                values (?, ?, ?)""", (volba, hodnota, pozn))
+        except sqlite.Error, e:
+            log(e)
+
 
     def commit(self):
         """Uložení změn do databáze"""
@@ -597,6 +606,21 @@ def aktualizace_db_na_novejsi_verzi(soubor):
 
             # další kontrola verze db
             aktualizace_db_na_novejsi_verzi(soubor)
+
+
+        elif stara_verze_db < 6:
+            # aktualizace z verze 5 na verzi 6
+            # přidání položky pokladna do nastavení
+            db.execute("""INSERT INTO nastaveni (volba, hodnota, pozn)
+                    values (?,?,?)""", ('pokladna', 'Pokladna hlavní', 'Název pokladny vydávající doklad'))
+
+            # nastavení správného čísla aktuální verze
+            db.execute("""UPDATE nastaveni SET hodnota=? WHERE volba=?""", (6, "verze"))
+            db.commit()
+
+            # další kontrola verze db
+            aktualizace_db_na_novejsi_verzi(soubor)
+
 
 
 
