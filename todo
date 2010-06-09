@@ -3,7 +3,7 @@
 + * Dopsat do sestavy: Pokladna: Pokladna hlavní
 + * Možnost změny názvu pokladny (Pokladna hlavní)
 
-- * 2 klienti platí převodem z účtu, tzn. nevytavujeme jim pokladní doklad, ale fakturu.
+- * 2 klienti platí převodem z účtu, tzn. nevystavujeme jim pokladní doklad, ale fakturu.
 Exportovat fakturu přímo z Benedatu do Pohody asi bude neřešitelný oříšek, protože na vytištěné sestavě musí být variabilní symbol podle čísla faktury, které určí ovšem až Pohoda; takže faktury zatim nebudeme řešit.
 Chtěl bych to vyřešit buď tak, že:
 1)       možnost udělat sestavy jen pro vybrané lidi (zaškrtnutí v seznamu nebo označení myší se zmáčknutým Ctrl)
@@ -13,7 +13,8 @@ Chtěl bych to vyřešit buď tak, že:
 
 + * Kontrola uložení souboru
 
-- * Výběr záznamů na jedno kliknutí
++ * Výběr klientů na jedno kliknutí
++ * Výběr záznamů na jedno kliknutí
 
 + * žazení výběru klientů v comboboxech
 

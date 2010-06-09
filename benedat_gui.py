@@ -486,7 +486,8 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
                 'NastaveniOS_pausalHodin',
                 'NastaveniOS_cena_do',
                 'NastaveniOS_cena_mezi',
-                'NastaveniOS_cena_nad']
+                'NastaveniOS_cena_nad',
+                'typ_dokladu']
         self.edWidgety = {}
         for pole in self.editacni_pole:
             self.edWidgety[pole] = self.wKlientiXml.get_widget("eKlienti_" + pole)
@@ -501,6 +502,15 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
         for expander in self.expandery:
             self.expWidgety[expander] = self.wKlientiXml.get_widget("expKlienti_" + expander)
 
+        self.combo_boxy = ['TypDokladu']
+        self.cbWidgety = {}
+        for widget in self.combo_boxy:
+            self.cbWidgety[widget] = self.wKlientiXml.get_widget("cbKlienti_" + widget)
+
+
+        # vložení typů dokladů do combo boxu
+        self.vytvor_cb_typy_dokladu()
+        
         # načtení widgetu pro tabulku klientů
         self.tabKlientu = self.wKlientiXml.get_widget("twTabKlientu")
         
@@ -524,7 +534,39 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
 
         self.nacteni_klientu_z_db()
 
+        # připojení signálu pro jednoduchý výběr klienta
+        self.tabKlientu.get_selection().connect('changed',lambda s: self.activate_selected(s))
 
+        
+        # callback pro výběr klienta pouhým kliknutím na něj (a jeho vyplnění do formuláře pro editaci
+    def activate_selected(self, tabKlientuSelection):
+        (model,iter)=tabKlientuSelection.get_selected()
+        if iter:
+            id_klienta = self.klientiList.get_value(iter, 0)
+            self.vyplnit_klienta_do_form(id_klienta)
+        else :
+            self.vyprazdnit_form()
+
+
+    def vytvor_cb_typy_dokladu(self):
+        """doplnění typů dokladů do comboboxu"""
+        cb = self.cbWidgety['TypDokladu']
+        typ_dokladuList = gtk.ListStore(int, str)
+        cb.set_model(typ_dokladuList)
+        cell = gtk.CellRendererText()
+        cb.pack_start(cell, True)
+        cb.add_attribute(cell, 'text', 1)
+
+        typ_dokladuList.clear()
+        typy_dokladu = {0 : 'Příjmový pokladní doklad',
+                        1 : 'Jednoduchý výpis'}
+        typy_dokladu_poradi = [0, 1]
+        for typ_dokladu in typy_dokladu_poradi:
+            iter = typ_dokladuList.append()
+            typ_dokladuList.set(iter,
+                    0, typ_dokladu,
+                    1, typy_dokladu[typ_dokladu])
+        cb.set_active(0)
 
     def vytvoreni_sloupcu_v_tab_klientu(self):
         self.sloupce = {}
@@ -664,6 +706,8 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
             self.edWidgety['NastaveniOS_cena_mezi'].set_text(bez_none(self.aktualni_klient[13]))
             self.edWidgety['NastaveniOS_cena_nad'].set_text(bez_none(self.aktualni_klient[14]))
             self.edWidgety['NastaveniOS_pausalHodin'].set_text(bez_none(self.aktualni_klient[15]))
+
+            self.cbWidgety['TypDokladu'].set_active(self.aktualni_klient[16])
         else:
             self.vyprazdnit_form()
 
@@ -687,6 +731,8 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
         self.edWidgety['NastaveniOS_cena_nad'].set_text("")
         self.edWidgety['NastaveniOS_pausalHodin'].set_text("")
 
+        self.cbWidgety['TypDokladu'].set_active(0)
+
     def nacteni_klienta_z_form(self):
         """načtení klienta z form do self.aktualni_klient"""
         tmp_vzdalenost = self.edWidgety['Vzdalenost'].get_text()
@@ -707,6 +753,9 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
         tmp_NastaveniOS_pausalHodin = self.edWidgety['NastaveniOS_pausalHodin'].get_text()
         if not tmp_NastaveniOS_pausalHodin:
             tmp_NastaveniOS_pausalHodin = 0
+        tmp_TypDokladu= self.cbWidgety['TypDokladu'].get_active()
+        if not tmp_TypDokladu:
+            tmp_TypDokladu = 0
         klient = [self.aktualni_klient[0],
                 self.edWidgety['Jmeno'].get_text(),
                 self.edWidgety['Prijmeni'].get_text(),
@@ -722,7 +771,8 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
                 tmp_NastaveniOS_cena_do,
                 tmp_NastaveniOS_cena_mezi,
                 tmp_NastaveniOS_cena_nad,
-                tmp_NastaveniOS_pausalHodin]
+                tmp_NastaveniOS_pausalHodin, 
+                tmp_TypDokladu] 
         self.aktualni_klient = klient
 
     def nacteni_noveho_klienta_z_form(self):
@@ -745,6 +795,9 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
         tmp_NastaveniOS_pausalHodin = self.edWidgety['NastaveniOS_pausalHodin'].get_text()
         if not tmp_NastaveniOS_pausalHodin:
             tmp_NastaveniOS_pausalHodin = 0
+        tmp_TypDokladu= self.cbWidgety['TypDokladu'].get_active()
+        if not tmp_TypDokladu:
+            tmp_TypDokladu = 0
         klient = [0,
                 self.edWidgety['Jmeno'].get_text(),
                 self.edWidgety['Prijmeni'].get_text(),
@@ -760,7 +813,8 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
                 tmp_NastaveniOS_cena_do,
                 tmp_NastaveniOS_cena_mezi,
                 tmp_NastaveniOS_cena_nad,
-                tmp_NastaveniOS_pausalHodin]
+                tmp_NastaveniOS_pausalHodin,
+                tmp_TypDokladu] 
         self.aktualni_klient = klient
 
 
@@ -784,7 +838,8 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
                                 k[12],
                                 k[13],
                                 k[14],
-                                k[15])
+                                k[15],
+                                k[16])
         BenedatDB.ulozeno = False
 
             
@@ -807,7 +862,8 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
                                 k[12],
                                 k[13],
                                 k[14],
-                                k[15])
+                                k[15],
+                                k[16])
         BenedatDB.ulozeno = False
 
         
@@ -843,6 +899,9 @@ class BenedatOknoKlienti(BenedatGladeFile, BenedatDB):
     def on_btKlientNovy_clicked(self, widget):
         self.aktualni_klient = []
         self.vyprazdnit_form()
+        self.tabKlientu.get_selection().unselect_all()
+        self.edWidgety['Jmeno'].grab_focus()
+
 
     def on_btKlientUlozit_clicked(self, widget):
         # uložit změny existujícího klienta nebo nového klienta?
@@ -957,6 +1016,10 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
         self.sloupce['datum'].set_sort_column_id(7)
 
         self.nacteni_zaznamu_os_z_db()
+
+        # připojení signálu pro jednoduchý výběr záznamu
+        self.tabZaznamuOS.get_selection().connect('changed',lambda s: self.activate_selected(s))
+
         
         self.vytvor_cb_mesice()
         self.vytvor_cb_roky()
@@ -968,6 +1031,14 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
         self.vytvor_menu_klientu()
         self.doplnovani_ed_klient()
 
+
+        # callback pro výběr záznamu pouhým kliknutím na něj (a jeho vyplnění do formuláře pro editaci
+    def activate_selected(self, tabZaznamuOSSelection):
+        (model,iter)=tabZaznamuOSSelection.get_selected()
+        if iter:
+            id_zaznamu = self.zaznamyOsList.get_value(iter, 0)
+            self.vyplnit_zaznam_do_form(id_zaznamu)
+        
         
 
 
@@ -1418,6 +1489,8 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
         """Obsloužení tlačítka Nový"""
         self.aktualni_zaznam = []
         self.vyprazdnit_form()
+        self.tabZaznamuOS.get_selection().unselect_all()
+        self.edWidgety['Klient'].grab_focus()
 
     def on_btZaznamyOS_Klient_clicked(self, widget):
         """Tlačítko pro zobrazení menu klientů"""
