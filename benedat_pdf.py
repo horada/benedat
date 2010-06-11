@@ -48,6 +48,8 @@ class Sestava():
         # připravení Pdf souboru
         self.sestava = jagpdf.create_file(soubor)
 
+        # typ dokladu
+        self.__typ_dokladu = 0
         # některé pomocné míry
         self._y = 0 
         self._x = 0
@@ -116,6 +118,10 @@ class Sestava():
         self.__podpis_pokladnika_nadpis = "Podpis pokladníka:"
 
     ############## Funkce k nastavení jednotlivých informací v sestavě ###########
+    # typ dokladu
+    def typ_dokladu(self, tmp):
+        self.__typ_dokladu = tmp
+
     # HLAVIČKA
     # informace v hlavičce vlevo
     def hlavicka_l(self, tmp):
@@ -191,8 +197,31 @@ class Sestava():
     def bold_italic(self,size=12):
         return self.sestava.font_load("file=fonts/LinLibertine_BI.ttf; size="+str(size)+"; enc=utf-8")
 
+    def rozdily_typ_dokladu(self):
+        if self.__typ_dokladu ==0:
+            # hlavička (v pravo)
+            self.__hlavicka_r = "Příjmový pokladní doklad č."
+        
+        elif self.__typ_dokladu ==1:
+            # hlavička (v pravo)
+            self.__hlavicka_r = "Výpis poskytnutých služeb"
+            # datum platby
+            self.__datum_platby_nadpis = ""
+            self.__datum_platby = ""
+            # Pokladna: Pokladna hlavní
+            self.__pokladna_nadpis = ""
+            self.__pokladna = "";
+            # firma není plátce dph
+            self.__firma_neni_platcem_dph = ""
+            # PODPIS POKLADNÍKA
+            self.__podpis_pokladnika_nadpis = "Podpis:"
+
+
+
+
     # vytvoření jedné sestavy
     def vytvor_sestavu(self):
+        self.rozdily_typ_dokladu()
         self.sestava.page_start(Sestava.a4w,Sestava.a4h)
         self.c = self.sestava.page().canvas()
         

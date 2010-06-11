@@ -1567,21 +1567,22 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
         signaly = { 'on_wSestavyOS_destroy': self.on_wSestavyOS_destroy,
                 'on_btSestavyOS_Zavrit_clicked': self.on_btSestavyOS_Zavrit_clicked,
                 'on_btSestavyOS_Ulozit_clicked': self.on_btSestavyOS_Ulozit_clicked,
-                'on_chSestavyOS_vsichni_toggled': self.on_chSestavyOS_vsichni_toggled,
-                'on_cbSestavyOS_Klient_changed': self.on_cbSestavyOS_Klient_changed,
+#                'on_chSestavyOS_vsichni_toggled': self.on_chSestavyOS_vsichni_toggled,
+#                'on_cbSestavyOS_Klient_changed': self.on_cbSestavyOS_Klient_changed,
                 'on_cbSestavyOS_Mesic_changed': self.on_cbZaznamyOs_Mesic_changed,
                 'on_cbSestavyOS_Rok_changed': self.on_cbZaznamyOs_Rok_changed,
+                'on_cbSestavyOS_TypDokladu_changed': self.on_cbZaznamyOs_TypDokladu_changed,
                 'on_btSestavyOS_DatVyst_clicked': self.on_btSestavyOS_DatVyst_clicked,
                 'on_btSestavyOS_DatPlat_clicked': self.on_btSestavyOS_DatPlat_clicked}
         self.wSestavyOSXml.signal_autoconnect(signaly)
 
         
-        self.combo_boxy = ['Mesic', 'Rok', 'Klient']
+        self.combo_boxy = ['Mesic', 'Rok', 'TypDokladu']
         self.cbWidgety = {}
         for widget in self.combo_boxy:
             self.cbWidgety[widget] = self.wSestavyOSXml.get_widget("cbSestavyOS_" + widget)
 
-        self.chWidget_vsichni = self.wSestavyOSXml.get_widget("chSestavyOS_vsichni")
+#        self.chWidget_vsichni = self.wSestavyOSXml.get_widget("chSestavyOS_vsichni")
         
         self.btWidget_Ulozit = self.wSestavyOSXml.get_widget("btSestavyOS_Ulozit")
 
@@ -1595,22 +1596,113 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
         self.edWidgety['Vystavil'].set_text(str(BenedatDB.db.nastaveni(volba="vystavil")[1]))
         self.aktualizace_zobrazeneho_kodu_v_okne_sestav()
 
+        self.tabKlientu = self.wSestavyOSXml.get_widget("twSestavyOS_klienti")
+        
+
         # Nastavení roku a měsíce na aktuální
         self.mesic = time.strftime('%m')
         self.rok = time.strftime('%Y')
 
-        self.klient = None
-        self.vsichni = True
+#        self.klient = None
+#        self.vsichni = True
+        self.typ_dokladu = 0
+    
+        self.klienti = []
+        
+        # nastavení tabulky klientů
+        self.tab_klientu()
 
-        self.vytvorit_combo_box_klienti()
-        self.chWidget_vsichni.set_active(self.vsichni)
+#        self.vytvorit_combo_box_klienti()
+#        self.chWidget_vsichni.set_active(self.vsichni)
 
         self.vytvor_cb_mesice()
         self.vytvor_cb_roky()
+        self.vytvor_cb_typy_dokladu()
 
 
 
+    def tab_klientu(self):
+        """načtení widgetu pro tabulku klientů"""
+        self.tabKlientu.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        
+        self.sloupce_poradi = ['klient']
+        self.vytvoreni_list_store_klientu()
+        self.vytvoreni_sloupcu_v_tab_klientu()
 
+#        self.vyplnit_klienty_do_tabKlientu()
+
+        
+
+
+    def vytvoreni_list_store_klientu(self):
+        self.klientiList = gtk.ListStore(int, str)
+        self.tabKlientu.set_model(self.klientiList)
+
+    def vytvoreni_sloupcu_v_tab_klientu(self):
+        self.sloupce = {}
+#        self.sloupce['id'] = gtk.TreeViewColumn("ID",
+#                gtk.CellRendererText(),
+#                text=0)
+        self.sloupce['klient'] = gtk.TreeViewColumn("Klient",
+                gtk.CellRendererText(),
+                text=1)
+#        self.sloupce['prijmeni'] = gtk.TreeViewColumn("Příjmení",
+#                gtk.CellRendererText(),
+#                text=2)
+#        self.sloupce['adresa'] = gtk.TreeViewColumn("Adresa",
+#                gtk.CellRendererText(),
+#                text=3)
+#        self.sloupce['telefon'] = gtk.TreeViewColumn("Telefon",
+#                gtk.CellRendererText(),
+#                text=4)
+#        self.sloupce['mobil1'] = gtk.TreeViewColumn("Mobil 1",
+#                gtk.CellRendererText(),
+#                text=5)
+#        self.sloupce['mobil2'] = gtk.TreeViewColumn("Mobil 2",
+#                gtk.CellRendererText(),
+#                text=6)
+#        self.sloupce['pozn'] = gtk.TreeViewColumn("Poznámka",
+#                gtk.CellRendererText(),
+#                text=7)
+#        self.sloupce['os'] = gtk.TreeViewColumn("OS",
+#                gtk.CellRendererToggle(),
+#                active=8)
+#        self.sloupce['oa'] = gtk.TreeViewColumn("OA",
+#                gtk.CellRendererToggle(),
+#                active=9)
+#        self.sloupce['km_os'] = gtk.TreeViewColumn("Vzdálenost",
+#                gtk.CellRendererText(),
+#                text=10)
+        for sloupec in self.sloupce_poradi:
+            self.tabKlientu.append_column(self.sloupce[sloupec])
+
+    def vyplnit_klienty_do_tabKlientu(self):
+        klienti_z_db = BenedatDB.db.klienti_id_jmeno(1, pouze='osz', 
+                mesic=self.mesic, rok=self.rok)
+
+        setrideny_seznam_klientu = setrideni_slovniku_podle_obsahu(klienti_z_db)
+
+        self.klientiList.clear()
+        for klient in setrideny_seznam_klientu: 
+            iter = self.klientiList.append()
+            self.klientiList.set(iter,
+                    0, klient,
+                    1, klienti_z_db[klient])
+        self.oznac_klienty_v_tabKlientu()
+
+    def oznac_klienty_v_tabKlientu(self):
+        self.tabKlientu.get_selection().unselect_all()
+        i = 0
+        for klient_tmp in self.klientiList:
+#            print klient_tmp
+            id_klienta = klient_tmp[0]
+
+            klient = BenedatDB.db.klient_podle_id(id_klienta)
+            if klient[16] == self.typ_dokladu:
+                self.tabKlientu.get_selection().select_path(i)
+            i += 1
+
+        
 
 
     def vytvor_cb_mesice(self):
@@ -1653,7 +1745,8 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
         self.mesic = mesice[index][0]
 
         self.nastav_citlivost_bt_ulozit()
-        self.vyplnit_klienty_do_combo_boxu()
+#        self.vyplnit_klienty_do_combo_boxu()
+        self.vyplnit_klienty_do_tabKlientu()
         
 
     def vytvor_cb_roky(self):
@@ -1698,58 +1791,91 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
         self.rok = roky[index][0]
 
         self.nastav_citlivost_bt_ulozit()
-        self.vyplnit_klienty_do_combo_boxu()
+#        self.vyplnit_klienty_do_combo_boxu()
+        self.vyplnit_klienty_do_tabKlientu()
 
 
-    def vytvorit_combo_box_klienti(self):
-        cb = self.cbWidgety['Klient']
-        self.klientiList = gtk.ListStore(int, str)
-        cb.set_model(self.klientiList)
+    def vytvor_cb_typy_dokladu(self):
+        """doplnění roků do comboboxu"""
+        cb = self.cbWidgety['TypDokladu']
+        typ_dokladuList = gtk.ListStore(int, str)
+        cb.set_model(typ_dokladuList)
         cell = gtk.CellRendererText()
         cb.pack_start(cell, True)
         cb.add_attribute(cell, 'text', 1)
-        self.vyplnit_klienty_do_combo_boxu()
+
+        typ_dokladuList.clear()
+        typy_dokladu = {0 : 'Příjmový pokladní doklad',
+                        1 : 'Jednoduchý výpis'}
+        typy_dokladu_poradi = [0, 1]
+        for typ_dokladu in typy_dokladu_poradi:
+            iter = typ_dokladuList.append()
+            typ_dokladuList.set(iter,
+                    0, typ_dokladu,
+                    1, typy_dokladu[typ_dokladu])
+        cb.set_active(self.typ_dokladu)
+
+    def on_cbZaznamyOs_TypDokladu_changed(self, widget):
+        """Změna nastavení typu dokladu"""
+        cb = self.cbWidgety['TypDokladu']
+        typy_dokladuList = cb.get_model()
+        index = cb.get_active()
+        self.typ_dokladu = typy_dokladuList[index][0]
+        self.oznac_klienty_v_tabKlientu()
 
 
-    def vyplnit_klienty_do_combo_boxu(self):
-        """Vyplnění možných klientů do combo boxu"""
-        cb = self.cbWidgety['Klient']
 
-        self.klientiList.clear()
-        klienti_z_db = BenedatDB.db.klienti_id_jmeno(1, pouze='osz', 
-                mesic=self.mesic, rok=self.rok)
 
-        setrideny_seznam_klientu = setrideni_slovniku_podle_obsahu(klienti_z_db)
 
-        for klient in setrideny_seznam_klientu:
-            iter = self.klientiList.append()
-            self.klientiList.set(iter,
-                    0, klient,
-                    1, klienti_z_db[klient])
-    
+#    def vytvorit_combo_box_klienti(self):
+#        cb = self.cbWidgety['Klient']
+#        self.klientiList = gtk.ListStore(int, str)
+#        cb.set_model(self.klientiList)
+#        cell = gtk.CellRendererText()
+#        cb.pack_start(cell, True)
+#        cb.add_attribute(cell, 'text', 1)
+#        self.vyplnit_klienty_do_combo_boxu()
+
+
+#    def vyplnit_klienty_do_combo_boxu(self):
+#        """Vyplnění možných klientů do combo boxu"""
+#        cb = self.cbWidgety['Klient']
+
+#        self.klientiList.clear()
+#        klienti_z_db = BenedatDB.db.klienti_id_jmeno(1, pouze='osz', 
+#                mesic=self.mesic, rok=self.rok)
+
+#        setrideny_seznam_klientu = setrideni_slovniku_podle_obsahu(klienti_z_db)
+
+#        for klient in setrideny_seznam_klientu:
+#            iter = self.klientiList.append()
+#            self.klientiList.set(iter,
+#                    0, klient,
+#                    1, klienti_z_db[klient])
+#    
     def aktualizace_zobrazeneho_kodu_v_okne_sestav(self):
         """aktualizace zobrazeného kódu v okně sestav"""
         kod_stala_cast = str(BenedatDB.db.nastaveni(volba="kod_stala_cast")[1])
         kod_promenna_cast = str(BenedatDB.db.nastaveni(volba="kod_promenna_cast")[1])
         self.edWidgety['Kod'].set_text(kod_stala_cast + kod_promenna_cast)
                 
-    def on_cbSestavyOS_Klient_changed(self, widget):
-        """Změna klienta"""
-        cb = self.cbWidgety['Klient']
-        klienti = cb.get_model()
-        index = cb.get_active()
-        if index >= 0:
-            try:
-                self.klient = klienti[index][0]
-            except IndexError,e:
-                self.klient = -1
-        else:
-            self.klient = -1
+#    def on_cbSestavyOS_Klient_changed(self, widget):
+#        """Změna klienta"""
+#        cb = self.cbWidgety['Klient']
+#        klienti = cb.get_model()
+#        index = cb.get_active()
+#        if index >= 0:
+#            try:
+#                self.klient = klienti[index][0]
+#            except IndexError,e:
+#                self.klient = -1
+#        else:
+#            self.klient = -1
 
 
-    def on_chSestavyOS_vsichni_toggled(self, widget):
-        self.vsichni = self.chWidget_vsichni.get_active()
-        self.nastav_citlivost_cb_klient()
+#    def on_chSestavyOS_vsichni_toggled(self, widget):
+#        self.vsichni = self.chWidget_vsichni.get_active()
+#        self.nastav_citlivost_cb_klient()
 
     def on_wSestavyOS_destroy(self, widget):
         self.destroy()
@@ -1767,6 +1893,12 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
     def on_btSestavyOS_Zavrit_clicked(self, widget):
         self.destroy()
 
+    def callback_selected_foreach(self, treemodel, path, iter):
+        id_klienta = self.klientiList.get_value(iter, 0)
+        self.klienti.append(id_klienta)
+
+
+
     def on_btSestavyOS_Ulozit_clicked(self, widget):
 #        print self.klient
 #        print self.mesic
@@ -1777,6 +1909,39 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
         BenedatDB.db.zmen_nastaveni(volba="vystavil", hodnota=vystavil)
 #        BenedatDB.ulozeno = False
         BenedatDB.db.commit()
+
+########################################
+        # zpracování označených klientů v tabulce
+        (model,pathlist)=self.tabKlientu.get_selection().get_selected_rows()
+        self.tabKlientu.get_selection().selected_foreach(self.callback_selected_foreach)
+#        print self.klienti
+
+        if self.typ_dokladu == 0:
+            sablona_nazvu = 'Prijmovy_pokladni_doklad_'
+        else :
+            sablona_nazvu = 'Sestava_'
+        if len(self.klienti) == 1:
+            sablona_nazvu += bez_diakritiky_a_mezer(BenedatDB.db.klient_jmeno_podle_id(self.klienti[0], vystup=2))+"_"
+
+        sablona_nazvu += str(self.mesic) + "_" + str(self.rok) + ".pdf"
+        soubor = self.dotaz_ulozeni_sestavy(sablona_nazvu=sablona_nazvu)
+
+        if soubor != -1 and soubor:    
+            # Vytvoření sestavy a uložení do souboru
+            sestava = bsestavy.Sestavy(BenedatDB.db)
+#               print sestava.sestava_text(str(self.klient), str(self.mesic), str(self.rok))
+            sestava.sestavy_vyber_pdf(self.klienti, str(self.mesic), str(self.rok), soubor, datum_vystaveni=datum_vystaveni, datum_platby=datum_platby, vystavil=vystavil, typ_dokladu=self.typ_dokladu)
+
+        # zavření okna pro sestavy
+        self.destroy()
+                
+        return
+ 
+########################################
+
+
+
+
 
         
         if self.vsichni:
@@ -1806,7 +1971,7 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
             self.destroy()
                     
             return
-        else:
+        else :
             if not self.klient > 0:
                 return 
         
@@ -1873,8 +2038,8 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
             self.wUlozeniSestavy.destroy()
             return -1
 
-    def nastav_citlivost_cb_klient(self):
-        self.cbWidgety['Klient'].set_sensitive(not self.vsichni)
+#    def nastav_citlivost_cb_klient(self):
+#        self.cbWidgety['Klient'].set_sensitive(not self.vsichni)
 
     def nastav_citlivost_bt_ulozit(self):
         if BenedatDB.db.klienti_id_jmeno(vystup=1, pouze="osz", mesic=self.mesic, rok=self.rok):
