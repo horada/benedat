@@ -1640,39 +1640,9 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
 
     def vytvoreni_sloupcu_v_tab_klientu(self):
         self.sloupce = {}
-#        self.sloupce['id'] = gtk.TreeViewColumn("ID",
-#                gtk.CellRendererText(),
-#                text=0)
         self.sloupce['klient'] = gtk.TreeViewColumn("Klient",
                 gtk.CellRendererText(),
                 text=1)
-#        self.sloupce['prijmeni'] = gtk.TreeViewColumn("Příjmení",
-#                gtk.CellRendererText(),
-#                text=2)
-#        self.sloupce['adresa'] = gtk.TreeViewColumn("Adresa",
-#                gtk.CellRendererText(),
-#                text=3)
-#        self.sloupce['telefon'] = gtk.TreeViewColumn("Telefon",
-#                gtk.CellRendererText(),
-#                text=4)
-#        self.sloupce['mobil1'] = gtk.TreeViewColumn("Mobil 1",
-#                gtk.CellRendererText(),
-#                text=5)
-#        self.sloupce['mobil2'] = gtk.TreeViewColumn("Mobil 2",
-#                gtk.CellRendererText(),
-#                text=6)
-#        self.sloupce['pozn'] = gtk.TreeViewColumn("Poznámka",
-#                gtk.CellRendererText(),
-#                text=7)
-#        self.sloupce['os'] = gtk.TreeViewColumn("OS",
-#                gtk.CellRendererToggle(),
-#                active=8)
-#        self.sloupce['oa'] = gtk.TreeViewColumn("OA",
-#                gtk.CellRendererToggle(),
-#                active=9)
-#        self.sloupce['km_os'] = gtk.TreeViewColumn("Vzdálenost",
-#                gtk.CellRendererText(),
-#                text=10)
         for sloupec in self.sloupce_poradi:
             self.tabKlientu.append_column(self.sloupce[sloupec])
 
@@ -1694,7 +1664,6 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
         self.tabKlientu.get_selection().unselect_all()
         i = 0
         for klient_tmp in self.klientiList:
-#            print klient_tmp
             id_klienta = klient_tmp[0]
 
             klient = BenedatDB.db.klient_podle_id(id_klienta)
@@ -1827,56 +1796,12 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
 
 
 
-#    def vytvorit_combo_box_klienti(self):
-#        cb = self.cbWidgety['Klient']
-#        self.klientiList = gtk.ListStore(int, str)
-#        cb.set_model(self.klientiList)
-#        cell = gtk.CellRendererText()
-#        cb.pack_start(cell, True)
-#        cb.add_attribute(cell, 'text', 1)
-#        self.vyplnit_klienty_do_combo_boxu()
-
-
-#    def vyplnit_klienty_do_combo_boxu(self):
-#        """Vyplnění možných klientů do combo boxu"""
-#        cb = self.cbWidgety['Klient']
-
-#        self.klientiList.clear()
-#        klienti_z_db = BenedatDB.db.klienti_id_jmeno(1, pouze='osz', 
-#                mesic=self.mesic, rok=self.rok)
-
-#        setrideny_seznam_klientu = setrideni_slovniku_podle_obsahu(klienti_z_db)
-
-#        for klient in setrideny_seznam_klientu:
-#            iter = self.klientiList.append()
-#            self.klientiList.set(iter,
-#                    0, klient,
-#                    1, klienti_z_db[klient])
-#    
     def aktualizace_zobrazeneho_kodu_v_okne_sestav(self):
         """aktualizace zobrazeného kódu v okně sestav"""
         kod_stala_cast = str(BenedatDB.db.nastaveni(volba="kod_stala_cast")[1])
         kod_promenna_cast = str(BenedatDB.db.nastaveni(volba="kod_promenna_cast")[1])
         self.edWidgety['Kod'].set_text(kod_stala_cast + kod_promenna_cast)
                 
-#    def on_cbSestavyOS_Klient_changed(self, widget):
-#        """Změna klienta"""
-#        cb = self.cbWidgety['Klient']
-#        klienti = cb.get_model()
-#        index = cb.get_active()
-#        if index >= 0:
-#            try:
-#                self.klient = klienti[index][0]
-#            except IndexError,e:
-#                self.klient = -1
-#        else:
-#            self.klient = -1
-
-
-#    def on_chSestavyOS_vsichni_toggled(self, widget):
-#        self.vsichni = self.chWidget_vsichni.get_active()
-#        self.nastav_citlivost_cb_klient()
-
     def on_wSestavyOS_destroy(self, widget):
         self.destroy()
     
@@ -1900,9 +1825,6 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
 
 
     def on_btSestavyOS_Ulozit_clicked(self, widget):
-#        print self.klient
-#        print self.mesic
-#        print self.rok
         datum_vystaveni = self.edWidgety['DatVyst'].get_text()
         datum_platby = self.edWidgety['DatPlat'].get_text()
         vystavil = self.edWidgety['Vystavil'].get_text()
@@ -1936,73 +1858,7 @@ class BenedatOknoSestavy(BenedatGladeFile,BenedatDB):
         self.destroy()
                 
         return
- 
 ########################################
-
-
-
-
-
-        
-        if self.vsichni:
-            sablona_nazvu="Sestava_" + str(self.mesic) + "_" + str(self.rok) + ".pdf"
-            soubor = self.dotaz_ulozeni_sestavy(sablona_nazvu=sablona_nazvu)
-            if soubor != -1 and soubor:    
-#                if os.name == 'posix':
-                    # vytvoření pdfka uděláme spuštěním benedat_sestavy.py jako scriptu
-#                print [os.path.join(".", "benedat_sestavy.py"), "-d", str(BenedatDB.db_soubor), "-k", str(self.klient), "-m", str(self.mesic), "-r", str(self.rok), "-o", str(soubor)]
-#                    proces=subprocess.Popen([os.path.join(".", "benedat_sestavy.py"), 
-#                        "-d", str(BenedatDB.db_soubor) , 
-#                        "-m", str(self.mesic),
-#                        "-r", str(self.rok),
-#                        "-o", str(soubor),
-#                        "-v", str(datum_vystaveni),
-#                        "-p", str(datum_platby),
-#                        "-f", str(vystavil)])
-                    #proces.wait()
-#                else:
-
-                # Vytvoření sestavy a uložení do souboru
-                sestava = bsestavy.Sestavy(BenedatDB.db)
-#               print sestava.sestava_text(str(self.klient), str(self.mesic), str(self.rok))
-                sestava.sestavy_pdf(str(self.mesic), str(self.rok), soubor, datum_vystaveni=datum_vystaveni, datum_platby=datum_platby, vystavil=vystavil)
-
-            # zavření okna pro sestavy
-            self.destroy()
-                    
-            return
-        else :
-            if not self.klient > 0:
-                return 
-        
-        sablona_nazvu="Sestava_" \
-                + bez_diakritiky_a_mezer(BenedatDB.db.klient_jmeno_podle_id(self.klient, vystup=2)) \
-                + "_" + str(self.mesic) + "_" + str(self.rok) + ".pdf"
-        soubor = self.dotaz_ulozeni_sestavy(sablona_nazvu=sablona_nazvu)
-        if soubor != -1 and soubor:    
-#            if os.name == 'posix':
-                # vytvoření pdfka uděláme spuštěním benedat_sestavy.py jako scriptu
-#                print [os.path.join(".", "benedat_sestavy.py"), "-d", str(BenedatDB.db_soubor), "-k", str(self.klient), "-m", str(self.mesic), "-r", str(self.rok), "-o", str(soubor)]
-#                proces=subprocess.Popen([os.path.join(".", "benedat_sestavy.py"), 
-#                    "-d", str(BenedatDB.db_soubor) , 
-#                    "-k", str(self.klient),
-#                    "-m", str(self.mesic),
-#                    "-r", str(self.rok),
-#                    "-o", str(soubor),
-#                    "-v", str(datum_vystaveni),
-#                    "-p", str(datum_platby),
-#                    "-f", str(vystavil)])
-            #proces.wait()
-#            else:
-
-            # Vytvoření sestavy a uložení do souboru
-            sestava = bsestavy.Sestavy(BenedatDB.db)
-#               print sestava.sestava_text(str(self.klient), str(self.mesic), str(self.rok))
-            sestava.sestava_pdf(str(self.klient), str(self.mesic), str(self.rok), soubor, datum_vystaveni=datum_vystaveni, datum_platby=datum_platby, vystavil=vystavil)
-
-        # zavření okna pro sestavy
-        self.destroy()
-                
 
     def dotaz_ulozeni_sestavy(self, sablona_nazvu=None):
         """Zobrazení a zpracování dialogu pro uložení sestavy vytvořené sestavy"""

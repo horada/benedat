@@ -52,8 +52,8 @@ class Sestavy():
     def sestava(self, id_klienta, mesic, rok):
         """vygenerování sestavy pro určitého klienta za určité období"""
         # data o klientovi
-        #0           1      2         3       4        5       6       7     8   9   10     11         12          13            14           15 
-        #id_klienta, jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad, os_pausalHodin
+        #0           1      2         3       4        5       6       7     8   9   10     11         12          13            14           15              16 
+        #id_klienta, jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad, os_pausalHodin, typ_dokladu
         data_klient = self.db.klient_podle_id(id_klienta)
 
         # data záznamů os
@@ -240,13 +240,14 @@ class Sestavy():
 #        su.text = souhrnny_text
 #        su.cena = data_souhrn[4]
         
-        # Vyplnění dat do xml pro Pohodu
-#        self.xml_to_pohoda.pridani_dokladu(id=kod, id_dokladu=kod_promenna_cast,
-#            kod_promenna_cast=kod_promenna_cast, kod_stala_cast=kod_stala_cast,
-#            datum_vystaveni=bcas.preved_datum(datum_vystaveni,2), datum_platby=bcas.preved_datum(datum_platby,2),
-#            text=souhrnny_text,
-#            jmeno=data_klient[1] + " " + data_klient[2], adresa=data_klient[3],
-#            cena=str(data_souhrn[4]))
+        if typ_dokladu == 0:
+            # Vyplnění dat do xml pro Pohodu
+            self.xml_to_pohoda.pridani_dokladu(id=kod, id_dokladu=kod_promenna_cast,
+                kod_promenna_cast=kod_promenna_cast, kod_stala_cast=kod_stala_cast,
+                datum_vystaveni=bcas.preved_datum(datum_vystaveni,2), datum_platby=bcas.preved_datum(datum_platby,2),
+                text=souhrnny_text,
+                jmeno=data_klient[1] + " " + data_klient[2], adresa=data_klient[3],
+                cena=str(data_souhrn[4]))
 
         # Vyplnění dat do csv
 #        print kod
@@ -362,7 +363,8 @@ class Sestavy():
 #        self.souhrn_ucetnictvi = bpohoda.Souhrn_ucetnictvi(soubor=soubor[:-3] + "txt")
 
         # xml pro Pohodu
-#        self.xml_to_pohoda = bpohoda.xmlDokument(id=str(mesic)+"_"+str(rok))
+        if typ_dokladu==0:
+            self.xml_to_pohoda = bpohoda.xmlDokument(id=str(mesic)+"_"+str(rok))
 
         # EXPORT DO CSV
         self.csv = bcsv.Souhrn_csv(soubor=soubor[:-3]+"csv")
@@ -388,7 +390,8 @@ class Sestavy():
 #        self.souhrn_ucetnictvi.uloz()
 
         # xml pro Pohodu
-#        self.xml_to_pohoda.to_xml_soubor(soubor=soubor[:-3] + "xml", debug=DEBUG)
+        if typ_dokladu==0:
+            self.xml_to_pohoda.to_xml_soubor(soubor=soubor[:-3] + "xml", debug=DEBUG)
 
 
         # export do csv

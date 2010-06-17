@@ -9,7 +9,7 @@ Chtěl bych to vyřešit buď tak, že:
 1)       možnost udělat sestavy jen pro vybrané lidi (zaškrtnutí v seznamu nebo označení myší se zmáčknutým Ctrl)
 2)       nebo udělat to tak, že těm dvěma klientům, co dostávaj fakturu a ne pokl.doklad, tak aby se těmhle dvěma v hromadné sestavě nepřidělovalo číslo podkladního dokladu
 
-- * pouklízet po změnách z předchozího bodu
++ * pouklízet po změnách z předchozího bodu
 
 + * Dopsat do sestavy: Podpis pokladníka: /mezera na podpis/
 
