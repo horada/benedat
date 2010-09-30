@@ -35,7 +35,7 @@ import benedat_chyby as err
 from benedat_log import *
 import time
 
-AKTUALNI_VERZE_DB = "7"
+AKTUALNI_VERZE_DB = "8"
 
 class Db:
     def __init__(self, soubor, novy=False):
@@ -106,6 +106,7 @@ class Db:
                     cas_do TEXT(15) NOT NULL ,
                     dovoz NUMERIC NOT NULL ,
                     odvoz NUMERIC NOT NULL ,
+                    prenocovani NUMERIC NOT NULL ,
                     PRIMARY KEY (id)
                     );                    
             """
@@ -182,7 +183,7 @@ class Db:
         try:
             self.databaze.execute("""INSERT INTO 
                 klienti (jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad, os_pausalHodin, typ_dokladu)
-                values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)""",
+                values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad,os_pausalHodin, typ_dokladu))
         except sqlite.Error, e:
             log(e)
@@ -635,6 +636,21 @@ def aktualizace_db_na_novejsi_verzi(soubor):
 
             # další kontrola verze db
             aktualizace_db_na_novejsi_verzi(soubor)
+
+        elif stara_verze_db < 8:
+            # aktualizace z verze 7 na verzi 8
+            # přidání sloupce prenocovani
+            db.execute("""ALTER TABLE zaznamy_os ADD COLUMN prenocovani NUMERIC NOT NULL DEFAULT 0;""")
+            # uklizení
+#            db.execute("""UPDATE zaznamy_os SET prenocovani='0'""")
+
+            # nastavení správného čísla aktuální verze
+            db.execute("""UPDATE nastaveni SET hodnota=? WHERE volba=?""", (8, "verze"))
+            db.commit()
+
+            # další kontrola verze db
+            aktualizace_db_na_novejsi_verzi(soubor)
+
 
 
 
