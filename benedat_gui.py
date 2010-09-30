@@ -971,7 +971,8 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
                 'CasOd',
                 'CasDo',
                 'Dovoz',
-                'Odvoz']
+                'Odvoz',
+                'Prenocovani']
         self.edWidgety = {}
         for pole in self.editacni_pole:
             self.edWidgety[pole] = self.wZaznamyOSXml.get_widget("eZaznamyOS_" + pole)
@@ -1004,7 +1005,7 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
 
         self.sloupce_poradi = ['klient', 'datum', 
                                 'cas_od', 'cas_do', 
-                                'dovoz', 'odvoz', 'mezera']
+                                'dovoz', 'odvoz', 'prenocovani', 'mezera']
 
 
         self.tabZaznamuOS = self.wZaznamyOSXml.get_widget("twTabZaznamyOS")
@@ -1044,8 +1045,9 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
 
 
     def vytvoreni_list_store_zaznamu_os(self):
-        # id zaznamu, klient, datum, cas_od, cas_do, dovoz, odvoz, datum_razeni
+        # id zaznamu, klient, datum, cas_od, cas_do, dovoz, odvoz, prenocovani, datum_razeni
         self.zaznamyOsList = gtk.ListStore(int, str, str, str, str,
+                                            gobject.TYPE_BOOLEAN,
                                             gobject.TYPE_BOOLEAN,
                                             gobject.TYPE_BOOLEAN,
                                             str)
@@ -1088,6 +1090,10 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
         self.sloupce['odvoz'] = gtk.TreeViewColumn("Odvoz",
                 gtk.CellRendererToggle(),
                 active=6)
+
+        self.sloupce['prenocovani'] = gtk.TreeViewColumn("Přenocování",
+                gtk.CellRendererToggle(),
+                active=7)
 #        self.sloupce['odvoz'].set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
 #        self.sloupce['odvoz'].set_fixed_width(1)
 #        self.sloupce['odvoz'].set_max_width(2)
@@ -1120,7 +1126,8 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
                     4, zaznam[4],
                     5, bool(zaznam[5]),
                     6, bool(zaznam[6]),
-                    7, zaznam[2])
+                    7, bool(zaznam[7]),
+                    8, zaznam[2])
 
     def vytvor_cb_mesice(self):
         """doplnění měsíců do comboboxu"""
@@ -1227,6 +1234,7 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
             self.edWidgety['CasDo'].set_text(bez_none(self.aktualni_zaznam[4]))
             self.edWidgety['Dovoz'].set_active(bool(self.aktualni_zaznam[5]))
             self.edWidgety['Odvoz'].set_active(bool(self.aktualni_zaznam[6]))
+            self.edWidgety['Odvoz'].set_active(bool(self.aktualni_zaznam[7]))
         else:
             self.vyprazdnit_form()
 
@@ -1238,6 +1246,7 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
         self.edWidgety['CasDo'].set_text("")
         self.edWidgety['Dovoz'].set_active(False)
         self.edWidgety['Odvoz'].set_active(False)
+        self.edWidgety['Prenocovani'].set_active(False)
 
     def vytvor_klientiList(self):
         """Vytvoření seznamu klientů"""
@@ -1320,18 +1329,20 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
                 self.edWidgety['CasOd'].get_text(), # 3
                 self.edWidgety['CasDo'].get_text(), # 4
                 int(self.edWidgety['Dovoz'].get_active()),  # 5
-                int(self.edWidgety['Odvoz'].get_active())]  # 6
+                int(self.edWidgety['Odvoz'].get_active()), # 6
+                int(self.edWidgety['Prenocovani'].get_active())]  # 7
         self.aktualni_zaznam = zaznam
 
     def nacteni_noveho_zaznamu_z_form(self):
         """načtení nového záznamu z formuláře do self.aktualni_zaznam"""
         zaznam = [0,
-                self.urcit_id_klienta_z_textu(self.edWidgety['Klient'].get_text()),
-                self.edWidgety['Datum'].get_text(),
-                self.edWidgety['CasOd'].get_text(),
-                self.edWidgety['CasDo'].get_text(),
-                int(self.edWidgety['Dovoz'].get_active()),
-                int(self.edWidgety['Odvoz'].get_active())]
+                self.urcit_id_klienta_z_textu(self.edWidgety['Klient'].get_text()), # 1
+                self.edWidgety['Datum'].get_text(), # 2
+                self.edWidgety['CasOd'].get_text(), # 3
+                self.edWidgety['CasDo'].get_text(), # 4
+                int(self.edWidgety['Dovoz'].get_active()), # 5
+                int(self.edWidgety['Odvoz'].get_active()), # 6
+                int(self.edWidgety['Prenocovani'].get_active())] # 7
         self.aktualni_zaznam = zaznam
 
     def overeni_datumu_podle_nastavenych_hodnot(self):
@@ -1367,6 +1378,7 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
                                     z[4],
                                     z[5],
                                     z[6],
+                                    z[7],
                                     z[0])
         BenedatDB.ulozeno = False
 
@@ -1379,7 +1391,8 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
                                     z[3],
                                     z[4],
                                     z[5],
-                                    z[6])
+                                    z[6],
+                                    z[7])
         BenedatDB.ulozeno = False
 
     def vytvor_menu_klientu(self):

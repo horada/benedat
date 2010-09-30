@@ -429,8 +429,8 @@
     <property name="icon">Benedat.png</property>
     <property name="type_hint">normal</property>
     <property name="has_separator">False</property>
-    <property name="do_overwrite_confirmation">True</property>
     <property name="action">save</property>
+    <property name="do_overwrite_confirmation">True</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox4">
         <property name="visible">True</property>
@@ -2236,6 +2236,37 @@
               </packing>
             </child>
             <child>
+              <widget class="GtkVBox" id="vbox24">
+                <property name="visible">True</property>
+                <child>
+                  <widget class="GtkLabel" id="label48">
+                    <property name="visible">True</property>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">P&#x159;enocov&#xE1;n&#xED;</property>
+                  </widget>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkCheckButton" id="eZaznamyOS_Prenocovani">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="draw_indicator">True</property>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">6</property>
+              </packing>
+            </child>
+            <child>
               <widget class="GtkButton" id="btZaznamyOSUlozit">
                 <property name="label">gtk-save</property>
                 <property name="visible">True</property>
@@ -2249,7 +2280,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">6</property>
+                <property name="position">7</property>
               </packing>
             </child>
           </widget>
@@ -2452,7 +2483,7 @@
                     <property name="height_request">150</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hadjustment">0 0 396 39.600000000000001 356.40000000000003 396</property>
+                    <property name="hadjustment">0 0 395 39.5 355.5 395</property>
                     <property name="hscrollbar_policy">automatic</property>
                     <property name="shadow_type">in</property>
                     <child>
@@ -2782,9 +2813,9 @@
     <property name="icon">Benedat.png</property>
     <property name="type_hint">normal</property>
     <property name="has_separator">False</property>
-    <property name="show_hidden">True</property>
-    <property name="do_overwrite_confirmation">True</property>
     <property name="action">save</property>
+    <property name="do_overwrite_confirmation">True</property>
+    <property name="show_hidden">True</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox5">
         <property name="visible">True</property>

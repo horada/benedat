@@ -316,7 +316,7 @@ class Db:
             log(e)
         
 
-    def vloz_zaznam_os(self, id_klienta, datum, cas_od, cas_do, dovoz, odvoz):
+    def vloz_zaznam_os(self, id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani=0):
         """Zadání záznamu pro osobní asistenci (os)"""
         if id_klienta == "":
             raise err.ChybaPrazdnePole("Není zadáno žádné id_klienta!")
@@ -332,13 +332,13 @@ class Db:
             raise err.ChybaPrazdnePole("Není zadán odvoz!")
         try:
             self.databaze.execute("""INSERT INTO 
-                zaznamy_os (id_klienta, datum, cas_od, cas_do, dovoz, odvoz)
-                values (?, ?, ?, ?, ?, ?)""",
-                (id_klienta, datum, cas_od, cas_do, dovoz, odvoz))
+                zaznamy_os (id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani)
+                values (?, ?, ?, ?, ?, ?, ?)""",
+                (id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani))
         except sqlite.Error, e:
             log(e)
 
-    def zmen_zaznam_os(self, id_klienta, datum, cas_od, cas_do, dovoz, odvoz, id_zaznamu):
+    def zmen_zaznam_os(self, id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani, id_zaznamu):
         """Změna záznamu pro osobní asistenci (os) podle id_zaznamu (id)"""
         if id_klienta == "":
             raise err.ChybaPrazdnePole("Není zadáno žádné id_klienta!")
@@ -354,9 +354,9 @@ class Db:
             raise err.ChybaPrazdnePole("Není zadán odvoz!")
         try:
             self.databaze.execute("""UPDATE zaznamy_os 
-                SET id_klienta=?, datum=?, cas_od=?, cas_do=?, dovoz=?, odvoz=?
+                SET id_klienta=?, datum=?, cas_od=?, cas_do=?, dovoz=?, odvoz=?, prenocovani=?
                 WHERE id=?""",
-                (id_klienta, datum, cas_od, cas_do, dovoz, odvoz, id_zaznamu))
+                (id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani, id_zaznamu))
         except sqlite.Error, e:
             log(e)
 
@@ -375,7 +375,7 @@ class Db:
         if zaznam_id:
             try:
                 vysledek = self.databaze.execute("""SELECT
-                    id, id_klienta, datum, cas_od, cas_do, dovoz, odvoz
+                    id, id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani
                     FROM zaznamy_os WHERE id=?""", (str(zaznam_id),))
                 return vysledek.fetchone()
             except sqlite.Error, e:
@@ -425,7 +425,7 @@ class Db:
 #                id, id_klienta, datum, cas_od, cas_do, dovoz, odvoz \
 #                FROM zaznamy_os""" + w + o + l + str(where_data))
             vysledek = self.databaze.execute("""SELECT
-                id, id_klienta, datum, cas_od, cas_do, dovoz, odvoz
+                id, id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani
                 FROM zaznamy_os""" + w + o + l, where_data)
                 
             return vysledek.fetchall()
