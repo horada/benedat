@@ -182,7 +182,7 @@ class Db:
         try:
             self.databaze.execute("""INSERT INTO 
                 klienti (jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad, os_pausalHodin, typ_dokladu)
-                values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)""",
+                values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (jmeno, prijmeni, adresa, telefon, mobil1, mobil2, pozn, os, oa, km_os, os_pausal, os_cena_do, os_cena_mezi, os_cena_nad,os_pausalHodin, typ_dokladu))
         except sqlite.Error, e:
             log(e)
