@@ -35,7 +35,7 @@ import benedat_chyby as err
 from benedat_log import *
 import time
 
-AKTUALNI_VERZE_DB = "8"
+AKTUALNI_VERZE_DB = "9"
 
 class Db:
     def __init__(self, soubor, novy=False):
@@ -140,6 +140,7 @@ class Db:
                         ('adresa_dalsi','IČ: 70868832|DIČ: CZ70868832|Mobil: +420 731 646 811|E-mail: benediktus@centrum.cz|WWW: benediktus.infobar.cz','Doplňující informace v adrese'),
                         #('','',''),
                         ('vystavil','',u'Kdo vystavil příjmový doklad'),
+                        ('os_cena_prenocovani','0',u'Cena za přenocování'),
                         ('pokladna', 'Pokladna hlavní', 'Název pokladny vydávající doklad'))
             for t in nastaveni:
                 self.databaze.execute("""INSERT INTO nastaveni (volba, hodnota, pozn)
@@ -646,6 +647,18 @@ def aktualizace_db_na_novejsi_verzi(soubor):
 
             # nastavení správného čísla aktuální verze
             db.execute("""UPDATE nastaveni SET hodnota=? WHERE volba=?""", (8, "verze"))
+            db.commit()
+
+            # další kontrola verze db
+            aktualizace_db_na_novejsi_verzi(soubor)
+
+        elif stara_verze_db < 9:
+            # aktualizace z verze 8 na verzi 9
+            # přidání položky os_cena_prenocovani do nastavení
+            db.execute("""INSERT INTO nastaveni (volba, hodnota, pozn)
+                    values (?,?,?)""", ('os_cena_prenocovani', '0', 'Cena za přenocování'))
+            # nastavení správného čísla aktuální verze
+            db.execute("""UPDATE nastaveni SET hodnota=? WHERE volba=?""", (9, "verze"))
             db.commit()
 
             # další kontrola verze db

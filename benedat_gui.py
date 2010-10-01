@@ -2025,7 +2025,8 @@ class BenedatOknoNastaveni(BenedatGladeFile, BenedatDB):
                         'horni_hranice_poctu_hodin',
                         'adresa',
                         'adresa_dalsi',
-                        'pokladna']
+                        'pokladna',
+                        'os_cena_prenocovani']
         
         self.edWidgety = {}
         for pole in self.editacni_pole:
