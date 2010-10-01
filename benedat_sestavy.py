@@ -62,19 +62,21 @@ class Sestavy():
                 razeni='datum')
         data_zaznamy = []
         for z in data_zaznamy_z_db:
-            zaznam = [z[2], z[3], z[4], rozdil_casu(z[3], z[4]), z[5], z[6]]
+            zaznam = [z[2], z[3], z[4], rozdil_casu(z[3], z[4]), z[5], z[6], z[7]]
             data_zaznamy.append(zaznam)
         
-        # souhrn [pocet_hodin, cena_os, pocet_cest, cena_cest, celkem]
-        data_souhrn = [0,0,0,0,0]
+        # souhrn [pocet_hodin, cena_os, pocet_cest, cena_cest, pocet_prenocovani, cena_prenocovani, celkem]
+        data_souhrn = [0,0,0,0,0,0,0]
         for z in data_zaznamy:
             data_souhrn[0] += z[3]  # počet hodin
             data_souhrn[2] += z[4] + z[5] # počet cest
+            data_souhrn[4] += z[6] # počet přenocování
         # cena os
         data_souhrn[1] = self.cena_os(data_souhrn[0], id_klienta)
         data_souhrn[3] = data_souhrn[2] * self.cena_cesty(id_klienta)
+        data_souhrn[5] = data_souhrn[4] * int(self.db.nastaveni('os_cena_prenocovani')[1])
         # celková cena (zaokrouhlená na koruny)
-        data_souhrn[4] = round(data_souhrn[1] + data_souhrn[3], 0)
+        data_souhrn[6] = round(data_souhrn[1] + data_souhrn[3] + data_souhrn[5], 0)
 
         # data_dalsi [dovoz, odvoz]
         data_dalsi = [0, 0]
@@ -247,7 +249,7 @@ class Sestavy():
                 datum_vystaveni=bcas.preved_datum(datum_vystaveni,2), datum_platby=bcas.preved_datum(datum_platby,2),
                 text=souhrnny_text,
                 jmeno=data_klient[1] + " " + data_klient[2], adresa=data_klient[3],
-                cena=str(data_souhrn[4]))
+                cena=str(data_souhrn[6]))
 
         # Vyplnění dat do csv
 #        print kod
@@ -266,7 +268,8 @@ class Sestavy():
         horni_hranice_poctu_hodin = int(self.db.nastaveni('horni_hranice_poctu_hodin')[1])
         cestovne_os_cena_za_litr = float(self.db.nastaveni('cestovne_os_cena_za_litr')[1])
         self.csv.zapis_radek((data_klient[1], data_klient[2], str(mesic)+"/"+str(rok), kod, data_souhrn[0], data_souhrn[1],
-            data_dalsi[0], data_dalsi[1], data_souhrn[2], data_souhrn[3], data_souhrn[4], 
+            data_dalsi[0], data_dalsi[1], data_souhrn[2], data_souhrn[3],
+            data_souhrn[4], data_souhrn[5], data_souhrn[6], 
             data_klient[10], data_klient[11], data_klient[15], data_klient[12], data_klient[13], data_klient[14], dolni_hranice_poctu_hodin, horni_hranice_poctu_hodin, cestovne_os_cena_za_litr))
 
 
@@ -294,7 +297,8 @@ class Sestavy():
         self.csv = bcsv.Souhrn_csv(soubor=soubor[:-3]+"csv")
         # názvy sloupců
         self.csv.zapis_radek(("Příjmení", "Jméno", "Období", "Kód dokladu", "Počet hodin OS", "Cena za OS", 
-                             "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty", "Cena celkem",
+                             "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty",
+                             "Přenocování", "Cena za přenocování", "Cena celkem",
                              "Vzdálenost v km", "OS paušál", "OS paušál hodin", "OS cena do", 
                              "OS cena mezi", "OS cena nad", "OS dolní hranice počtu hodin", 
                              "OS horní hranice počtu hodin", "Cena za litr"))
@@ -328,7 +332,8 @@ class Sestavy():
         self.csv = bcsv.Souhrn_csv(soubor=soubor[:-3]+"csv")
         # názvy sloupců
         self.csv.zapis_radek(("Příjmení", "Jméno", "Období", "Kód dokladu", "Počet hodin OS", "Cena za OS", 
-                             "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty", "Cena celkem",
+                             "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty",
+                             "Přenocování", "Cena za přenocování", "Cena celkem",
                              "Vzdálenost v km", "OS paušál", "OS paušál hodin", "OS cena do", 
                              "OS cena mezi", "OS cena nad", "OS dolní hranice počtu hodin", 
                              "OS horní hranice počtu hodin", "Cena za litr"))
@@ -370,7 +375,8 @@ class Sestavy():
         self.csv = bcsv.Souhrn_csv(soubor=soubor[:-3]+"csv")
         # názvy sloupců
         self.csv.zapis_radek(("Příjmení", "Jméno", "Období", "Kód dokladu", "Počet hodin OS", "Cena za OS", 
-                             "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty", "Cena celkem",
+                             "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty",
+                             "Přenocování", "Cena za přenocování", "Cena celkem",
                              "Vzdálenost v km", "OS paušál", "OS paušál hodin", "OS cena do", 
                              "OS cena mezi", "OS cena nad", "OS dolní hranice počtu hodin", 
                              "OS horní hranice počtu hodin", "Cena za litr"))
