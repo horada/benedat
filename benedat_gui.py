@@ -1234,7 +1234,7 @@ class BenedatOknoZaznamyOS(BenedatGladeFile,BenedatDB):
             self.edWidgety['CasDo'].set_text(bez_none(self.aktualni_zaznam[4]))
             self.edWidgety['Dovoz'].set_active(bool(self.aktualni_zaznam[5]))
             self.edWidgety['Odvoz'].set_active(bool(self.aktualni_zaznam[6]))
-            self.edWidgety['Odvoz'].set_active(bool(self.aktualni_zaznam[7]))
+            self.edWidgety['Prenocovani'].set_active(bool(self.aktualni_zaznam[7]))
         else:
             self.vyprazdnit_form()
 
