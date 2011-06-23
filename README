@@ -1,0 +1,8 @@
+Benedat
+=======
+program pro výpočet ceny za poskytnuté služby klientům občanského sdružení Benediktus
+
+Program je napsaný v pythonu s využitím knihoven PyGTK, Jagpdf a další.
+
+(Toto je vývojová větev nové verze.)
+
