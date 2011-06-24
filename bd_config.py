@@ -37,9 +37,9 @@ from lib.singletonmixin import Singleton
 
 # list of possible places default configuration files
 # (next file overwrite previous set configuration)
-CONFIG_FILES = ('./benedat.conf')
+CONFIG_FILES = ('./benedat.conf',)
 # list of sections in configuration file
-CONFIG_SECTIONS = ('default')
+CONFIG_SECTIONS = ('default',)
 
 
 def setConfigFiles(files):
@@ -49,6 +49,14 @@ def setConfigFiles(files):
     """
     global CONFIG_FILES
     CONFIG_FILES=files
+
+def setConfigSections(sections):
+    """
+    Function to set variable CONFIG_SECTIONS.
+    (list of configuration sections)
+    """
+    global CONFIG_SECTIONS
+    CONFIG_SECTIONS=sections
 
 
 class Config(ConfigParser.SafeConfigParser, Singleton):
@@ -156,7 +164,7 @@ if __name__ == '__main__':
             self.tmp_file.file.close()
             setConfigFiles(self.tmp_file.name)
             # sections in testing configuration file
-            CONFIG_SECTIONS = ('testing', 'testing2')
+            setConfigSections(('testing', 'testing2'))
 
             self.conf = Config.getInstance()
 
