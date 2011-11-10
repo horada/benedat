@@ -32,7 +32,34 @@ Helpful module for work with date and time.
 
 
 import datetime
+import re
+from pprint import pprint
 
+
+DATE_FORMAT_RE = {"dd.mm.rrrr": re.compile(r'''^\d?\d\.\d?\d\.(\d\d)?\d\d$'''),
+    "dd/mm/rrrr": re.compile(r'''^\d?\d\/\d?\d\/(\d\d)?\d\d$'''),
+    "dd.mm.": re.compile(r'''^\d?\d\.\d?\d\.?$'''),
+    "dd/mm": re.compile(r'''^\d?\d\/\d?\d$'''),
+    "dd.": re.compile(r'''^\d?\d\.?$'''),
+    "rrr-mm-dd": re.compile(r'''^\d\d\d\d-\d\d-\d\d$''')}
+
+
+
+
+
+
+def emendYear(year): 
+    """
+    Emend double digit year to 4 digit.
+    0-49  => 2000 - 2049
+    50-99 => 1950 - 1999
+    """
+    if year >= 100:
+        return year
+    elif year >= 50:
+        return 1900 + year
+    else:
+        return 2000 + year
 
 
 
@@ -44,13 +71,15 @@ class Date():
         # set date to today
         self.date = datetime.date.today()
         if arg:
-            set(arg)
+            self.set(arg)
 
     def __str__(self):
-        return self.date.strftime('%d.%m.%Y')
+        #return self.date.strftime('%d.%m.%Y')
+        return "%d.%d.%d" % (self.date.day, self.date.month, self.date.year)
     
     def __repr__(self):
         return "%s('%s')" % (self.__class__, self.date.strftime('%d.%m.%Y'))
+
 
     def set(self, arg):
         """
@@ -67,12 +96,36 @@ class Date():
             rrrr-mm-dd
         """
         # remove any dot at the end
-        arg = arg.rstrip('.')
+#        arg = arg.rstrip('.')
         
         # TODO - recognise format and parse date
         
-        
-        
+        if DATE_FORMAT_RE["dd.mm.rrrr"].match(arg):
+            arg = map(int, arg.split('.'))
+            self.date = self.date.replace(year=emendYear(arg[2]),
+                    month=arg[1], day=arg[0])
+
+        elif DATE_FORMAT_RE["dd/mm/rrrr"].match(arg):
+            arg = map(int, arg.split('/'))
+            self.date = self.date.replace(year=emendYear(arg[2]),
+                    month=arg[1], day=arg[0])
+
+        elif DATE_FORMAT_RE["dd.mm."].match(arg):
+            arg = map(int, filter(None, arg.split('.')))
+            self.date = self.date.replace(month=arg[1], day=arg[0])
+
+        elif DATE_FORMAT_RE["dd/mm"].match(arg):
+            arg = map(int, arg.split('/'))
+            self.date = self.date.replace(month=arg[1], day=arg[0])
+
+        elif DATE_FORMAT_RE["dd."].match(arg):
+            arg = map(int, filter(None, arg.split('.')))
+            self.date = self.date.replace(day=arg[0])
+
+        elif DATE_FORMAT_RE["rrrr-mm-dd"].match(arg):
+            arg = map(int, arg.split('-'))
+            self.date = self.date.replace(year=emendYear(arg[0]),
+                    month=arg[1], day=arg[2])
 
 
 
@@ -96,6 +149,22 @@ class Date():
 if __name__ == '__main__':
     # unit testing 
     import unittest
+
+    class DatetimeFunctionsTest(unittest.TestCase):
+        def setUp(self):
+            pass
+
+        def test_emendYear(self):
+            self.assertEqual(emendYear(2000), 2000)
+            self.assertEqual(emendYear(1999), 1999)
+            self.assertEqual(emendYear(1950), 1950)
+            self.assertEqual(emendYear(2010), 2010)
+            self.assertEqual(emendYear(00), 2000)
+            self.assertEqual(emendYear(49), 2049)
+            self.assertEqual(emendYear(50), 1950)
+            self.assertEqual(emendYear(99), 1999)
+            self.assertEqual(emendYear(11), 2011)
+
 
     class DatePublicInterfaceTest(unittest.TestCase):
         def setUp(self):
@@ -170,9 +239,8 @@ if __name__ == '__main__':
 
 
 
-
     unittest.main()
 
 
 
-
+# vim:set tabstop=4:set shiftwidth=4:set softtabstop=4: 
