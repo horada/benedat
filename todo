@@ -136,6 +136,13 @@ dnů v týdnu: hod.za měs.: cena za měsíc:
 
 
 
+- * v zadávání záznamů OS by byly kolonky: čas od,  čas do,  dovoz,  odvoz,  obědy vařené [numericky],  obědy dovežené [zaškrtávátko ANO/NE],  přenocování
+- . v možnosti Nastavení by přibyla sekce Obědy: Cena dovážených obědů:  [numericky] Kč  tj. stálá cena obědů dovážených z jídelny
+- . v tiskové sestavě by se měly sečíst částky za obědy vařené do položky „Občerstvení“
+- . v tiskové sestavě by se měly sečíst částky za obědy dovežené do položky „Poskytnuté obědy“
+- . a pak ještě přidat celkový součet všech položek na sestavě
+
+
 
 
 

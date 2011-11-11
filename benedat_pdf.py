@@ -28,7 +28,11 @@
 # 
 
 
-import jagpdf
+try:
+  import jagpdf
+except ImportError:
+  pass
+
 import benedat_cas as bcas
 
 
