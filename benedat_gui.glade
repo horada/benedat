@@ -1607,7 +1607,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkEntry" id="eNastaveni_os_cena_obedu">
+                                  <widget class="GtkEntry" id="eNastaveni_os_cena_obeda">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="max_length">6</property>

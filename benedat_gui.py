@@ -2057,6 +2057,7 @@ class BenedatOknoNastaveni(BenedatGladeFile, BenedatDB):
                         'adresa',
                         'adresa_dalsi',
                         'pokladna',
+                        'os_cena_obeda',
                         'os_cena_prenocovani']
         
         self.edWidgety = {}
