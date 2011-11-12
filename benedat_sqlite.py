@@ -35,7 +35,7 @@ import benedat_chyby as err
 from benedat_log import *
 import time
 
-AKTUALNI_VERZE_DB = "9"
+AKTUALNI_VERZE_DB = "10"
 
 class Db:
     def __init__(self, soubor, novy=False):
@@ -107,6 +107,8 @@ class Db:
                     dovoz NUMERIC NOT NULL ,
                     odvoz NUMERIC NOT NULL ,
                     prenocovani NUMERIC NOT NULL ,
+                    cena_obcerstveni REAL NOT NULL,
+                    obed NUMERIC NOT NULL,
                     PRIMARY KEY (id)
                     );                    
             """
@@ -141,6 +143,7 @@ class Db:
                         #('','',''),
                         ('vystavil','',u'Kdo vystavil příjmový doklad'),
                         ('os_cena_prenocovani','0',u'Cena za přenocování'),
+                        ('os_cena_obeda', '0', 'Cena doveženého oběda'),
                         ('pokladna', 'Pokladna hlavní', 'Název pokladny vydávající doklad'))
             for t in nastaveni:
                 self.databaze.execute("""INSERT INTO nastaveni (volba, hodnota, pozn)
@@ -317,7 +320,8 @@ class Db:
             log(e)
         
 
-    def vloz_zaznam_os(self, id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani=0):
+    def vloz_zaznam_os(self, id_klienta, datum, cas_od, cas_do, dovoz, odvoz, \
+            prenocovani=0, cena_obcerstveni=0, obed=0):
         """Zadání záznamu pro osobní asistenci (os)"""
         if id_klienta == "":
             raise err.ChybaPrazdnePole("Není zadáno žádné id_klienta!")
@@ -333,13 +337,14 @@ class Db:
             raise err.ChybaPrazdnePole("Není zadán odvoz!")
         try:
             self.databaze.execute("""INSERT INTO 
-                zaznamy_os (id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani)
-                values (?, ?, ?, ?, ?, ?, ?)""",
-                (id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani))
+                zaznamy_os (id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani, cena_obcerstveni, obed)
+                values (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani, cena_obcerstveni, obed))
         except sqlite.Error, e:
             log(e)
 
-    def zmen_zaznam_os(self, id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani, id_zaznamu):
+    def zmen_zaznam_os(self, id_klienta, datum, cas_od, cas_do, dovoz, odvoz, \
+            prenocovani, cena_obcerstveni, obed, id_zaznamu):
         """Změna záznamu pro osobní asistenci (os) podle id_zaznamu (id)"""
         if id_klienta == "":
             raise err.ChybaPrazdnePole("Není zadáno žádné id_klienta!")
@@ -355,9 +360,11 @@ class Db:
             raise err.ChybaPrazdnePole("Není zadán odvoz!")
         try:
             self.databaze.execute("""UPDATE zaznamy_os 
-                SET id_klienta=?, datum=?, cas_od=?, cas_do=?, dovoz=?, odvoz=?, prenocovani=?
+                SET id_klienta=?, datum=?, cas_od=?, cas_do=?, dovoz=?, odvoz=?, 
+                    prenocovani=?, cena_obcerstveni=?, obed=?
                 WHERE id=?""",
-                (id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani, id_zaznamu))
+                (id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani, \
+                    cena_obcerstveni, obed, id_zaznamu))
         except sqlite.Error, e:
             log(e)
 
@@ -376,7 +383,8 @@ class Db:
         if zaznam_id:
             try:
                 vysledek = self.databaze.execute("""SELECT
-                    id, id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani
+                    id, id_klienta, datum, cas_od, cas_do, dovoz, odvoz, 
+                        prenocovani, cena_obcerstveni, obed
                     FROM zaznamy_os WHERE id=?""", (str(zaznam_id),))
                 return vysledek.fetchone()
             except sqlite.Error, e:
@@ -426,7 +434,8 @@ class Db:
 #                id, id_klienta, datum, cas_od, cas_do, dovoz, odvoz \
 #                FROM zaznamy_os""" + w + o + l + str(where_data))
             vysledek = self.databaze.execute("""SELECT
-                id, id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani
+                id, id_klienta, datum, cas_od, cas_do, dovoz, odvoz,
+                    prenocovani, cena_obcerstveni, obed
                 FROM zaznamy_os""" + w + o + l, where_data)
                 
             return vysledek.fetchall()
@@ -663,6 +672,25 @@ def aktualizace_db_na_novejsi_verzi(soubor):
 
             # další kontrola verze db
             aktualizace_db_na_novejsi_verzi(soubor)
+
+        elif stara_verze_db < 10:
+            # aktualizace z verze 9 na verzi 10
+            # přidání položky os_cena_obeda do nastavení
+            db.execute("""INSERT INTO nastaveni (volba, hodnota, pozn)
+                    values (?,?,?)""", ('os_cena_obeda', '0', 'Cena doveženého oběda'))
+
+            # přidání sloupce cena_obcerstveni
+            db.execute("""ALTER TABLE zaznamy_os ADD COLUMN cena_obcerstveni REAL NOT NULL DEFAULT 0;""")
+            # přidání sloupce obed
+            db.execute("""ALTER TABLE zaznamy_os ADD COLUMN obed NUMERIC NOT NULL DEFAULT 0;""")
+
+            # nastavení správného čísla aktuální verze
+            db.execute("""UPDATE nastaveni SET hodnota=? WHERE volba=?""", (10, "verze"))
+            db.commit()
+
+            # další kontrola verze db
+            aktualizace_db_na_novejsi_verzi(soubor)
+
 
 
 
