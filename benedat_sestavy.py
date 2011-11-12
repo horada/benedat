@@ -60,23 +60,35 @@ class Sestavy():
         data_zaznamy_z_db = self.db.vypis_zaznamy_os(id_klienta = id_klienta, 
                 mesic = mesic, rok = rok, 
                 razeni='datum')
+        # 0   1           2      3       4       5      6      7            8                 9
+        # id, id_klienta, datum, cas_od, cas_do, dovoz, odvoz, prenocovani, cena_obcerstveni, obed
         data_zaznamy = []
         for z in data_zaznamy_z_db:
-            zaznam = [z[2], z[3], z[4], rozdil_casu(z[3], z[4]), z[5], z[6], z[7]]
+            # 0      1       2       3            4      5      6            7                 8
+            # datum, cas_od, cas_do, rozdil_casu, dovoz, odvoz, prenocovani, cena_obcerstveni, obed
+            zaznam = [z[2], z[3], z[4], rozdil_casu(z[3], z[4]), z[5], z[6], z[7], z[8], z[9]]
             data_zaznamy.append(zaznam)
         
-        # souhrn [pocet_hodin, cena_os, pocet_cest, cena_cest, pocet_prenocovani, cena_prenocovani, celkem]
-        data_souhrn = [0,0,0,0,0,0,0]
+        #         0            1        2           3          4                  5                 6                 7            8           9
+        # souhrn [pocet_hodin, cena_os, pocet_cest, cena_cest, pocet_prenocovani, cena_prenocovani, cena_obcerstveni, pocet_obedu, cena_obedu, celkem]
+        data_souhrn = [0,0,0,0,0,0,0,0,0,0]
         for z in data_zaznamy:
             data_souhrn[0] += z[3]  # počet hodin
             data_souhrn[2] += z[4] + z[5] # počet cest
             data_souhrn[4] += z[6] # počet přenocování
+            data_souhrn[6] += z[7] # součet ceny občerstvení
+            data_souhrn[7] += z[8] # počet obědů
         # cena os
         data_souhrn[1] = self.cena_os(data_souhrn[0], id_klienta)
+        # cena cest
         data_souhrn[3] = data_souhrn[2] * self.cena_cesty(id_klienta)
+        # cena přenocování
         data_souhrn[5] = data_souhrn[4] * int(self.db.nastaveni('os_cena_prenocovani')[1])
+        # cena obědů
+        data_souhrn[8] = data_souhrn[7] * float(self.db.nastaveni('os_cena_obeda')[1])
         # celková cena (zaokrouhlená na koruny)
-        data_souhrn[6] = round(data_souhrn[1] + data_souhrn[3] + data_souhrn[5], 0)
+        data_souhrn[9] = round(data_souhrn[1] + data_souhrn[3] + data_souhrn[5] + \
+                data_souhrn[6] + data_souhrn[8], 0)
 
         # data_dalsi [dovoz, odvoz]
         data_dalsi = [0, 0]

@@ -45,7 +45,7 @@ class Sestava():
     okraje = 30
     # mezery
     mezera = 15
-    sirka_sloupce =70
+    sirka_sloupce =55
 
     # konstruktor (vytvoření nové sestavy, nastavení implicitních hodnot)
     def __init__(self,soubor="sestava.pdf"):
@@ -341,7 +341,7 @@ class Sestava():
         self._x = Sestava.okraje + 2*Sestava.mezera
         self._y = self._y + self.radek
         sloupec = 0
-        for popisek in ('datum', 'čas od', 'čas do', 'celkem', 'dovoz', 'odvoz', 'přespání'):
+        for popisek in ('datum', 'čas od', 'čas do', 'celkem', 'dovoz', 'odvoz', 'občerst.', 'oběd', 'přespání'):
             self.c.text(x(self._x + sloupec * Sestava.sirka_sloupce), y(self._y), popisek)
             sloupec += 1
 
@@ -349,12 +349,12 @@ class Sestava():
         self.c.line_width(0.5)
         self._x = Sestava.okraje + Sestava.mezera
 #        self._y = self.adresa_y + tmp_vyska_adresy + Sestava.mezera
-        for i in range(6):
+        for i in range(8):
             self.c.move_to(x(self._x + (i+1) * Sestava.sirka_sloupce), y(self._y+5))
             self.c.line_to(x(self._x + (i+1) * Sestava.sirka_sloupce), y(self._y-10))
             self.c.path_paint('s')
         self.c.move_to(x(self._x), y(self._y+5))
-        self.c.line_to(x(self._x + 7 * Sestava.sirka_sloupce), y(self._y+5))
+        self.c.line_to(x(self._x + 9 * Sestava.sirka_sloupce), y(self._y+5))
         self.c.path_paint('s')
 
         # výpis záznamů
@@ -362,7 +362,8 @@ class Sestava():
         self._x = Sestava.okraje + 2 * Sestava.mezera
         self._y = self._y + 1.2 * self.radek
         if self.__zaznamy:
-            for datum, od, do, celkem, dovoz, odvoz, prenocovani in self.__zaznamy:
+            for datum, od, do, celkem, dovoz, odvoz, prenocovani, \
+                    cena_obcerstveni, obed in self.__zaznamy:
                 self.c.text(x(self._x + 0 * Sestava.sirka_sloupce + 
                     (40 - self.regular(12).advance(bcas.preved_datum(datum,0)))),
                     y(self._y), bcas.preved_datum(datum,0))
@@ -377,50 +378,67 @@ class Sestava():
                     self.c.text(x(self._x + 4 * Sestava.sirka_sloupce), y(self._y), 'x')
                 if odvoz:
                     self.c.text(x(self._x + 5 * Sestava.sirka_sloupce), y(self._y), 'x')
+                if cena_obcerstveni:
+                    self.c.text(x(self._x + 6 * Sestava.sirka_sloupce), y(self._y), \
+                            str("%0.2f kč" % cena_obcerstveni))
+                if obed:
+                    self.c.text(x(self._x + 7 * Sestava.sirka_sloupce), y(self._y), 'x')
                 if prenocovani: 
-                    self.c.text(x(self._x + 6 * Sestava.sirka_sloupce), y(self._y), 'x')
+                    self.c.text(x(self._x + 8 * Sestava.sirka_sloupce), y(self._y), 'x')
                 self._y = self._y + self.m_radek
 
         # dolní oddělovací čára
         self._x = Sestava.okraje + Sestava.mezera
         self.c.move_to(x(self._x), y(self._y-self.radek+5))
-        self.c.line_to(x(self._x + 7 * Sestava.sirka_sloupce), y(self._y-self.radek+5))
+        self.c.line_to(x(self._x + 9 * Sestava.sirka_sloupce), y(self._y-self.radek+5))
         self.c.path_paint('s')
 
         # výpis souhrnu
         # popisky
         self.c.text_font(self.bold(10))
-        self._x = Sestava.okraje + 2*Sestava.mezera + 2*self.sirka_sloupce
+        self._x = Sestava.okraje + 2*Sestava.mezera + 3*self.sirka_sloupce
         self._y = self._y + Sestava.mezera
         self.c.text(x(self._x + 0 * Sestava.sirka_sloupce), y(self._y), "položka")
         self.c.text(x(self._x + 2 * Sestava.sirka_sloupce), y(self._y), "celkem")
-        self.c.text(x(self._x + 3 * Sestava.sirka_sloupce), y(self._y), "cena celkem")
+        self.c.text(x(self._x + 4 * Sestava.sirka_sloupce), y(self._y), "cena celkem")
         # hodnoty
         self.c.text_font(self.regular(12))
         self._y += self.m_radek
         self.c.text(x(self._x + 0 * Sestava.sirka_sloupce), y(self._y), "odlehčovací služba")
         self.c.text(x(self._x + 2 * Sestava.sirka_sloupce), y(self._y), str(round(self.__souhrn[0],2))+" hodin")
-        self.c.text(x(self._x + 3 * Sestava.sirka_sloupce + 
+        self.c.text(x(self._x + 4 * Sestava.sirka_sloupce + 
                     (50 - self.regular(12).advance(str('%0.2f' % self.__souhrn[1])+" kč"))),
                     y(self._y), str('%0.2f' % self.__souhrn[1])+" kč")
         self._y += self.m_radek
         self.c.text(x(self._x + 0 * Sestava.sirka_sloupce), y(self._y), "cesty")
         self.c.text(x(self._x + 2 * Sestava.sirka_sloupce), y(self._y), str(self.__souhrn[2]))
-        self.c.text(x(self._x + 3 * Sestava.sirka_sloupce + 
+        self.c.text(x(self._x + 4 * Sestava.sirka_sloupce + 
                     (50 - self.regular(12).advance(str('%0.2f' % self.__souhrn[3])+" kč"))), 
                     y(self._y), str('%0.2f' % self.__souhrn[3])+" kč")
         self._y += self.m_radek
+        self.c.text(x(self._x + 0 * Sestava.sirka_sloupce), y(self._y), "občerstvení")
+#        self.c.text(x(self._x + 2 * Sestava.sirka_sloupce), y(self._y), str(self.__souhrn[4]))
+        self.c.text(x(self._x + 4 * Sestava.sirka_sloupce + 
+                    (50 - self.regular(12).advance(str('%0.2f' % self.__souhrn[6])+" kč"))), 
+                    y(self._y), str('%0.2f' % self.__souhrn[6])+" kč")
+        self._y += self.m_radek
+        self.c.text(x(self._x + 0 * Sestava.sirka_sloupce), y(self._y), "obědy")
+        self.c.text(x(self._x + 2 * Sestava.sirka_sloupce), y(self._y), str(self.__souhrn[7]))
+        self.c.text(x(self._x + 4 * Sestava.sirka_sloupce + 
+                    (50 - self.regular(12).advance(str('%0.2f' % self.__souhrn[8])+" kč"))), 
+                    y(self._y), str('%0.2f' % self.__souhrn[8])+" kč")
+        self._y += self.m_radek
         self.c.text(x(self._x + 0 * Sestava.sirka_sloupce), y(self._y), "přenocování")
         self.c.text(x(self._x + 2 * Sestava.sirka_sloupce), y(self._y), str(self.__souhrn[4]))
-        self.c.text(x(self._x + 3 * Sestava.sirka_sloupce + 
+        self.c.text(x(self._x + 4 * Sestava.sirka_sloupce + 
                     (50 - self.regular(12).advance(str('%0.2f' % self.__souhrn[5])+" kč"))), 
                     y(self._y), str('%0.2f' % self.__souhrn[5])+" kč")
         self.c.text_font(self.bold(12))
         self._y += self.m_radek
         self.c.text(x(self._x + 0 * Sestava.sirka_sloupce), y(self._y), "celkem")
-        self.c.text(x(self._x + 3 * Sestava.sirka_sloupce + 
-                    (50 - self.bold(12).advance(str('%0.2f' % self.__souhrn[6])+" kč"))), 
-                    y(self._y), str('%0.2f' % self.__souhrn[6])+" kč")
+        self.c.text(x(self._x + 4 * Sestava.sirka_sloupce + 
+                    (50 - self.bold(12).advance(str('%0.2f' % self.__souhrn[9])+" kč"))), 
+                    y(self._y), str('%0.2f' % self.__souhrn[9])+" kč")
 
         self._x = Sestava.okraje + 1 * Sestava.mezera
         self._y = self._y + 2 * Sestava.mezera
