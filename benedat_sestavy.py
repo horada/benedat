@@ -274,18 +274,21 @@ class Sestavy():
 #        print data_souhrn
 #        print data_dalsi
         # "Příjmení", "Jméno", "Období", "Kód dokladu", "Počet hodin OS", "Cena za OS", 
-        #                     "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty",
-        #                     "Přenocování", "Cena za přenocování", "Cena celkem",
-        #                     "Vzdálenost v km", "OS paušál", "OS paušál hodin", "OS cena do", 
-        #                     "OS cena mezi", "OS cena nad", "OS dolní hranice počtu hodin", 
-        #                     "OS horní hranice počtu hodin", "Cena za litr"
+        # "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty",
+        # "Přenocování", "Cena za přenocování", "Cena občerstvení", 
+        # "Počet obědů", "Cena obědů", "Cena celkem",
+        # "Vzdálenost v km", "OS paušál", "OS paušál hodin", "OS cena do", 
+        # "OS cena mezi", "OS cena nad", "OS dolní hranice počtu hodin", 
+        # "OS horní hranice počtu hodin", "Cena za litr"
         dolni_hranice_poctu_hodin = int(self.db.nastaveni('dolni_hranice_poctu_hodin')[1])
         horni_hranice_poctu_hodin = int(self.db.nastaveni('horni_hranice_poctu_hodin')[1])
         cestovne_os_cena_za_litr = float(self.db.nastaveni('cestovne_os_cena_za_litr')[1])
+        os_cena_obeda = float(self.db.nastaveni('os_cena_obeda')[1])
         self.csv.zapis_radek((data_klient[1], data_klient[2], str(mesic)+"/"+str(rok), kod, data_souhrn[0], data_souhrn[1],
             data_dalsi[0], data_dalsi[1], data_souhrn[2], data_souhrn[3],
-            data_souhrn[4], data_souhrn[5], data_souhrn[9], 
-            data_klient[10], data_klient[11], data_klient[15], data_klient[12], data_klient[13], data_klient[14], dolni_hranice_poctu_hodin, horni_hranice_poctu_hodin, cestovne_os_cena_za_litr))
+            data_souhrn[4], data_souhrn[5], data_souhrn[6], data_souhrn[7], data_souhrn[8], data_souhrn[9], 
+            data_klient[10], data_klient[11], data_klient[15], data_klient[12], data_klient[13], data_klient[14],
+            dolni_hranice_poctu_hodin, horni_hranice_poctu_hodin, cestovne_os_cena_za_litr, os_cena_obeda))
 
 
         
@@ -313,10 +316,11 @@ class Sestavy():
         # názvy sloupců
         self.csv.zapis_radek(("Příjmení", "Jméno", "Období", "Kód dokladu", "Počet hodin OS", "Cena za OS", 
                              "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty",
-                             "Přenocování", "Cena za přenocování", "Cena celkem",
+                             "Přenocování", "Cena za přenocování", "Cena občerstvení", 
+                             "Počet obědů", "Cena obědů", "Cena celkem",
                              "Vzdálenost v km", "OS paušál", "OS paušál hodin", "OS cena do", 
                              "OS cena mezi", "OS cena nad", "OS dolní hranice počtu hodin", 
-                             "OS horní hranice počtu hodin", "Cena za litr"))
+                             "OS horní hranice počtu hodin", "Cena za litr", "Cena oběda"))
         
         # vyplnění sestavy
         self.cast_sestavy_pdf(s, id_klienta, mesic, rok,datum_vystaveni=datum_vystaveni,datum_platby=datum_platby,vystavil=vystavil)
@@ -348,10 +352,11 @@ class Sestavy():
         # názvy sloupců
         self.csv.zapis_radek(("Příjmení", "Jméno", "Období", "Kód dokladu", "Počet hodin OS", "Cena za OS", 
                              "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty",
-                             "Přenocování", "Cena za přenocování", "Cena celkem",
+                             "Přenocování", "Cena za přenocování", "Cena občerstvení", 
+                             "Počet obědů", "Cena obědů", "Cena celkem",
                              "Vzdálenost v km", "OS paušál", "OS paušál hodin", "OS cena do", 
                              "OS cena mezi", "OS cena nad", "OS dolní hranice počtu hodin", 
-                             "OS horní hranice počtu hodin", "Cena za litr"))
+                             "OS horní hranice počtu hodin", "Cena za litr", "Cena oběda"))
 
 
 
@@ -391,10 +396,11 @@ class Sestavy():
         # názvy sloupců
         self.csv.zapis_radek(("Příjmení", "Jméno", "Období", "Kód dokladu", "Počet hodin OS", "Cena za OS", 
                              "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty",
-                             "Přenocování", "Cena za přenocování", "Cena celkem",
+                             "Přenocování", "Cena za přenocování", "Cena občerstvení", 
+                             "Počet obědů", "Cena obědů", "Cena celkem",
                              "Vzdálenost v km", "OS paušál", "OS paušál hodin", "OS cena do", 
                              "OS cena mezi", "OS cena nad", "OS dolní hranice počtu hodin", 
-                             "OS horní hranice počtu hodin", "Cena za litr"))
+                             "OS horní hranice počtu hodin", "Cena za litr", "Cena oběda"))
 
 
 
