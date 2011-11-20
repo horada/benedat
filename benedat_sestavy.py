@@ -261,7 +261,7 @@ class Sestavy():
                 datum_vystaveni=bcas.preved_datum(datum_vystaveni,2), datum_platby=bcas.preved_datum(datum_platby,2),
                 text=souhrnny_text,
                 jmeno=data_klient[1] + " " + data_klient[2], adresa=data_klient[3],
-                cena=str(data_souhrn[6]))
+                cena=str(data_souhrn[9]))
 
         # Vyplnění dat do csv
 #        print kod
@@ -273,15 +273,18 @@ class Sestavy():
 #        print data_klient
 #        print data_souhrn
 #        print data_dalsi
-        #"Příjmení", "Jméno", "Období", "Kód dokladu", "Počet hodin OS", "Cena za OS", 
-        # "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty", "Cena celkem",
-        # "Vzdálenost v km", "OS paušál", "OS paušál hodin", "OS cena do", "OS cena mezi", "OS cena nad", "OS dolní hranice počtu hodin", "OS horní hranice počtu hodin", "Cena za litr"
+        # "Příjmení", "Jméno", "Období", "Kód dokladu", "Počet hodin OS", "Cena za OS", 
+        #                     "Dovozů", "Odvozů", "Cest celkem", "Cena za cesty",
+        #                     "Přenocování", "Cena za přenocování", "Cena celkem",
+        #                     "Vzdálenost v km", "OS paušál", "OS paušál hodin", "OS cena do", 
+        #                     "OS cena mezi", "OS cena nad", "OS dolní hranice počtu hodin", 
+        #                     "OS horní hranice počtu hodin", "Cena za litr"
         dolni_hranice_poctu_hodin = int(self.db.nastaveni('dolni_hranice_poctu_hodin')[1])
         horni_hranice_poctu_hodin = int(self.db.nastaveni('horni_hranice_poctu_hodin')[1])
         cestovne_os_cena_za_litr = float(self.db.nastaveni('cestovne_os_cena_za_litr')[1])
         self.csv.zapis_radek((data_klient[1], data_klient[2], str(mesic)+"/"+str(rok), kod, data_souhrn[0], data_souhrn[1],
             data_dalsi[0], data_dalsi[1], data_souhrn[2], data_souhrn[3],
-            data_souhrn[4], data_souhrn[5], data_souhrn[6], 
+            data_souhrn[4], data_souhrn[5], data_souhrn[9], 
             data_klient[10], data_klient[11], data_klient[15], data_klient[12], data_klient[13], data_klient[14], dolni_hranice_poctu_hodin, horni_hranice_poctu_hodin, cestovne_os_cena_za_litr))
 
 
