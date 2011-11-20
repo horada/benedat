@@ -30,8 +30,8 @@
 
 try:
   import jagpdf
-except ImportError:
-  pass
+except ImportError as err:
+  print "ERROR: %s" % err
 
 import benedat_cas as bcas
 
@@ -422,7 +422,7 @@ class Sestava():
                     (50 - self.regular(12).advance(str('%0.2f' % self.__souhrn[6])+" kč"))), 
                     y(self._y), str('%0.2f' % self.__souhrn[6])+" kč")
         self._y += self.m_radek
-        self.c.text(x(self._x + 0 * Sestava.sirka_sloupce), y(self._y), "obědy")
+        self.c.text(x(self._x + 0 * Sestava.sirka_sloupce), y(self._y), "poskytnuté obědy")
         self.c.text(x(self._x + 2 * Sestava.sirka_sloupce), y(self._y), str(self.__souhrn[7]))
         self.c.text(x(self._x + 4 * Sestava.sirka_sloupce + 
                     (50 - self.regular(12).advance(str('%0.2f' % self.__souhrn[8])+" kč"))), 

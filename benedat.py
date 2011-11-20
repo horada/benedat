@@ -37,6 +37,7 @@ try:
     import gtk
     import gtk.glade
 except:
+    print "ERROR: Import module gtk or gtk.glade failed."
     sys.exit(1)
 
 import os
