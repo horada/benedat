@@ -6,6 +6,58 @@ Module for work with configuration (load and safe to configuration file)
 
 Class Config behave as singleton, it is necessary to obtain an instance
 through method Config.getInstance().
+
+VARIABLES:
+  CONFIG_FILES:
+    list of possible places default configuration files
+    (next file overwrite previous set configuration).
+    Must be set (or modified) before creating object of Config() class.
+  
+  CONFIG_SECTIONS:
+    list of sections in configuration file
+    Must be set (or modified) before creating object of Config() class.
+
+FUNCTIONS:
+  setConfigFiles(files):
+    Function to set variable CONFIG_FILES.
+    (list of configuration files)
+  
+  setConfigSections(sections):
+    Function to set variable CONFIG_SECTIONS.
+    (list of configuration sections)
+
+CLASSES:
+  Config():
+    Class Config serves to access configuration saved in configuration file.
+    Class Config behave as singleton, it is necessary to obtain an instance 
+    through method Config.getInstance().
+    __init__():
+      Not directly called.
+    loadFile(file):
+      Load configuration file (append new and overwrite existing options).
+    saveFile(file=False):
+      Save configuration to 'file', if 'file' is not defined, 
+      last item in CONFIG_FILES is used.
+    get(section, option, default):
+      Get value of 'option' in 'section'. 
+      If 'value' don't exists, returns 'default'. 
+    getInt(section, option, default=None, translation=None):
+      Get value of 'option' in 'section' converted to integer.
+      If 'value' don't exists or not possible to convert, returns 'default'.
+      For translate value to int is possible to use dictionary in form:
+          {'ONE':1, 'TWO':2, 'THREE':3}
+    more from:http://docs.python.org/library/configparser.html
+    set(section, option, value):
+      If the given section exists, set the given option to the specified value;
+      otherwise raise NoSectionError. value must be a string (str or unicode);
+      if not, TypeError is raised.
+
+
+
+
+
+
+
 """
 
 #
@@ -82,7 +134,7 @@ class Config(ConfigParser.SafeConfigParser, Singleton):
         # load configuration file
         self.read(file)
 
-    def saveFile(self, file=False):
+    def saveFile(self, file=None):
         """
         Save configuration to 'file', if 'file' is not defined, last item of 
         CONFIG_FILES is used.
@@ -136,76 +188,5 @@ class Config(ConfigParser.SafeConfigParser, Singleton):
 
 
 
-if __name__ == '__main__':
-    # unit testing 
-    import unittest
-    import tempfile
 
-    class PublicInterfaceTest(unittest.TestCase):
-        def setUp(self):
-            # create temporary configuration file
-            self.tmp_file = tempfile.NamedTemporaryFile(prefix='test_tmp_conf_', 
-                    suffix='.conf')
-            self.tmp_file.file.write('''[testing]\n'''
-                                    '''opt1=Option 1\n'''
-                                    '''opt2=Option 2\n'''
-                                    '''# coment\n'''
-                                    '''opt3=Option 3\n'''
-                                    '''opt_int=12\n'''
-                                    '''opt_dict=SEVEN\n'''
-                                    '''\n'''
-                                    '''[testing2]\n'''
-                                    '''opt3=Option 3 section 2\n'''
-                                    '''opt4=Option 4\n'''
-                                    '''opt5=45\n'''
-                                    '''\n'''
-                                    '''\n'''                            
-                                    '''\n''')
-            self.tmp_file.file.close()
-            setConfigFiles(self.tmp_file.name)
-            # sections in testing configuration file
-            setConfigSections(('testing', 'testing2'))
-
-            self.conf = Config.getInstance()
-
-
-        def test_getExistingValues(self):
-            self.assertEqual(self.conf.get('testing', 'opt1'), 'Option 1')
-            self.assertEqual(self.conf.get('testing', 'opt2'), 'Option 2')
-            self.assertEqual(self.conf.get('testing', 'opt3'), 'Option 3')
-            self.assertEqual(self.conf.get('testing2', 'opt3'), 'Option 3 section 2')
-            self.assertEqual(self.conf.get('testing2', 'opt4'), 'Option 4')
-            self.assertEqual(self.conf.get('testing2', 'opt5'), '45')
-        
-        def test_getExistingIntegerValues(self):
-            self.assertEqual(self.conf.getInt('testing', 'opt_int'), 12)
-            self.assertEqual(self.conf.getInt('testing2', 'opt5'), 45)
-
-        def test_getDefaultValues(self):
-            self.assertEqual(self.conf.get('testing', 'not_exist_opt', 'DEFAULT'), 'DEFAULT')
-
-        def test_getDefaultIntegerValues(self):
-            self.assertEqual(self.conf.getInt('testing', 'not_exist_opt2', 5), 5)
-            self.assertEqual(self.conf.getInt('testing', 'opt1', 7), 7)
-
-        def test_getTranslateIntegerValues(self):
-            trans_dict={'ONE':1, 'TWO':2, 'SEVEN':7}
-            self.assertEqual(self.conf.getInt('testing', 'opt_dict', 7, trans_dict), 7)
-
-        def test_setNewOption(self):
-            self.conf.set('testing', 'new_opt', 'NEW')
-            self.assertEqual(self.conf.get('testing', 'new_opt'), 'NEW')
-
-        def test_returnsSameObject(self):
-            tmp=Config.getInstance()
-            self.assertEquals(id(self.conf), id(tmp))
-
-
-        def test_saveConfigurationToFile(self):
-            self.conf.set('testing', 'new_opt', 'NEW')
-            self.conf.saveFile('/tmp/TESTING_CONFIGURATION.conf')
-
-    unittest.main()
-
-
-
+# vim:set tabstop=4:set shiftwidth=4:set softtabstop=4: 

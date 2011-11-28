@@ -4,6 +4,40 @@
 """
 Helpful module for work with date and time.
 
+VARIABLES:
+  DATE_FORMAT_RE:
+    Dictionary with regexp for each possible format of date.
+
+FUNCTIONS:
+  emendYear(year):
+    Emend double digit year to 4 digit.
+      0-49  => 2000 - 2049
+      50-99 => 1950 - 1999
+
+CLASSES:
+  Date():
+    Class to represent and work with date.
+    __init__(arg=None):
+      If arg=None, date is set to today,
+      else to date given via arg (see method set(arg)).
+    __str__():
+      Return date in format '[d]d.[m]m.[yy]yy'.
+      e.g.: '28.11.2011'
+    __repr_():
+      Return "bd_datetime.Date('[d]d.[m]m.[yy]yy')".
+      e.g.: "bd_datetime.Date('28.11.2011')"
+    set(arg):
+      Function to set date from string containing one of 
+      next few representation of date.
+      Values that are not inserted in 'arg', are used from the original value.
+      possible formats:
+        d[d].m[m].[rr]rr
+        d[d]/m[m]/[rr]rr
+        d[d].m[m][.]
+        d[d]/m[m]
+        d[d][.]
+        rrrr-mm-dd
+    
 """
 
 #
@@ -70,6 +104,7 @@ class Date():
     def __init__(self, arg=None):
         # set date to today
         self.date = datetime.date.today()
+        # change date to date given via arg
         if arg:
             self.set(arg)
 
@@ -128,118 +163,6 @@ class Date():
                     month=arg[1], day=arg[2])
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if __name__ == '__main__':
-    # unit testing 
-    import unittest
-
-    class DatetimeFunctionsTest(unittest.TestCase):
-        def setUp(self):
-            pass
-
-        def test_emendYear(self):
-            self.assertEqual(emendYear(2000), 2000)
-            self.assertEqual(emendYear(1999), 1999)
-            self.assertEqual(emendYear(1950), 1950)
-            self.assertEqual(emendYear(2010), 2010)
-            self.assertEqual(emendYear(00), 2000)
-            self.assertEqual(emendYear(49), 2049)
-            self.assertEqual(emendYear(50), 1950)
-            self.assertEqual(emendYear(99), 1999)
-            self.assertEqual(emendYear(11), 2011)
-
-
-    class DatePublicInterfaceTest(unittest.TestCase):
-        def setUp(self):
-            pass
-
-        def test_setToday(self):
-            self.assertEqual(str(Date()),
-                    datetime.date.today().strftime('%d.%m.%Y'))
-
-        def test_setInitialFullDate(self):
-            d = Date('21.6.2011')
-            self.assertEqual(str(d), '21.6.2011')
-
-        def test_setInitialPartialDate(self):
-            d = Date('23.')
-            self.assertEqual(str(d), 
-                    datetime.date.today().strftime('23.%m.%Y'))
-
-        def test_setDateFormat_ddmmrr(self):
-            d = Date()
-            d.set('12.5.2011')
-            self.assertEqual(str(d), '12.5.2011')
-            d.set('1.6.2011')
-            self.assertEqual(str(d), '1.6.2011')
-            d.set('9.12.2010')
-            self.assertEqual(str(d), '9.12.2010')
-            d.set('2.1.1998')
-            self.assertEqual(str(d), '2.1.1998')
-            d.set('12.11.12')
-            self.assertEqual(str(d), '12.11.2012')
-            d.set('1.1.01')
-            self.assertEqual(str(d), '1.1.2001')
-            d.set('9/12/2010')
-            self.assertEqual(str(d), '9.12.2010')
-            d.set('1/1/01')
-            self.assertEqual(str(d), '1.1.2001')
-
-        def test_setDateFormat_ddmm(self):
-            d = Date()
-            d.set('12.5.')
-            self.assertEqual(str(d), 
-                    datetime.date.today().strftime('12.5.%Y'))
-            d.set('12.5')
-            self.assertEqual(str(d), 
-                    datetime.date.today().strftime('12.5.%Y'))
-            d.set('1.2')
-            self.assertEqual(str(d), 
-                    datetime.date.today().strftime('1.2.%Y'))
-            d.set('2.1.')
-            self.assertEqual(str(d), 
-                    datetime.date.today().strftime('2.1.%Y'))
-            d.set('2/1')
-            self.assertEqual(str(d), 
-                    datetime.date.today().strftime('2.1.%Y'))
-
-        def test_setDateFormat_dd(self):
-            d = Date()
-            d.set('12.')
-            self.assertEqual(str(d), 
-                    datetime.date.today().strftime('12.%m.%Y'))
-            d.set('12.')
-            self.assertEqual(str(d), 
-                    datetime.date.today().strftime('12.%m.%Y'))
-            d.set('1.')
-            self.assertEqual(str(d), 
-                    datetime.date.today().strftime('1.%m.%Y'))
-            d.set('2.')
-            self.assertEqual(str(d), 
-                    datetime.date.today().strftime('2.%m.%Y'))
-
-
-
-
-
-    unittest.main()
 
 
 
