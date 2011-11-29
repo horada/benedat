@@ -33,7 +33,8 @@ import sys
 import unittest
 import datetime
 
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath(os.path.join(
+        os.path.split(os.path.abspath(sys.argv[0]))[0],'..')))
 import bd_datetime
 
 

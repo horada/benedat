@@ -29,8 +29,7 @@ FUNCTIONS:
 CLASSES:
   Config():
     Class Config serves to access configuration saved in configuration file.
-    Class Config behave as singleton, it is necessary to obtain an instance 
-    through method Config.getInstance().
+    Class Config can behave as singleton, see function bd_config.getConfig().
     __init__():
       Not directly called.
     loadFile(file):
@@ -51,10 +50,6 @@ CLASSES:
       If the given section exists, set the given option to the specified value;
       otherwise raise NoSectionError. value must be a string (str or unicode);
       if not, TypeError is raised.
-
-
-
-
 
 
 
@@ -85,13 +80,14 @@ CLASSES:
 
 
 import ConfigParser
-from lib.singletonmixin import Singleton
 
 # list of possible places default configuration files
 # (next file overwrite previous set configuration)
 CONFIG_FILES = ('./benedat.conf',)
 # list of sections in configuration file
 CONFIG_SECTIONS = ('default',)
+# variable with actual object of class Config
+__config = None
 
 
 def setConfigFiles(files):
@@ -110,15 +106,23 @@ def setConfigSections(sections):
     global CONFIG_SECTIONS
     CONFIG_SECTIONS=sections
 
+def getConfig():
+    """
+    Get singleton of Config.
+    """
+    global __config
+    if not __config:
+      __config=Config()
+    return __config
 
-class Config(ConfigParser.SafeConfigParser, Singleton):
+
+class Config(ConfigParser.SafeConfigParser):
     """
     Class Config serves to access configuration saved in configuration file.
-    Class Config behave as singleton, it is necessary to obtain an instance 
-    through method Config.getInstance().
+    Class Config can behave as singleton, see function bd_config.getConfig().
     """
     def __init__(self):
-        super(Config, self).__init__()
+        ConfigParser.SafeConfigParser.__init__(self)
 
         # creating necessary sections
         for section in CONFIG_SECTIONS:
@@ -152,7 +156,7 @@ class Config(ConfigParser.SafeConfigParser, Singleton):
         If 'value' don't exists, returns 'default'. 
         """
         try :
-            return super(Config, self).get(section, option)
+            return ConfigParser.SafeConfigParser.get(self, section, option)
         except ConfigParser.NoOptionError:
             # Option don't exists - return default
             return default
@@ -165,7 +169,7 @@ class Config(ConfigParser.SafeConfigParser, Singleton):
             {'ONE':1, 'TWO':2, 'THREE':3}
         """
         try :
-            value = super(Config, self).get(section, option)
+            value = ConfigParser.SafeConfigParser.get(self, section, option)
             return int(value)
         except ConfigParser.NoOptionError:
             # option don't exists - return default

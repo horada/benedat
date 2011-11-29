@@ -33,7 +33,8 @@ import os
 import sys
 import unittest
 import tempfile
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath(os.path.join(
+        os.path.split(os.path.abspath(sys.argv[0]))[0],'..')))
 import bd_config
 
 
@@ -66,7 +67,8 @@ if __name__ == '__main__':
             # sections in testing configuration file
             bd_config.setConfigSections(('testing', 'testing2'))
 
-            self.conf = bd_config.Config.getInstance()
+#            self.conf = bd_config.Config.getInstance()
+            self.conf = bd_config.getConfig()
 
 
         def test_getExistingValues(self):
@@ -97,7 +99,8 @@ if __name__ == '__main__':
             self.assertEqual(self.conf.get('testing', 'new_opt'), 'NEW')
 
         def test_returnsSameObject(self):
-            tmp=bd_config.Config.getInstance()
+#            tmp=bd_config.Config.getInstance()
+            tmp=bd_config.getConfig()
             self.assertEquals(id(self.conf), id(tmp))
 
 
