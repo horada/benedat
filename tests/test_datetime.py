@@ -126,6 +126,89 @@ if __name__ == '__main__':
             self.assertEqual(str(d), 
                     datetime.date.today().strftime('2.%m.%Y'))
 
+
+
+    class TimePublicInterfaceTest(unittest.TestCase):
+        def setUp(self):
+            pass
+
+        def test_setInitialValue(self):
+            self.assertEqual(str(bd_datetime.Time()), "00:00")
+
+        def test_setInitialFullTime(self):
+            t = bd_datetime.Time('9:25')
+            self.assertEqual(str(t), '09:25')
+
+        def test_setInitialPartialTime(self):
+            t = bd_datetime.Time('9')
+            self.assertEqual(str(t), '09:00')
+
+        def test_setTimeFormat_hh_mm(self):
+            t = bd_datetime.Time()
+            t.set('9:15')
+            self.assertEqual(str(t), '09:15')
+            t.set('9,15')
+            self.assertEqual(str(t), '09:15')
+            t.set('9.15')
+            self.assertEqual(str(t), '09:15')
+            t.set('9-15')
+            self.assertEqual(str(t), '09:15')
+            t.set('14:00')
+            self.assertEqual(str(t), '14:00')
+            t.set('14,00')
+            self.assertEqual(str(t), '14:00')
+            t.set('14.00')
+            self.assertEqual(str(t), '14:00')
+            t.set('14-00')
+            self.assertEqual(str(t), '14:00')
+            t.set('14:5')
+            self.assertEqual(str(t), '14:05')
+            t.set('14,5')
+            self.assertEqual(str(t), '14:05')
+            t.set('14.5')
+            self.assertEqual(str(t), '14:05')
+            t.set('14-5')
+            self.assertEqual(str(t), '14:05')
+#            t.set('24:00')
+#            self.assertEqual(str(t), '00:00')
+#            t.set('12:60')
+#            self.assertEqual(str(t), '00:00')
+
+        def test_setTimeFormat_hhmm(self):
+            t = bd_datetime.Time()
+            t.set('915')
+            self.assertEqual(str(t), '09:15')
+            t.set('915')
+            self.assertEqual(str(t), '09:15')
+            t.set('915')
+            self.assertEqual(str(t), '09:15')
+            t.set('915')
+            self.assertEqual(str(t), '09:15')
+            t.set('1400')
+            self.assertEqual(str(t), '14:00')
+            t.set('1400')
+            self.assertEqual(str(t), '14:00')
+            t.set('1400')
+            self.assertEqual(str(t), '14:00')
+            t.set('1400')
+            self.assertEqual(str(t), '14:00')
+#            t.set('2400')
+#            self.assertEqual(str(t), '00:00')
+#            t.set('1260')
+#            self.assertEqual(str(t), '00:00')
+
+        def test_setTimeFormat_hh(self):
+            t = bd_datetime.Time()
+            t.set('12')
+            self.assertEqual(str(t), '12:00')
+            t.set('8')
+            self.assertEqual(str(t), '08:00')
+            t.set('1:')
+            self.assertEqual(str(t), '01:00')
+
+
+
+
     unittest.main()
 
 
