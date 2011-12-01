@@ -62,8 +62,9 @@ if __name__ == '__main__':
             pass
 
         def test_setToday(self):
+            today = datetime.date.today()
             self.assertEqual(str(bd_datetime.Date()),
-                    datetime.date.today().strftime('%d.%m.%Y'))
+                    "%d.%d.%d" % (today.day, today.month, today.year))
 
         def test_setInitialFullDate(self):
             d = bd_datetime.Date('21.6.2011')
