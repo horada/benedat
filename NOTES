@@ -1,0 +1,34 @@
+BeneDat 2
+==============================================================================
+
+Tabulka (a zadávání) záznamů:
+-----------------------------------------------------------------------------
+        | poskytnuté služby   |       | Čas     | Cesty                       |
+Klient  | OS | STD | ChB |... | Datum | od | do | dovoz | odvoz | CH>M | M>CH |
+-----------------------------------------------------------------------------
+
+------------------------------------------
+Občerstvení         |      |              |
+Chotěboř | Modletín | Oběd | Přenocování  | 
+------------------------------------------
+
+
+Rozpis položek:
+  Klient - textové pole s doplňováním + tlačítko s výběrem (jako nyní)
+  Poskytnuté služby - zaškrtávátko (ano/ne) u každé
+                    (možnost zvolit ke každému klientovy "defaultní" nastavení)
+  Datum - jako nyní
+  Čas - jako nyní
+  Cesty - zaškrtávátka (ano/ne)
+  Občerstvení - zaškrtávátka (ano/ne)
+  Oběd - zaškrtávátko (ano/ne)
+  Přenocování - zaškrtávátko (ano/ne)
+
+
+Tabulka (a zadávání) klientů/osob:
+  - Základní políčka stejná jako nyní.
+  - poskytované služby (OS, STD, ChB...) - to co by se předvyplnilo při zadávání záznamů
+  - položky pro výpočet ceny OS
+
+
+
