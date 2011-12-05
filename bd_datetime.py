@@ -257,4 +257,4 @@ class Time():
 
 
 
-# vim:set tabstop=4:set shiftwidth=4:set softtabstop=4: 
+# vim:tabstop=4:shiftwidth=4:softtabstop=4:

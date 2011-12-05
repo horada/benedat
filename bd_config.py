@@ -12,7 +12,7 @@ VARIABLES:
     list of possible places default configuration files
     (next file overwrite previous set configuration).
     Must be set (or modified) before creating object of Config() class.
-  
+
   CONFIG_SECTIONS:
     list of sections in configuration file
     Must be set (or modified) before creating object of Config() class.
@@ -21,7 +21,7 @@ FUNCTIONS:
   setConfigFiles(files):
     Function to set variable CONFIG_FILES.
     (list of configuration files)
-  
+
   setConfigSections(sections):
     Function to set variable CONFIG_SECTIONS.
     (list of configuration sections)
@@ -35,11 +35,11 @@ CLASSES:
     loadFile(file):
       Load configuration file (append new and overwrite existing options).
     saveFile(file=False):
-      Save configuration to 'file', if 'file' is not defined, 
+      Save configuration to 'file', if 'file' is not defined,
       last item in CONFIG_FILES is used.
     get(section, option, default):
-      Get value of 'option' in 'section'. 
-      If 'value' don't exists, returns 'default'. 
+      Get value of 'option' in 'section'.
+      If 'value' don't exists, returns 'default'.
     getInt(section, option, default=None, translation=None):
       Get value of 'option' in 'section' converted to integer.
       If 'value' don't exists or not possible to convert, returns 'default'.
@@ -56,7 +56,7 @@ CLASSES:
 """
 
 #
-# BeneDat - program pro výpočet ceny a vytvoření souhrnu za poskytnuté služby 
+# BeneDat - program pro výpočet ceny a vytvoření souhrnu za poskytnuté služby
 #           klientům občanského sdružení BENEDIKTUS (podpora lidí s postižením)
 # BeneDat - program for prices calculation and summary creation of utilized 
 #           services for clients of Civic association BENEDIKTUS 
@@ -96,7 +96,7 @@ def setConfigFiles(files):
     (list of configuration files)
     """
     global CONFIG_FILES
-    CONFIG_FILES=files
+    CONFIG_FILES = files
 
 def setConfigSections(sections):
     """
@@ -193,4 +193,4 @@ class Config(ConfigParser.SafeConfigParser):
 
 
 
-# vim:set tabstop=4:set shiftwidth=4:set softtabstop=4: 
+# vim:tabstop=4:shiftwidth=4:softtabstop=4:

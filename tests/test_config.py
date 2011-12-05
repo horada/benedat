@@ -114,4 +114,4 @@ if __name__ == '__main__':
 
 
 
-# vim:set tabstop=4:set shiftwidth=4:set softtabstop=4: 
+# vim:tabstop=4:shiftwidth=4:softtabstop=4:
