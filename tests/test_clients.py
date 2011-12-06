@@ -55,7 +55,7 @@ class PublicInterfaceTest(unittest.TestCase):
 
     def test_createPanelledClient(self):
         c = bd_clients.Client("Jan", "Novák", "Veselá Lhota 123\nPetrovice 32132",
-                "321321321", "123123123", "123456789", "Poznámky\n na\nvíce řádků.")
+                "321321321", "123123123", "123456789", "Poznámky\n na\nvíce řádků.", ["OS", "STD"])
         self.assertEqual(c.first_name, "Jan")
         self.assertEqual(c.last_name, "Novák")
         self.assertEqual(c.address, "Veselá Lhota 123\nPetrovice 32132")
@@ -63,7 +63,140 @@ class PublicInterfaceTest(unittest.TestCase):
         self.assertEqual(c.mobile_phone1, "123123123")
         self.assertEqual(c.mobile_phone2, "123456789")
         self.assertEqual(c.notes, "Poznámky\n na\nvíce řádků.")
-        self.assertEqual(c.services, None)
+        self.assertEqual(c.services, ["OS", "STD"])
+
+
+    def test_FirstName(self):
+        c = bd_clients.Client()
+        c.setFirstName("Jan")
+        self.assertEqual(c.getFirstName(), "Jan")
+        c = bd_clients.Client()
+        c.first_name = "Honza"
+        self.assertEqual(c.first_name, "Honza")
+        c = bd_clients.Client()
+        c.setFirstName("Jan")
+        self.assertEqual(c.first_name, "Jan")
+        c = bd_clients.Client()
+        c.setFirstName("Honza")
+        self.assertEqual(c.first_name, "Honza")
+
+    def test_LastName(self):
+        c = bd_clients.Client()
+        c.setLastName("Novák")
+        self.assertEqual(c.getLastName(), "Novák")
+        c = bd_clients.Client()
+        c.last_name = "Nováček"
+        self.assertEqual(c.last_name, "Nováček")
+        c = bd_clients.Client()
+        c.setLastName("Novák")
+        self.assertEqual(c.last_name, "Novák")
+        c = bd_clients.Client()
+        c.setLastName("Nováček")
+        self.assertEqual(c.last_name, "Nováček")
+
+    def test_Address(self):
+        c = bd_clients.Client()
+        c.setAddress("Veselá Lhota 123\nPetrovice 32132")
+        self.assertEqual(c.getAddress(), "Veselá Lhota 123\nPetrovice 32132")
+        c = bd_clients.Client()
+        c.address = "Smutná Lhota 321\nPetrovice 12321"
+        self.assertEqual(c.address, "Smutná Lhota 321\nPetrovice 12321")
+        c = bd_clients.Client()
+        c.setAddress("Veselá Lhota 123\nPetrovice 32132")
+        self.assertEqual(c.address, "Veselá Lhota 123\nPetrovice 32132")
+        c = bd_clients.Client()
+        c.setAddress("Smutná Lhota 321\nPetrovice 12321")
+        self.assertEqual(c.address, "Smutná Lhota 321\nPetrovice 12321")
+
+    def test_Phone(self):
+        c = bd_clients.Client()
+        c.setPhone("321321321")
+        self.assertEqual(c.getPhone(), "321321321")
+        c = bd_clients.Client()
+        c.phone = "111111111"
+        self.assertEqual(c.phone, "111111111")
+        c = bd_clients.Client()
+        c.setPhone("321321321")
+        self.assertEqual(c.phone, "321321321")
+        c = bd_clients.Client()
+        c.setPhone("111111111")
+        self.assertEqual(c.phone, "111111111")
+
+    def test_MobilePhone1(self):
+        c = bd_clients.Client()
+        c.setMobilePhone1("123123123")
+        self.assertEqual(c.getMobilePhone1(), "123123123")
+        c = bd_clients.Client()
+        c.mobile_phone1 = "222222222"
+        self.assertEqual(c.mobile_phone1, "222222222")
+        c = bd_clients.Client()
+        c.setMobilePhone1("123123123")
+        self.assertEqual(c.mobile_phone1, "123123123")
+        c = bd_clients.Client()
+        c.setMobilePhone1("222222222")
+        self.assertEqual(c.mobile_phone1, "222222222")
+
+    def test_MobilePhone2(self):
+        c = bd_clients.Client()
+        c.setMobilePhone2("123456789")
+        self.assertEqual(c.getMobilePhone2(), "123456789")
+        c = bd_clients.Client()
+        c.mobile_phone2 = "333333333"
+        self.assertEqual(c.mobile_phone2, "333333333")
+        c = bd_clients.Client()
+        c.setMobilePhone2("123456789")
+        self.assertEqual(c.mobile_phone2, "123456789")
+        c = bd_clients.Client()
+        c.setMobilePhone2("333333333")
+        self.assertEqual(c.mobile_phone2, "333333333")
+
+    def test_Notes(self):
+        c = bd_clients.Client()
+        c.setNotes("Poznámky\n na\nvíce řádků.")
+        self.assertEqual(c.getNotes(), "Poznámky\n na\nvíce řádků.")
+        c = bd_clients.Client()
+        c.notes = "Poznámka\nna dva řádky."
+        self.assertEqual(c.notes, "Poznámka\nna dva řádky.")
+        c = bd_clients.Client()
+        c.setNotes("Poznámky\n na\nvíce řádků.")
+        self.assertEqual(c.notes, "Poznámky\n na\nvíce řádků.")
+        c = bd_clients.Client()
+        c.setNotes("Poznámka\nna dva řádky.")
+        self.assertEqual(c.notes, "Poznámka\nna dva řádky.")
+
+    def test_Services(self):
+        c = bd_clients.Client()
+        c.setServices(["OS", "STD"])
+        self.assertEqual(c.getServices(), ["OS", "STD"])
+        c = bd_clients.Client()
+        c.services = ["OS"]
+        self.assertEqual(c.services, ["OS"])
+        c = bd_clients.Client()
+        c.setServices(["OS", "STD"])
+        self.assertEqual(c.services, ["OS", "STD"])
+        c = bd_clients.Client()
+        c.setServices(["OS"])
+        self.assertEqual(c.services, ["OS"])
+        
+        c = bd_clients.Client(services=["OS", "STD"])
+        self.assertTrue(c.containsService("OS"))
+        self.assertTrue(c.containsService("STD"))
+        self.assertFalse(c.containsService("AAA"))
+        self.assertFalse(c.containsService("BBB"))
+
+        c.addService("AAA")
+        self.assertTrue(c.containsService("AAA"))
+        c.removeService("AAA")
+        self.assertFalse(c.containsService("AAA"))
+
+        c.addService("AAA")
+        c.addService("AAA")
+        self.assertTrue(c.containsService("AAA"))
+        c.removeService("AAA")
+        c.removeService("AAA")
+        self.assertFalse(c.containsService("AAA"))
+
+
 
 
 

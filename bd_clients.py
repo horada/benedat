@@ -43,14 +43,14 @@ class Client():
     def __init__(self, first_name=None, last_name=None, address=None, 
             phone=None, mobile_phone1=None, mobile_phone2=None, 
             notes=None, services=None):
-        self.first_name = first_name
-        self.last_name = last_name
-        self.address = address
-        self.phone = phone
-        self.mobile_phone1 = mobile_phone1
-        self.mobile_phone2 = mobile_phone2
-        self.notes = notes
-        self.services = services
+        self.setFirstName(first_name)
+        self.setLastName(last_name)
+        self.setAddress(address)
+        self.setPhone(phone)
+        self.setMobilePhone1(mobile_phone1)
+        self.setMobilePhone2(mobile_phone2)
+        self.setNotes(notes)
+        self.setServices(services)
 
     def getFirstName(self):
         return self.__first_name
@@ -99,6 +99,29 @@ class Client():
     def setServices(self, value):
         self.__services = value
     services = property(getServices, setServices)
+
+    def containsService(self, service):
+        """
+        Return True if client's services contains 'service'.
+        """
+        return service in self.__services
+
+    def addService(self, service):
+        """
+        Add 'service' to services (if it still does not contain).
+        """
+        if not self.containsService(service):
+            self.__services.append(service)
+
+    def removeService(self, service):
+        """
+        Remove 'service' from services.
+        """
+        if self.containsService(service):
+            self.__services.remove(service)
+
+
+
 
 
 
