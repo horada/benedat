@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 """
-Helpful module for work with clients.
+Helpful module for work with database.
 
 VARIABLES:
 
@@ -40,6 +40,8 @@ VERSION_DB = 0
 import sqlite3
 import os
 
+from bd_exceptions import *
+
 
 # variable with actual object of class Db
 __db = None
@@ -56,6 +58,7 @@ def getDb(db_file=None, new=False):
       __db=Db(db_file=db_file, new=new)
     return __db
 
+
 class Db():
     def __init__(self, db_file, new=False):
         """
@@ -63,7 +66,9 @@ class Db():
         If 'new'=True, old file is removed and new created.
         """
         # variable for database connection
-        self.__dbc
+        self.__dbcon = None
+        # variable for connection cursor 
+        self.__dbc = None
         
         # if new = True, remove old file
         if new and os.path.isfile(db_file):
@@ -79,8 +84,57 @@ class Db():
         """
         Closing database on exit.
         """
-        if type(self.__dbc) == sqlite3.Connection:
+        if type(self.__dbc) == sqlite3.Cursor:
             self.__dbc.close()
+        if type(self.__dbcon) == sqlite3.Connection:
+            self.__dbcon.close()
+    
+
+    def create_database(self, db_file):
+        """
+        Create new database and insert initial data.
+        """
+        # create database file
+        try:
+            self.__dbcon = sqlite3.connect(db_file)
+            self.__dbc = self.__dbcon.cursor()
+            self.__dbcon.text_factory = lambda x: unicode(x, "utf-8", "ignore")
+        except sqlite3.OperationalError as e:
+            raise bdFileError("Nemohu vytvořit soubor %s! (%s)" % (db_file, e))
+
+        # create database schema
+        try:
+            # create configuration table 
+            self.__dbc.execute("""
+                CREATE TABLE configuration(
+                    name TEXT NOT NULL,
+                    value TEXT,
+                    note TEXT, 
+                    PRIMARY KEY (name)
+                    );                    
+            """
+            )
+            self.__dbc.commit()
+        except sqlite3.Error, e:
+            raise bdDbError("Problém s vytvořením databázové struktury.")
+
+        # insert initial schema
+        try:
+            pass
+        except sqlite3.Error, e:
+            raise bdDbError("Problém s vložením výchozího nastavení.")
+
+    
+    def open_database(self, db_file):
+        # open database file
+        try:
+            self.__dbcon = sqlite3.connect(db_file)
+            self.__dbc = self.__dbcon.cursor()
+            self.__dbcon.text_factory = lambda x: unicode(x, "utf-8", "ignore")
+        except sqlite3.OperationalError as e:
+            raise bdFileError("Nemohu otevřít soubor %s! (%s)" % (db_file, e))
+        # TODO: ověření db
+
 
 
 
@@ -90,4 +144,4 @@ class Db():
 
 
 # vim:tabstop=4:shiftwidth=4:softtabstop=4:
-???
+# eof
