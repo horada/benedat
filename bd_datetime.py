@@ -196,15 +196,39 @@ class Time():
     def __init__(self, arg=None):
         # default time is 00:00 
         self.time = datetime.time()
+        # defines if 00:00 means 24:00
+        self.midnight = False
         if arg:
             self.set(arg)
 
     def __str__(self):
         #return "%d:%0.2d" % (self.time.hour, self.time.minute) 
-        return self.time.strftime('%H:%M') 
+        if self.midnight:
+            return "24:00"
+        else:
+            return self.time.strftime('%H:%M') 
 
     def __repr__(self):
-        return "%s('%s')" % (self.__class__, self.time.strftime('%H:%M'))
+        if self.midnight:
+            return "%s('%s')" % (self.__class__, "24:00")
+        else:
+            return "%s('%s')" % (self.__class__, self.time.strftime('%H:%M'))
+
+    def __add__(a, b):
+        """
+        Implementation of + operator. (Return number of minutes.)
+        """
+#        print a
+#        print b
+        return TimePeriod(a.toMinutes() + b.toMinutes())
+
+    def __sub__(a, b):
+        """
+        Implementation of - operator. (Return number of minutes.)
+        """
+#        print a
+#        print b
+        return TimePeriod(a.toMinutes() - b.toMinutes())
 
     def set(self, arg):
         """
@@ -220,16 +244,84 @@ class Time():
         if TIME_FORMAT_RE["hh:mm"].match(arg):
             arg = re.sub('[:.,-]', ':', arg)
             arg = map(int, arg.split(':'))
-            self.time = self.time.replace(hour=arg[0], minute=arg[1])
+            hour = arg[0]
+            minute = arg[1]
+            if hour == 24 and minute == 0:
+                self.midnight = True
+                hour = 0
+            else:
+                self.midnight = False
+            self.time = self.time.replace(hour=hour, minute=minute)
 
         elif TIME_FORMAT_RE["hhmm"].match(arg):
             arg = map(int, [arg[:-2], arg[-2:]])
-            self.time = self.time.replace(hour=arg[0], minute=arg[1])
+            hour = arg[0]
+            minute = arg[1]
+            if hour == 24 and minute == 0:
+                self.midnight = True
+                hour = 0
+            else:
+                self.midnight = False
+            self.time = self.time.replace(hour=hour, minute=minute)
 
         elif TIME_FORMAT_RE["hh"].match(arg):
             arg = re.sub('[:.,-]', ':', arg)
             arg = map(int, filter(None, arg.split(':')))
-            self.time = self.time.replace(hour=arg[0], minute=0)
+            hour = arg[0]
+            if hour == 24:
+                self.midnight = True
+                hour = 0
+            else:
+                self.midnight = False
+            self.time = self.time.replace(hour=hour, minute=0)
+
+    def toMinutes(self):
+        """
+        Return number of minutes (int) from 00:00. 
+        (0h - 24h => 0m - 1440m)
+        """
+        if self.midnight:
+            return 24 * 60
+        else:
+            return int(self.time.hour * 60 + self.time.minute)
+
+    def fromMinutes(self, value):
+        """
+        Set time to time from minutes from 00:00
+        """
+        hour = int(value)/60
+        minute = value%60
+        if hour == 24 and minute == 0:
+            self.midnight = True
+            hour = 0
+        else:
+            self.midnight = False
+        self.time = datetime.time(hour,minute)
+
+class TimePeriod():
+    """
+    Representation of time period.
+    """
+    def __init__(self, minutes):
+        """
+        Difference input in minutes.
+        self.value is in minutes.
+        """
+        self.value = minutes
+
+    def __str__(self):
+        hours = int(self.value) / 60
+        minutes = self.value % 60
+        return "%s:%s" % (hours, minutes)
+
+    def __add__(a, b):
+        return TimePeriod(a.value + b.value)
+
+    def __sub__(a, b):
+        return TimePeriod(a.value - b.value)
+
+
+
 
 
 

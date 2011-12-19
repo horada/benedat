@@ -167,8 +167,8 @@ class TimePublicInterfaceTest(unittest.TestCase):
         self.assertEqual(str(t), '14:05')
         t.set('14-5')
         self.assertEqual(str(t), '14:05')
-#            t.set('24:00')
-#            self.assertEqual(str(t), '00:00')
+        t.set('24:00')
+        self.assertEqual(str(t), '24:00')
 #            t.set('12:60')
 #            self.assertEqual(str(t), '00:00')
 
@@ -190,8 +190,8 @@ class TimePublicInterfaceTest(unittest.TestCase):
         self.assertEqual(str(t), '14:00')
         t.set('1400')
         self.assertEqual(str(t), '14:00')
-#            t.set('2400')
-#            self.assertEqual(str(t), '00:00')
+        t.set('2400')
+        self.assertEqual(str(t), '24:00')
 #            t.set('1260')
 #            self.assertEqual(str(t), '00:00')
 
@@ -203,6 +203,68 @@ class TimePublicInterfaceTest(unittest.TestCase):
         self.assertEqual(str(t), '08:00')
         t.set('1:')
         self.assertEqual(str(t), '01:00')
+
+
+    def test_fromToMinutes(self):
+        t = bd_datetime.Time("12:00")
+        self.assertEqual(t.toMinutes(), 720)
+        t.set("1:25")
+        self.assertEqual(t.toMinutes(), 85)
+        t.set("00:00")
+        self.assertEqual(t.toMinutes(), 0)
+        t.set("23:59")
+        self.assertEqual(t.toMinutes(), 1439)
+        t.set("24:00")
+        self.assertEqual(t.toMinutes(), 1440)
+        t.fromMinutes(444)
+        self.assertEqual(str(t), '07:24')
+        t.fromMinutes(0)
+        self.assertEqual(str(t), '00:00')
+        t.fromMinutes(1439)
+        self.assertEqual(str(t), '23:59')
+        t.fromMinutes(900)
+        self.assertEqual(str(t), '15:00')
+        t.fromMinutes(1440)
+        self.assertEqual(str(t), '24:00')
+        
+    def test_timeDifference(self):
+        t1 = bd_datetime.Time("7:30")
+        t2 = bd_datetime.Time("15:15")
+        self.assertEqual(str(t2-t1), '7:45')
+        t1 = bd_datetime.Time("9:15")
+        t2 = bd_datetime.Time("11:30")
+        self.assertEqual(str(t2-t1), '2:15')
+
+    def test_timeSuma(self):
+        t1 = bd_datetime.Time("9:15")
+        t2 = bd_datetime.Time("11:30")
+        self.assertEqual(str(t2+t1), '20:45')
+        self.assertEqual(str(t1+t2), '20:45')
+        t1 = bd_datetime.Time("8:30")
+        t2 = bd_datetime.Time("17:00")
+        self.assertEqual(str(t2+t1), '25:30')
+        self.assertEqual(str(t1+t2), '25:30')
+
+    def test_timeDifferenceSuma(self):
+        t1 = bd_datetime.Time("9:15")
+        t2 = bd_datetime.Time("17:30")
+        t3 = bd_datetime.Time("10:00")
+        t4 = bd_datetime.Time("16:30")
+        t5 = bd_datetime.Time("11:00")
+        t6 = bd_datetime.Time("16:00")
+        self.assertEqual(str((t2-t1) + (t4-t3) + (t6-t5)), "19:45")
+        t = t2-t1
+        t += t4-t3
+        t += t6-t5
+        self.assertEqual(str(t), "19:45")
+        t += t6-t5
+        t += t6-t5
+        t += t6-t5
+        t += t6-t5
+        t += t6-t5
+        self.assertEqual(str(t), "44:45")
+
+        
 
 
 
