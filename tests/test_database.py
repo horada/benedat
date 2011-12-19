@@ -42,8 +42,21 @@ class DatetimeFunctionsTest(unittest.TestCase):
         pass
 
     def test_createNewDb(self):
-        db = bd_database.Db("/tmp/test1.db")
+        db = bd_database.getDb("/tmp/test1.db")
+        del(db)
+        os.remove("/tmp/test1.db")
 
+
+    def test_setGetConf(self):
+        db = bd_database.getDb("/tmp/test.db")
+        db2 = bd_database.getDb()
+        self.assertIs(db, db2, "Method getDb return same object.")
+#        del(db2)
+#        db = bd_database.getDb("/tmp/test.db")
+#        self.assertIsNot(db, db2, "__del__ correctly remove object.")
+
+
+   
 
 
 

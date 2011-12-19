@@ -38,6 +38,8 @@ CLASSES:
 class bdFileError(Exception):
     pass
 
+class bdDbError(Exception):
+    pass
 
 
 

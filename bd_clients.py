@@ -3,6 +3,17 @@
 
 """
 Helpful module for work with clients.
+Data about one client:
+    setFirstName
+    setLastName
+    setAddress
+    setPhone
+    setMobilePhone1
+    setMobilePhone2
+    setNotes
+    setServices - default used services
+
+
 
 VARIABLES:
 
