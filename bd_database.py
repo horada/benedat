@@ -52,8 +52,11 @@ INITIAL_CONFIGURATION = (
 
 import sqlite3
 import os
+import sys
+sys.setdefaultencoding( "utf-8" )
 
 from bd_exceptions import *
+import bd_clients
 
 
 # variable with actual object of class Db
@@ -105,8 +108,23 @@ class Db():
             self.__dbc.close()
 #        if db is self:
 #            db = None
+ 
+    def execute(self, query, data=None):
+        """
+        Execute database query.
+        """
+        if data:
+            result = self.__dbcc.execute(query, data)
+        else:
+            result = self.__dbcc.execute(query)
+        return result
     
-
+    def commit(self):
+        """
+        Commit changes to database.
+        """
+        self.__dbc.commit()
+    
     def create_database(self, db_file):
         """
         Create new database and insert initial data.
@@ -131,16 +149,63 @@ class Db():
                     );                    
             """
             )
+            # create clients table
+            self.__dbcc.execute("""
+                CREATE TABLE clients(
+                    id INTEGER NOT NULL,
+                    first_name TEXT,
+                    last_name TEXT,
+                    address TEXT,
+                    phone TEXT,
+                    mobile_phone1 TEXT,
+                    mobile_phone2 TEXT,
+                    notes TEXT,
+                    PRIMARY KEY (ID)
+                    );                    
+            """
+            )
+            # create records table 
+            self.__dbcc.execute("""
+                CREATE TABLE records(
+                    id INTEGER NOT NULL,
+                    client INTEGER NOT NULL,
+                    PRIMARY KEY (ID)
+                    );                    
+            """
+            )
+            # create timed records table 
+            self.__dbcc.execute("""
+                CREATE TABLE records_timed(
+                    id INTEGER NOT NULL,
+                    id_record INTEGER NOT NULL,
+                    service TEXT,
+                    time_from TEXT,
+                    time_to TEXT,
+                    PRIMARY KEY (ID)
+                    );                    
+            """
+            )
+            # create numeric records table 
+            self.__dbcc.execute("""
+                CREATE TABLE records_numeric(
+                    id INTEGER NOT NULL,
+                    id_record INTEGER NOT NULL,
+                    service TEXT,
+                    value INTEGER,
+                    PRIMARY KEY (ID)
+                    );                    
+            """
+            )
             self.commit()
         except sqlite3.Error, e:
-            raise bdDbError("Problém s vytvořením databázové struktury.")
+            raise bdDbError("Problém s vytvořením databázové struktury: %s" %e)
 
         # insert initial data 
         try:
             self.updateConfiguration()
             self.commit()
         except sqlite3.Error, e:
-            raise bdDbError("Problém s vložením výchozího nastavení.")
+            raise bdDbError("Problém s vložením výchozího nastavení: %s" %e)
 
     def open_database(self, db_file):
         # open database file
@@ -182,9 +247,6 @@ class Db():
                         'value': row[1],
                         'note': row[2]}
             return config
-
-
-
 
     def getConfVal(self, name, default=None):
         """
@@ -228,25 +290,56 @@ class Db():
 
 
 
+    def addClient(self, client):
+        """
+        Add client to database.
+        """
+        data = {}
+        data['first_name'] = client['first_name']
+        data['last_name'] = client['last_name']
+        data['address'] = client['address']
+        data['phone'] = client['phone']
+        data['mobile_phone1'] = client['mobile_phone1']
+        data['mobile_phone2'] = client['mobile_phone2']
+        data['notes'] = client['notes']
+        result = self.execute('''INSERT INTO clients
+                (first_name, last_name, address, phone, mobile_phone1, mobile_phone2, notes) 
+                VALUES (:first_name, :last_name, :address, 
+                :phone, :mobile_phone1, :mobile_phone2, :notes)''', data)
+        #TODO: services
+        self.commit()
 
-    def execute(self, query, data=None):
+    def getClients(self):
         """
-        Execute database query.
+        Get clients.
         """
-        if data:
-            result = self.__dbcc.execute(query, data)
-        else:
-            result = self.__dbcc.execute(query)
-        return result
-    
-    def commit(self):
-        """
-        Commit changes to database.
-        """
-        self.__dbc.commit()
-    
+        result = self.execute('''SELECT id, first_name, last_name, address, 
+                phone, mobile_phone1, mobile_phone2, notes FROM clients''')
+        clients = []
+        for row in result:
+#            print "%s" % row[0]
+#            print "%s" % row[1]
+#            print "%s" % row[2]
+#            print "%s" % row[3]
+#            print "%s" % row[4]
+#            print "%s" % row[5]
+#            print "%s" % row[6]
+#            print "%s" % row[7]
+            client = bd_clients.Client(
+                    db_id =         u(row[0]),
+                    first_name =    u(row[1]), 
+                    last_name =     u(row[2]), 
+                    address =       u(row[3]),
+                    phone =         u(row[4]), 
+                    mobile_phone1 = u(row[5]),
+                    mobile_phone2 = u(row[6]), 
+                    notes =         u(row[7]))
+            clients.append(client)
+        return clients
 
 
+def u(x):
+    return unicode(str(x), "utf-8", "ignore")
 
 # vim:tabstop=4:shiftwidth=4:softtabstop=4:
 # eof

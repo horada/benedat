@@ -4,14 +4,14 @@
 """
 Helpful module for work with clients.
 Data about one client:
-    setFirstName
-    setLastName
-    setAddress
-    setPhone
-    setMobilePhone1
-    setMobilePhone2
-    setNotes
-    setServices - default used services
+    firstName
+    lastName
+    address
+    phone
+    mobilePhone1
+    mobilePhone2
+    notes
+    services - default used services
 
 
 
@@ -53,7 +53,7 @@ class Client():
     """
     def __init__(self, first_name=None, last_name=None, address=None, 
             phone=None, mobile_phone1=None, mobile_phone2=None, 
-            notes=None, services=None):
+            notes=None, services=None, db_id=None):
         self.setFirstName(first_name)
         self.setLastName(last_name)
         self.setAddress(address)
@@ -62,6 +62,39 @@ class Client():
         self.setMobilePhone2(mobile_phone2)
         self.setNotes(notes)
         self.setServices(services)
+        self.setDbId(db_id)
+
+    def __str__(self):
+        s = "Client: \n"
+        s += "first_name = '%s'\n" % self.getFirstName()
+        s += "last_name = '%s'\n" % self.getLastName()
+        s += "address = '%s'\n" % self.getAddress()
+        s += "phone = '%s'\n" % self.getPhone()
+        s += "mobile_phone1 = '%s'\n" % self.getMobilePhone1()
+        s += "mobile_phone2 = '%s'\n" % self.getMobilePhone2()
+        s += "notes = '%s'\n" % self.getNotes()
+        s += "services = '%s'\n" % self.getServices()
+        s += "db_id = '%s'\n" % self.getDbId()
+        return s
+
+    def __repr__(self):
+        s = "%s(" % self.__class__
+        s += "first_name='%s', " % self.getFirstName()
+        s += "last_name='%s', " % self.getLastName()
+        s += "address='%s', " % self.getAddress()
+        s += "phone='%s', " % self.getPhone()
+        s += "mobile_phone1='%s', " % self.getMobilePhone1()
+        s += "mobile_phone2='%s', " % self.getMobilePhone2()
+        s += "notes='%s', " % self.getNotes()
+        s += "services='%s', " % self.getServices()
+        s += "db_id='%s')" % self.getDbId()
+        return s   
+
+    def __getitem__(self, key):
+        """
+        For dictionary behavior (client[first_name], ...)
+        """
+        return getattr(self, key)
 
     def getFirstName(self):
         return self.__first_name
@@ -110,6 +143,12 @@ class Client():
     def setServices(self, value):
         self.__services = value
     services = property(getServices, setServices)
+
+    def getDbId(self):
+        return self.__db_id
+    def setDbId(self, value):
+        self.__db_id = value
+    db_id = property(getDbId, setDbId)
 
     def containsService(self, service):
         """

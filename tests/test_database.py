@@ -35,30 +35,56 @@ import datetime
 sys.path.insert(0, os.path.abspath(os.path.join(
         os.path.split(os.path.abspath(sys.argv[0]))[0],'..')))
 import bd_database
+import bd_clients
 
 
 class DatetimeFunctionsTest(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_createNewDb(self):
-        db = bd_database.getDb("/tmp/test1.db")
-        del(db)
-        os.remove("/tmp/test1.db")
+#    def test_createNewDb(self):
+#        db = bd_database.getDb("/tmp/test.db")
+#        del(db)
+#        os.remove("/tmp/test.db")
 
 
     def test_setGetConf(self):
         db = bd_database.getDb("/tmp/test.db")
         db2 = bd_database.getDb()
-        self.assertIs(db, db2, "Method getDb return same object.")
+        self.assertTrue(db is db2, "Method getDb return same object.")
 #        del(db2)
 #        db = bd_database.getDb("/tmp/test.db")
-#        self.assertIsNot(db, db2, "__del__ correctly remove object.")
+#        self.assertFalse(db is db2, "__del__ correctly remove object.")
 
 
-   
+    def test_addClient(self):
+        db = bd_database.getDb("/tmp/test.db")
 
+        client = bd_clients.Client(first_name="Jan", last_name="Novák", 
+                address="Horní Dolní 123", phone="123234345", 
+                mobile_phone1="243432445", mobile_phone2="5675676543", 
+                notes="Super poznámka")
+#        client = bd_clients.Client(first_name="Jan", last_name="Novak", 
+#                address="Horni Dolni 123", phone="123234345", 
+#                mobile_phone1="243432445", mobile_phone2="5675676543", 
+#                notes="Super poznamka")
+        db.addClient(client)
+        
+        db.getClients()
+        for client in db.getClients():
+            print client.getFirstName()
+            print client.getFirstName()
+            print client.getLastName()
+            print client.getAddress()
+            print client.getPhone()
+            print client.getMobilePhone1()
+            print client.getMobilePhone2()
+            print client.getNotes()
+            print client.getServices()
+            print client.getDbId()
+#            print client
 
+ 
 
 
 

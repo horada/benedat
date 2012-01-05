@@ -124,6 +124,15 @@ def emendYear(year):
     else:
         return 2000 + year
 
+def allToIntMinutes(*values):
+    """
+    Convert all values to integer (in minutes).
+    """
+    output = []
+    for value in values:
+        if type(value) == Time 
+            output.append(value.toMinutes())
+    return output
 
 
 class Date():
@@ -302,23 +311,38 @@ class TimePeriod():
     """
     Representation of time period.
     """
-    def __init__(self, minutes):
+    def __init__(self, a=0, b=None):
         """
         Difference input in minutes.
+        a - from
+        b - to
+        a,b type should be:
+            - int => number of minutes,
+            - Time
+        if only a is set, then it is the difference (self.value=a)
+
         self.value is in minutes.
         """
-        self.value = minutes
+        if b is None:
+            b = a
+            a = 0
+        self.value = b - a
+            
 
     def __str__(self):
         hours = int(self.value) / 60
         minutes = self.value % 60
-        return "%s:%s" % (hours, minutes)
+        return "%d:%0.2d" % (hours, minutes)
 
     def __add__(a, b):
-        return TimePeriod(a.value + b.value)
+        a,b = allToIntMinutes(a,b)
+        return TimePeriod(a + b)
+
 
     def __sub__(a, b):
-        return TimePeriod(a.value - b.value)
+        a,b = allToIntMinutes(a,b)
+        return TimePeriod()
+
 
 
 
