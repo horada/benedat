@@ -12,6 +12,7 @@ Data about one client:
     mobilePhone2
     notes
     services - default used services
+    - distance
 
 
 
@@ -63,6 +64,7 @@ class Client():
         self.setNotes(notes)
         self.setServices(services)
         self.setDbId(db_id)
+        self.preferences = {}
 
     def __str__(self):
         s = "Client: \n"
@@ -75,6 +77,7 @@ class Client():
         s += "notes = '%s'\n" % self.getNotes()
         s += "services = '%s'\n" % self.getServices()
         s += "db_id = '%s'\n" % self.getDbId()
+        s += "%s" % self.preferences
         return s
 
     def __repr__(self):
@@ -95,6 +98,20 @@ class Client():
         For dictionary behavior (client[first_name], ...)
         """
         return getattr(self, key)
+
+    def getDict(self):
+        """
+        Return dictionary of clients informations and settings.
+        """
+        data = {}
+        data['first_name'] = self['first_name']
+        data['last_name'] = self['last_name']
+        data['address'] = self['address']
+        data['phone'] = self['phone']
+        data['mobile_phone1'] = self['mobile_phone1']
+        data['mobile_phone2'] = self['mobile_phone2']
+        data['notes'] = self['notes']
+        return data
 
     def getFirstName(self):
         return self.__first_name
@@ -169,6 +186,8 @@ class Client():
         """
         if self.containsService(service):
             self.__services.remove(service)
+
+
 
 
 

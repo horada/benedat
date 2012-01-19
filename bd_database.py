@@ -53,7 +53,6 @@ INITIAL_CONFIGURATION = (
 import sqlite3
 import os
 import sys
-sys.setdefaultencoding( "utf-8" )
 
 from bd_exceptions import *
 import bd_clients
@@ -83,8 +82,6 @@ class Db():
         """
         # variable for database connection
         self.__dbc = None
-        # variable for connection cursor 
-        self.__dbcc = None
         
         # if new = True, remove old file
         if new and os.path.isfile(db_file):
@@ -102,8 +99,6 @@ class Db():
         """
         global db
         print db
-        if type(self.__dbcc) == sqlite3.Cursor:
-            self.__dbcc.close()
         if type(self.__dbc) == sqlite3.Connection:
             self.__dbc.close()
 #        if db is self:
@@ -113,10 +108,12 @@ class Db():
         """
         Execute database query.
         """
+        # variable for connection cursor 
+        dbcc = self.__dbc.cursor()
         if data:
-            result = self.__dbcc.execute(query, data)
+            result = dbcc.execute(query, data)
         else:
-            result = self.__dbcc.execute(query)
+            result = dbcc.execute(query)
         return result
     
     def commit(self):
@@ -132,15 +129,14 @@ class Db():
         # create database file
         try:
             self.__dbc = sqlite3.connect(db_file)
-            self.__dbcc = self.__dbc.cursor()
-            self.__dbc.text_factory = lambda x: unicode(x, "utf-8", "ignore")
+            self.__dbc.text_factory = u
         except sqlite3.OperationalError as e:
             raise bdFileError("Nemohu vytvořit soubor %s! (%s)" % (db_file, e))
 
         # create database schema
         try:
             # create configuration table 
-            self.__dbcc.execute("""
+            self.execute("""
                 CREATE TABLE configuration(
                     name TEXT NOT NULL,
                     value TEXT,
@@ -150,7 +146,7 @@ class Db():
             """
             )
             # create clients table
-            self.__dbcc.execute("""
+            self.execute("""
                 CREATE TABLE clients(
                     id INTEGER NOT NULL,
                     first_name TEXT,
@@ -165,7 +161,7 @@ class Db():
             """
             )
             # create records table 
-            self.__dbcc.execute("""
+            self.execute("""
                 CREATE TABLE records(
                     id INTEGER NOT NULL,
                     client INTEGER NOT NULL,
@@ -174,7 +170,7 @@ class Db():
             """
             )
             # create timed records table 
-            self.__dbcc.execute("""
+            self.execute("""
                 CREATE TABLE records_timed(
                     id INTEGER NOT NULL,
                     id_record INTEGER NOT NULL,
@@ -186,7 +182,7 @@ class Db():
             """
             )
             # create numeric records table 
-            self.__dbcc.execute("""
+            self.execute("""
                 CREATE TABLE records_numeric(
                     id INTEGER NOT NULL,
                     id_record INTEGER NOT NULL,
@@ -211,11 +207,24 @@ class Db():
         # open database file
         try:
             self.__dbc = sqlite3.connect(db_file)
-            self.__dbcc = self.__dbc.cursor()
-            self.__dbc.text_factory = lambda x: unicode(x, "utf-8", "ignore")
+            self.__dbc.text_factory = u
         except sqlite3.OperationalError as e:
             raise bdFileError("Nemohu otevřít soubor %s! (%s)" % (db_file, e))
+        self.verification()
+
+    def verification(self):
+        """
+        Db verification.
+        """
         # TODO: db verification
+        try: 
+            print self.getConfVal("db_major_version")
+            print self.getConfVal("db_version")
+        except sqlite3.OperationalError as err:
+            print err
+            raise
+
+
 
     def updateConfiguration(self, update_set=INITIAL_CONFIGURATION):
         """
@@ -229,23 +238,36 @@ class Db():
                 # database did not contain this item => insert it
                 self.setConf(item['name'], item['value'], item['note'])
 
-    def getConf(self, name=None):
+    def getConf(self, name=None, pattern_name=None):
         """
-        Return 
+        Return configuration along to name, pattern_name or whole configuration.
         """
         if name:
             result = self.execute('''SELECT name,value,note FROM configuration 
                 WHERE name=:name''', {'name':name})
-            return {'name': result[0],
-                    'value': result[1],
-                    'note': result[2]}
+            result = result.fetchone()
+            if result:
+                return [{'name': result[0],
+                        'value': result[1],
+                        'note': result[2]}]
+            else:
+                return None
+        elif pattern_name:
+            result = self.execute('''SELECT name,value,note FROM configuration 
+                WHERE name GLOB :pattern_name''', {'pattern_name':pattern_name+'*'})
+            config = []
+            for row in result:
+                config.append({'name': row[0],
+                        'value': row[1],
+                        'note': row[2]})
+            return config
         else:
             result = self.execute('''SELECT name,value,note FROM configuration''')
-            config = {}
+            config = []
             for row in result:
-                config[row[0]]= {'name': row[0],
+                config.append({'name': row[0],
                         'value': row[1],
-                        'note': row[2]}
+                        'note': row[2]})
             return config
 
     def getConfVal(self, name, default=None):
@@ -286,7 +308,17 @@ class Db():
                     (name, value))
         return True
             
-
+    def delConf(self, name):
+        """
+        Delete configuration row.
+        """
+        result = self.execute('''DELETE FROM configuration 
+                WHERE name=?''', name)
+#        if not result.rowcount:
+#            raise bdDbError("Volba '%s' pro nastavení hodnoty '%s' neexistuje." %\
+#                    (name, value))
+        return True
+ 
 
 
 
@@ -294,18 +326,18 @@ class Db():
         """
         Add client to database.
         """
-        data = {}
-        data['first_name'] = client['first_name']
-        data['last_name'] = client['last_name']
-        data['address'] = client['address']
-        data['phone'] = client['phone']
-        data['mobile_phone1'] = client['mobile_phone1']
-        data['mobile_phone2'] = client['mobile_phone2']
-        data['notes'] = client['notes']
         result = self.execute('''INSERT INTO clients
                 (first_name, last_name, address, phone, mobile_phone1, mobile_phone2, notes) 
                 VALUES (:first_name, :last_name, :address, 
-                :phone, :mobile_phone1, :mobile_phone2, :notes)''', data)
+                :phone, :mobile_phone1, :mobile_phone2, :notes)''', 
+                client.getDict())
+        client.setDbId(result.lastrowid)
+        for key, value in client.preferences.iteritems():
+            self.setConf(name="preference_%s-%s" %(client.getDbId(), key),
+                    value=value, 
+                    note="%s (%s %s)" % 
+                            (key, client.first_name, client.last_name))
+                    
         #TODO: services
         self.commit()
 
@@ -317,14 +349,14 @@ class Db():
                 phone, mobile_phone1, mobile_phone2, notes FROM clients''')
         clients = []
         for row in result:
-#            print "%s" % row[0]
-#            print "%s" % row[1]
-#            print "%s" % row[2]
-#            print "%s" % row[3]
-#            print "%s" % row[4]
-#            print "%s" % row[5]
-#            print "%s" % row[6]
-#            print "%s" % row[7]
+            #print "%s" % row[0]
+            #print "%s" % row[1]
+            #print "%s" % row[2]
+            #print "%s" % row[3]
+            #print "%s" % row[4]
+            #print "%s" % row[5]
+            #print "%s" % row[6]
+            #print "%s" % row[7]
             client = bd_clients.Client(
                     db_id =         u(row[0]),
                     first_name =    u(row[1]), 
@@ -334,12 +366,33 @@ class Db():
                     mobile_phone1 = u(row[5]),
                     mobile_phone2 = u(row[6]), 
                     notes =         u(row[7]))
+            for pref in self.getConf(pattern_name="preference_%s-" % client.db_id):
+                client.preferences[pref['name']] = pref['value']
             clients.append(client)
+
         return clients
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def u(x):
-    return unicode(str(x), "utf-8", "ignore")
+    return x
+
+
 
 # vim:tabstop=4:shiftwidth=4:softtabstop=4:
 # eof

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 """
-Unittests for module bd_datetime.py.
+Unittests for module bd_database.py.
 """
 
 #
@@ -30,7 +30,6 @@ Unittests for module bd_datetime.py.
 import os
 import sys
 import unittest
-import datetime
 
 sys.path.insert(0, os.path.abspath(os.path.join(
         os.path.split(os.path.abspath(sys.argv[0]))[0],'..')))
@@ -38,7 +37,7 @@ import bd_database
 import bd_clients
 
 
-class DatetimeFunctionsTest(unittest.TestCase):
+class DatabaseTest(unittest.TestCase):
     def setUp(self):
         pass
 
@@ -68,21 +67,24 @@ class DatetimeFunctionsTest(unittest.TestCase):
 #                address="Horni Dolni 123", phone="123234345", 
 #                mobile_phone1="243432445", mobile_phone2="5675676543", 
 #                notes="Super poznamka")
+        client.preferences["aaaa"] = "AAAAA"
+        client.preferences["bbbb"] = "BBBBB"
+        client.preferences["cccc"] = "CCCCC"
         db.addClient(client)
         
-        db.getClients()
+#        db.getClients()
         for client in db.getClients():
-            print client.getFirstName()
-            print client.getFirstName()
-            print client.getLastName()
-            print client.getAddress()
-            print client.getPhone()
-            print client.getMobilePhone1()
-            print client.getMobilePhone2()
-            print client.getNotes()
-            print client.getServices()
-            print client.getDbId()
-#            print client
+#            print client.getFirstName()
+#            print client.getFirstName()
+#            print client.getLastName()
+#            print client.getAddress()
+#            print client.getPhone()
+#            print client.getMobilePhone1()
+#            print client.getMobilePhone2()
+#            print client.getNotes()
+#            print client.getServices()
+#            print client.getDbId()
+            print client
 
  
 

@@ -130,7 +130,7 @@ def allToIntMinutes(*values):
     """
     output = []
     for value in values:
-        if type(value) == Time 
+        if type(value) == Time:
             output.append(value.toMinutes())
     return output
 
