@@ -7,7 +7,6 @@
     <property name="title" translatable="yes">BeneDat 2</property>
     <property name="icon">Benedat.png</property>
     <signal name="destroy" handler="on_wMain_destroy"/>
-    <signal name="destroy_event" handler="on_wMain_destroy_event"/>
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -26,12 +25,12 @@
                     <property name="visible">True</property>
                     <property name="layout_style">spread</property>
                     <child>
-                      <widget class="GtkButton" id="btRecords">
+                      <widget class="GtkButton" id="wMain_btRecords">
                         <property name="label" translatable="yes">Editace z&#xE1;znam&#x16F;</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_btRecords_clicked"/>
+                        <signal name="clicked" handler="on_wMain_btRecords_clicked"/>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -40,12 +39,12 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkButton" id="btSummary">
+                      <widget class="GtkButton" id="wMain_btSummary">
                         <property name="label" translatable="yes">Sestavy</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_btSummary_clicked"/>
+                        <signal name="clicked" handler="on_wMain_btSummary_clicked"/>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -86,12 +85,12 @@
                     <property name="visible">True</property>
                     <property name="layout_style">spread</property>
                     <child>
-                      <widget class="GtkButton" id="btClients">
+                      <widget class="GtkButton" id="wMain_btClients">
                         <property name="label" translatable="yes">Klienti</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_btClients_clicked"/>
+                        <signal name="clicked" handler="on_wMain_btClients_clicked"/>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -123,51 +122,70 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
-              <widget class="GtkHButtonBox" id="hbuttonbox4">
+              <widget class="GtkVBox" id="vbox4">
                 <property name="visible">True</property>
-                <property name="layout_style">spread</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">5</property>
                 <child>
-                  <widget class="GtkButton" id="btNewDb">
-                    <property name="label">gtk-new</property>
+                  <widget class="GtkHButtonBox" id="hbuttonbox4">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                    <signal name="clicked" handler="on_btNewDb_clicked"/>
+                    <property name="layout_style">spread</property>
+                    <child>
+                      <widget class="GtkButton" id="wMain_btNewDb">
+                        <property name="label">gtk-new</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_stock">True</property>
+                        <signal name="clicked" handler="on_wMain_btNewDb_clicked"/>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkButton" id="wMain_btOpenDb">
+                        <property name="label">gtk-open</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_stock">True</property>
+                        <signal name="clicked" handler="on_wMain_btOpenDb_clicked"/>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="btOpenDb">
-                    <property name="label">gtk-open</property>
+                  <widget class="GtkHButtonBox" id="hbuttonbox9">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                    <signal name="clicked" handler="on_btOpenDb_clicked"/>
+                    <property name="layout_style">spread</property>
+                    <child>
+                      <widget class="GtkButton" id="wMain_btEmptyDbCopy">
+                        <property name="label" translatable="yes">Pr&#xE1;zdn&#xE1; kopie DB</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <signal name="clicked" handler="on_wMain_btEmptyDbCopy_clicked"/>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
                     <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkButton" id="btEmptyDbCopy">
-                    <property name="label" translatable="yes">Pr&#xE1;zdn&#xE1; kopie DB</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_btEmptyDbCopy_clicked"/>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">2</property>
                   </packing>
                 </child>
               </widget>
@@ -232,13 +250,13 @@
               <placeholder/>
             </child>
             <child>
-              <widget class="GtkButton" id="btExit">
+              <widget class="GtkButton" id="wMain_btExit">
                 <property name="label">gtk-quit</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_btExit_clicked"/>
+                <signal name="clicked" handler="on_wMain_btExit_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -253,7 +271,7 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkStatusbar" id="sbMain">
+          <widget class="GtkStatusbar" id="wMain_statusbar">
             <property name="visible">True</property>
             <property name="spacing">2</property>
           </widget>
@@ -282,14 +300,14 @@
             <property name="vscrollbar_policy">automatic</property>
             <property name="shadow_type">out</property>
             <child>
-              <widget class="GtkTreeView" id="tvClientsTable">
+              <widget class="GtkTreeView" id="wClients_tvClientsTable">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="enable_grid_lines">both</property>
                 <property name="tooltip_column">2</property>
-                <signal name="select_cursor_row" handler="on_tvClientsTable_select_cursor_row"/>
-                <signal name="move_cursor" handler="on_tvClientsTable_move_cursor"/>
-                <signal name="row_activated" handler="on_tvClientsTable_row_activated"/>
+                <signal name="select_cursor_row" handler="on_wClients_tvClientsTable_select_cursor_row"/>
+                <signal name="move_cursor" handler="on_wClients_tvClientsTable_move_cursor"/>
+                <signal name="row_activated" handler="on_wClients_tvClientsTable_row_activated"/>
               </widget>
             </child>
           </widget>
@@ -313,7 +331,7 @@
                       <widget class="GtkAlignment" id="alignment3">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkEntry" id="eClient_firstName">
+                          <widget class="GtkEntry" id="wClients_efirstName">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x25CF;</property>
@@ -346,7 +364,7 @@
                       <widget class="GtkAlignment" id="alignment4">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkEntry" id="eClient_lastName">
+                          <widget class="GtkEntry" id="wClients_elastName">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x25CF;</property>
@@ -384,7 +402,7 @@
                   <widget class="GtkAlignment" id="alignment5">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkEntry" id="eClient_address">
+                      <widget class="GtkEntry" id="wClients_eaddress">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="invisible_char">&#x25CF;</property>
@@ -420,7 +438,7 @@
                       <widget class="GtkAlignment" id="alignment7">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkEntry" id="eClient_phone">
+                          <widget class="GtkEntry" id="wClients_ephone">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x25CF;</property>
@@ -453,7 +471,7 @@
                       <widget class="GtkAlignment" id="alignment6">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkEntry" id="eClient_mobilePhone1">
+                          <widget class="GtkEntry" id="wClients_emobilePhone1">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x25CF;</property>
@@ -486,7 +504,7 @@
                       <widget class="GtkAlignment" id="alignment8">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkEntry" id="eClient_mobilePhone2">
+                          <widget class="GtkEntry" id="wClients_emobilePhone2">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x25CF;</property>
@@ -524,7 +542,7 @@
                   <widget class="GtkAlignment" id="alignment9">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkEntry" id="eClient_notes">
+                      <widget class="GtkEntry" id="wClients_enotes">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="invisible_char">&#x25CF;</property>
@@ -560,7 +578,7 @@
                       <widget class="GtkAlignment" id="alignment10">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkEntry" id="eClient_distance">
+                          <widget class="GtkEntry" id="wClients_edistance">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x25CF;</property>
@@ -605,13 +623,13 @@
             <property name="visible">True</property>
             <property name="layout_style">spread</property>
             <child>
-              <widget class="GtkButton" id="btNewClient">
+              <widget class="GtkButton" id="wClients_btNewClient">
                 <property name="label">gtk-new</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_btNewClient_clicked"/>
+                <signal name="clicked" handler="on_wClients_btNewClient_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -620,13 +638,13 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="btDeleteClient">
+              <widget class="GtkButton" id="wClients_btDeleteClient">
                 <property name="label">gtk-delete</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_btDeleteClient_clicked"/>
+                <signal name="clicked" handler="on_wClients_btDeleteClient_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -635,7 +653,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="btSaveClient">
+              <widget class="GtkButton" id="wClients_btSaveClient">
                 <property name="label">gtk-save</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -643,7 +661,7 @@
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_btSaveClient_clicked"/>
+                <signal name="clicked" handler="on_wClients_btSaveClient_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -652,13 +670,13 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="btClientClose">
+              <widget class="GtkButton" id="wClients_btClose">
                 <property name="label">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_btClientClose_clicked"/>
+                <signal name="clicked" handler="on_wClients_btClose_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -702,7 +720,7 @@
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <widget class="GtkComboBox" id="cbOtevriDBTypSouboru">
+              <widget class="GtkComboBox" id="wOpenDB_cbFileType">
                 <property name="visible">True</property>
                 <property name="button_sensitivity">on</property>
               </widget>
@@ -725,7 +743,7 @@
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <widget class="GtkButton" id="btOtevriDBZrus">
+              <widget class="GtkButton" id="wOpenDB_btCancel">
                 <property name="label">gtk-cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
@@ -740,7 +758,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="btOtevriDBOK">
+              <widget class="GtkButton" id="wOpenDB_btOK">
                 <property name="label">gtk-open</property>
                 <property name="response_id">-5</property>
                 <property name="visible">True</property>
@@ -785,7 +803,7 @@
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <widget class="GtkComboBox" id="cbNovaDBTypSouboru">
+              <widget class="GtkComboBox" id="wNewDB_cbFileType">
                 <property name="visible">True</property>
                 <property name="button_sensitivity">on</property>
               </widget>
@@ -808,7 +826,7 @@
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <widget class="GtkButton" id="btNovaDBZrus">
+              <widget class="GtkButton" id="wNewDB_btCancel">
                 <property name="label">gtk-cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
@@ -823,7 +841,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="btNovaDBOK">
+              <widget class="GtkButton" id="wNewDB_btOK">
                 <property name="label">gtk-save</property>
                 <property name="response_id">-5</property>
                 <property name="visible">True</property>
@@ -870,7 +888,7 @@
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <widget class="GtkButton" id="btUlozeniSestavy_Zrus">
+              <widget class="GtkButton" id="wSaveSummary_btCancel">
                 <property name="label">gtk-cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
@@ -885,7 +903,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="btUlozeniSestavy_OK">
+              <widget class="GtkButton" id="wSaveSummary_btOK">
                 <property name="label">gtk-save</property>
                 <property name="response_id">-5</property>
                 <property name="visible">True</property>
@@ -930,7 +948,7 @@
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <widget class="GtkComboBox" id="cbKopieDBTypSouboru">
+              <widget class="GtkComboBox" id="wCopyDB_cbFileType">
                 <property name="visible">True</property>
                 <property name="button_sensitivity">on</property>
               </widget>
@@ -953,7 +971,7 @@
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <widget class="GtkButton" id="btKopieDBZrus">
+              <widget class="GtkButton" id="wCopyDB_btCancel">
                 <property name="label">gtk-cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
@@ -968,7 +986,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="btKopieDBOK">
+              <widget class="GtkButton" id="wCopyDB_btOK">
                 <property name="label">gtk-save</property>
                 <property name="response_id">-5</property>
                 <property name="visible">True</property>

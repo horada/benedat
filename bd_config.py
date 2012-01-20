@@ -85,7 +85,7 @@ import ConfigParser
 # (next file overwrite previous set configuration)
 CONFIG_FILES = ('./benedat.conf',)
 # list of sections in configuration file
-CONFIG_SECTIONS = ('default',)
+CONFIG_SECTIONS = ('main',)
 # variable with actual object of class Config
 __config = None
 
