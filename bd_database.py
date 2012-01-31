@@ -165,6 +165,7 @@ class Db():
                 CREATE TABLE records(
                     id INTEGER NOT NULL,
                     client INTEGER NOT NULL,
+                    date TEXT,
                     PRIMARY KEY (ID)
                     );                    
             """
