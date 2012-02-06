@@ -48,7 +48,7 @@ CLASSES:
     more from:http://docs.python.org/library/configparser.html
     set(section, option, value):
       If the given section exists, set the given option to the specified value;
-      otherwise raise NoSectionError. value must be a string (str or unicode);
+      otherwise raise NoSectionError. value is converted to str by 'str()';
       if not, TypeError is raised.
 
 
@@ -186,6 +186,16 @@ class Config(ConfigParser.SafeConfigParser):
                 except KeyError:
                     # value is not in dictionary - return default
                     return default
+
+    def set(self, section, option, value=None):
+        """
+        If the given section exists, set the given option to the specified value;
+        otherwise raise NoSectionError. value is converted to str by 'str()';
+        if not, TypeError is raised.
+        """
+        if not value:
+            value = ""
+        ConfigParser.SafeConfigParser.set(self, section, option, str(value))
 
 
 
