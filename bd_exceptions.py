@@ -35,6 +35,9 @@ CLASSES:
 # along with BeneDat.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+class bdMissingFileError(Exception):
+    pass
+
 class bdFileError(Exception):
     pass
 
