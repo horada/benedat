@@ -70,7 +70,10 @@ def getDb(db_file=None, new=False):
     """
     global db
     if not db:
-      db=Db(db_file=db_file, new=new)
+        if db_file:
+            db=Db(db_file=db_file, new=new)
+        else:
+            raise bdMissingFileError("Chybí cesta k databázovému souboru.")
     return db
 
 
@@ -98,7 +101,7 @@ class Db():
         Closing database on exit.
         """
         global db
-        print db
+#        print db
         if type(self.__dbc) == sqlite3.Connection:
             self.__dbc.close()
 #        if db is self:
@@ -219,8 +222,8 @@ class Db():
         """
         # TODO: db verification
         try: 
-            print self.getConfVal("db_major_version")
-            print self.getConfVal("db_version")
+            print "db_major_version=%s" % self.getConfVal("db_major_version")
+            print "db_version=%s" % self.getConfVal("db_version")
         except sqlite3.OperationalError as err:
             print err
             raise
