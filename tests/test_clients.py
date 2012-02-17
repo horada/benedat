@@ -44,6 +44,7 @@ class PublicInterfaceTest(unittest.TestCase):
 
     def test_createEmptyClient(self):
         c = bd_clients.Client()
+        d = bd_clients.Client()
         self.assertEqual(c.first_name, None)
         self.assertEqual(c.last_name, None)
         self.assertEqual(c.address, None)
@@ -51,11 +52,12 @@ class PublicInterfaceTest(unittest.TestCase):
         self.assertEqual(c.mobile_phone1, None)
         self.assertEqual(c.mobile_phone2, None)
         self.assertEqual(c.notes, None)
-        self.assertEqual(c.services, None)
+        self.assertEqual(d.preferences, {})
+        self.assertEqual(c.preferences, {})
 
     def test_createPanelledClient(self):
         c = bd_clients.Client("Jan", "Novák", "Veselá Lhota 123\nPetrovice 32132",
-                "321321321", "123123123", "123456789", "Poznámky\n na\nvíce řádků.", ["OS", "STD"])
+                "321321321", "123123123", "123456789", "Poznámky\n na\nvíce řádků.", {"pref": "value"})
         self.assertEqual(c.first_name, "Jan")
         self.assertEqual(c.last_name, "Novák")
         self.assertEqual(c.address, "Veselá Lhota 123\nPetrovice 32132")
@@ -63,7 +65,7 @@ class PublicInterfaceTest(unittest.TestCase):
         self.assertEqual(c.mobile_phone1, "123123123")
         self.assertEqual(c.mobile_phone2, "123456789")
         self.assertEqual(c.notes, "Poznámky\n na\nvíce řádků.")
-        self.assertEqual(c.services, ["OS", "STD"])
+        self.assertEqual(c.preferences, {"pref": "value"})
 
 
     def test_FirstName(self):
@@ -164,38 +166,30 @@ class PublicInterfaceTest(unittest.TestCase):
         c.setNotes("Poznámka\nna dva řádky.")
         self.assertEqual(c.notes, "Poznámka\nna dva řádky.")
 
-    def test_Services(self):
+    def test_Preferences(self):
         c = bd_clients.Client()
-        c.setServices(["OS", "STD"])
-        self.assertEqual(c.getServices(), ["OS", "STD"])
+        c.setPreferences({"distance": "13"})
+        self.assertEqual(c.getPreferences(), {"distance": "13"})
         c = bd_clients.Client()
-        c.services = ["OS"]
-        self.assertEqual(c.services, ["OS"])
+        c.preferences = {"prefA": "ValueA"}
+        self.assertEqual(c.preferences, {"prefA": "ValueA"})
         c = bd_clients.Client()
-        c.setServices(["OS", "STD"])
-        self.assertEqual(c.services, ["OS", "STD"])
+        c.setPreference("distance", "7")
+        self.assertEqual(c.getPreference("distance", "0"), "7")
         c = bd_clients.Client()
-        c.setServices(["OS"])
-        self.assertEqual(c.services, ["OS"])
+        c.setPreference("pref1", "value1")
+        c.setPreference("pref2", "value2")
+        self.assertEqual(c.getPreference("pref1"), "value1")
+        self.assertEqual(c.getPreference("pref2"), "value2")
         
-        c = bd_clients.Client(services=["OS", "STD"])
-        self.assertTrue(c.containsService("OS"))
-        self.assertTrue(c.containsService("STD"))
-        self.assertFalse(c.containsService("AAA"))
-        self.assertFalse(c.containsService("BBB"))
+        c.setPreference("aaa", "AAAA")
+        self.assertEqual(c.getPreference("aaa"), "AAAA")
+        c.setPreference("bbb", "BBBB")
+        self.assertEqual(c.getPreference("bbb"), "BBBB")
+        c.setPreference("aaa", "CCCC")
+        self.assertEqual(c.getPreference("aaa"), "CCCC")
 
-        c.addService("AAA")
-        self.assertTrue(c.containsService("AAA"))
-        c.removeService("AAA")
-        self.assertFalse(c.containsService("AAA"))
-
-        c.addService("AAA")
-        c.addService("AAA")
-        self.assertTrue(c.containsService("AAA"))
-        c.removeService("AAA")
-        c.removeService("AAA")
-        self.assertFalse(c.containsService("AAA"))
-
+        self.assertEqual(c.getPreference("zzz"), None)
 
 
 

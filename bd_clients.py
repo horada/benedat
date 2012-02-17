@@ -54,7 +54,8 @@ class Client():
     """
     def __init__(self, first_name=None, last_name=None, address=None, 
             phone=None, mobile_phone1=None, mobile_phone2=None, 
-            notes=None, services=None, db_id=None):
+            notes=None, preferences=None, db_id=None):
+        self.__preferences = {}
         self.setFirstName(first_name)
         self.setLastName(last_name)
         self.setAddress(address)
@@ -62,9 +63,9 @@ class Client():
         self.setMobilePhone1(mobile_phone1)
         self.setMobilePhone2(mobile_phone2)
         self.setNotes(notes)
-        self.setServices(services)
+        if preferences:
+            self.setPreferences(preferences)
         self.setDbId(db_id)
-        self.preferences = {}
 
     def __str__(self):
         s = "Client: \n"
@@ -75,9 +76,8 @@ class Client():
         s += "mobile_phone1 = '%s'\n" % self.getMobilePhone1()
         s += "mobile_phone2 = '%s'\n" % self.getMobilePhone2()
         s += "notes = '%s'\n" % self.getNotes()
-        s += "services = '%s'\n" % self.getServices()
+        s += "preferences = '%s'\n" % self.getPreferences()
         s += "db_id = '%s'\n" % self.getDbId()
-        s += "%s" % self.preferences
         return s
 
     def __repr__(self):
@@ -89,7 +89,7 @@ class Client():
         s += "mobile_phone1='%s', " % self.getMobilePhone1()
         s += "mobile_phone2='%s', " % self.getMobilePhone2()
         s += "notes='%s', " % self.getNotes()
-        s += "services='%s', " % self.getServices()
+        s += "preferences='%s', " % self.getPreferences()
         s += "db_id='%s')" % self.getDbId()
         return s   
 
@@ -155,38 +155,30 @@ class Client():
         self.__notes = value
     notes = property(getNotes, setNotes)
 
-    def getServices(self):
-        return self.__services
-    def setServices(self, value):
-        self.__services = value
-    services = property(getServices, setServices)
+    def getPreferences(self):
+        return self.__preferences
+    def setPreferences(self, value):
+        self.__preferences.update(value)
+#        if type(value) == dict:
+#            self.__preferences = value
+#        else:
+#            raise ValueError("setPreferences(value=%s)"
+#                    " - value must be dict not %s"%(value, type(value)))
+    preferences = property(getPreferences, setPreferences)
+
+    def setPreference(self, preference, value):
+        self.__preferences[preference] = value
+    def getPreference(self, preference, default_value=None):
+        try:
+            return self.__preferences[preference]
+        except KeyError as err:
+            return default_value
 
     def getDbId(self):
         return self.__db_id
     def setDbId(self, value):
         self.__db_id = value
     db_id = property(getDbId, setDbId)
-
-    def containsService(self, service):
-        """
-        Return True if client's services contains 'service'.
-        """
-        return service in self.__services
-
-    def addService(self, service):
-        """
-        Add 'service' to services (if it still does not contain).
-        """
-        if not self.containsService(service):
-            self.__services.append(service)
-
-    def removeService(self, service):
-        """
-        Remove 'service' from services.
-        """
-        if self.containsService(service):
-            self.__services.remove(service)
-
 
 
 

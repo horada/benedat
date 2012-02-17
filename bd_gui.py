@@ -56,9 +56,12 @@ except:
     sys.exit(1)
 
 import os
+from pprint import pprint
 
 import bd_config
+import bd_clients
 import bd_database
+import bd_logging
 
 
 
@@ -66,6 +69,8 @@ import bd_database
 
 # get configuration
 conf = bd_config.getConfig()
+# get logger
+log = bd_logging.getLogger(__name__)
 
 # database
 db = None
@@ -128,11 +133,12 @@ class WMain():
         """
         Open window for clients.
         """
-        pass
+        windowClients = wClients()
+        windowClients.run()
 
     def openWSettings(self, widget):
         """
-        Open window for clients.
+        Open window for settings.
         """
         windowSettings = wSettings()
         windowSettings.run()
@@ -267,6 +273,96 @@ class WMain():
         Open dialog for copy empty db.
         """
         pass
+
+
+
+class wClients():
+    """
+    BeneDat settings window.
+    """
+    def __init__(self):
+        self.actual_client = None
+        # Window 
+        self.wxml = gtk.glade.XML(GLADEFILE, "wClients")
+        self.w = self.wxml.get_widget("wClients")
+        
+        # Signals
+        signals = {
+                "on_wClients_destroy": self.nothing,
+                "on_wClients_tvClientsTable_select_cursor_row": self.nothing,
+                "on_wClients_tvClientsTable_move_cursor": self.nothing,
+                "on_wClients_tvClientsTable_row_activated": self.nothing,
+                "on_wClients_btNewClient_clicked": self.newClient,
+                "on_wClients_btDeleteClient_clicked": self.deleteClient,
+                "on_wClients_btSaveClient_clicked": self.saveClient,
+                "on_wClients_btClose_clicked": self.closeClient,
+                }
+
+        self.wxml.signal_autoconnect(signals)
+
+        # Widgets
+        editable_fields = ['FirstName',
+            'LastName',
+            'Address',
+            'Phone',
+            'MobilePhone1',
+            'MobilePhone2',
+            'Notes',
+            'Distance',]
+        self.eWidgets = {}
+        for field in editable_fields:
+            self.eWidgets[field] = self.wxml.get_widget("wClients_e%s"%field)
+
+
+    def newClient(self, widget):
+        """
+        """
+        self.actual_client = None
+
+    def deleteClient(self, widget):
+        """
+        """
+        pass
+
+    def saveClient(self, widget):
+        """
+        """
+        if self.actual_client:
+            ac = self.actual_client
+            # update existing client
+            ac.setFirstName(self.eWidgets["FirstName"].get_text())
+            ac.setLastName(self.eWidgets["LastName"].get_text())
+            ac.setAddress(self.eWidgets["Address"].get_text())
+            ac.setPhone(self.eWidgets["Phone"].get_text())
+            ac.setMobilePhone1(self.eWidgets["MobilePhone1"].get_text())
+            ac.setMobilePhone2(self.eWidgets["MobilePhone2"].get_text())
+            ac.setNotes(self.eWidgets["Notes"].get_text())
+            ac.setPreference("Distance",self.eWidgets["Distance"].get_text())
+        else:
+            # create new client
+            self.actual_client = bd_clients.Client(
+                    first_name=self.eWidgets["FirstName"].get_text(),
+                    last_name=self.eWidgets["LastName"].get_text(),
+                    address=self.eWidgets["Address"].get_text(),
+                    phone=self.eWidgets["Phone"].get_text(),
+                    mobile_phone1=self.eWidgets["MobilePhone1"].get_text(),
+                    mobile_phone2=self.eWidgets["MobilePhone2"].get_text(),
+                    notes=self.eWidgets["Notes"].get_text(),
+                    preferences={"Distance":self.eWidgets["Distance"].get_text()})
+        
+
+    def closeClient(self, widget):
+        """
+        """
+        self.w.destroy()
+
+
+    def run(self):
+        self.w.show_all()
+        
+    def nothing(self, widget, parametry=None):
+        if parametry:
+            print parametr
 
 
 
