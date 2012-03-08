@@ -37,6 +37,7 @@ CLASSES:
 #
 
 import logging
+import re
 
 logger = logging.getLogger('bd.logging')
 logger.debug("Module '%s' loaded." % __name__)
@@ -48,10 +49,22 @@ def getLogger(name):
   return logging.getLogger('bd.%s'%name)
 
 
-def config():
-  logging.basicConfig()
+def config(level=logging.DEBUG):
+  logging.basicConfig(format='%(asctime)s %(levelname)-8s %(name)-15s |%(message)s|')
   log = logging.getLogger('bd')
-  log.setLevel(logging.DEBUG)
+  log.setLevel(level)
+
+
+
+def rnl(text):
+    """
+    remove new line
+    Function for replacing 'new line' with space and ("foo\nbar" => "foo bar"),
+    and more than one space replace with one space ("foo     bar" => "foo bar").
+    """
+    return re.sub(r'\s{2,}', ' ', text.replace("\n", " "))
+
+
 
 
 

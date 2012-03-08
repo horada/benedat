@@ -52,14 +52,19 @@ INITIAL_CONFIGURATION = (
 
 import sqlite3
 import os
+from pprint import pprint
 import sys
 
 from bd_exceptions import *
 import bd_clients
+import bd_logging
+from bd_logging import rnl
 
 
 # variable with actual object of class Db
 db = None
+# get logger
+log = bd_logging.getLogger(__name__)
 
 
 def getDb(db_file=None, new=False):
@@ -69,10 +74,13 @@ def getDb(db_file=None, new=False):
     in further calls db_file and new have no effect.
     """
     global db
+    log.debug("getDb(db_file='%s', new='%s')"%(db_file, new))
     if not db:
         if db_file:
+            log.debug("db=Db(db_file='%s', new='%s')"%(db_file, new))
             db=Db(db_file=db_file, new=new)
         else:
+            log.error("Chybí cesta k databázovému souboru.")
             raise bdMissingFileError("Chybí cesta k databázovému souboru.")
     return db
 
@@ -92,20 +100,20 @@ class Db():
         
         # if db_file exists - open it otherwise create it
         if os.path.isfile(db_file):
+            log.debug("Opening database '%s'." % db_file)
             self.open_database(db_file)
         else:
+            log.debug("Creating new database '%s'." % db_file)
             self.create_database(db_file)
     
     def __del__(self):
         """
         Closing database on exit.
         """
-        global db
-#        print db
-        if type(self.__dbc) == sqlite3.Connection:
-            self.__dbc.close()
-#        if db is self:
-#            db = None
+        pass
+#        if type(self.__dbc) == sqlite3.Connection:
+#            log.debug("Closing database connection.")
+#            self.__dbc.close()
  
     def execute(self, query, data=None):
         """
@@ -113,16 +121,23 @@ class Db():
         """
         # variable for connection cursor 
         dbcc = self.__dbc.cursor()
-        if data:
-            result = dbcc.execute(query, data)
-        else:
-            result = dbcc.execute(query)
-        return result
+        try:
+            if data:
+                log.debug(rnl("Database cursor execute(query='%s' data='%s')."%(query, data)))
+                result = dbcc.execute(query, data)
+            else:
+                log.debug(rnl("Database cursor execute(query='%s')."%query))
+                result = dbcc.execute(query)
+            return result
+        except sqlite3.Error as err:
+            log.error(err)
+            raise
     
     def commit(self):
         """
         Commit changes to database.
         """
+        log.debug("Database cursor commit().")
         self.__dbc.commit()
     
     def create_database(self, db_file):
@@ -134,6 +149,7 @@ class Db():
             self.__dbc = sqlite3.connect(db_file)
             self.__dbc.text_factory = u
         except sqlite3.OperationalError as e:
+            log.error("Nemohu vytvořit soubor %s! (%s)" % (db_file, e))
             raise bdFileError("Nemohu vytvořit soubor %s! (%s)" % (db_file, e))
 
         # create database schema
@@ -198,6 +214,7 @@ class Db():
             )
             self.commit()
         except sqlite3.Error, e:
+            log.error("Problém s vytvořením databázové struktury: %s" %e)
             raise bdDbError("Problém s vytvořením databázové struktury: %s" %e)
 
         # insert initial data 
@@ -205,6 +222,7 @@ class Db():
             self.updateConfiguration()
             self.commit()
         except sqlite3.Error, e:
+            log.error("Problém s vložením výchozího nastavení: %s" %e)
             raise bdDbError("Problém s vložením výchozího nastavení: %s" %e)
 
     def open_database(self, db_file):
@@ -213,6 +231,7 @@ class Db():
             self.__dbc = sqlite3.connect(db_file)
             self.__dbc.text_factory = u
         except sqlite3.OperationalError as e:
+            log.error("Nemohu otevřít soubor %s! (%s)" % (db_file, e))
             raise bdFileError("Nemohu otevřít soubor %s! (%s)" % (db_file, e))
         self.verification()
 
@@ -220,12 +239,12 @@ class Db():
         """
         Db verification.
         """
-        # TODO: db verification
         try: 
-            print "db_major_version=%s" % self.getConfVal("db_major_version")
-            print "db_version=%s" % self.getConfVal("db_version")
+            log.info("db_major_version=%s" % self.getConfVal("db_major_version"))
+            log.info("db_version=%s" % self.getConfVal("db_version"))
+            # TODO: db verification
         except sqlite3.OperationalError as err:
-            print err
+            log.error(err)
             raise
 
 
@@ -240,6 +259,8 @@ class Db():
             if "DOES_NOT_CONTAIN" == \
                     self.getConfVal(item['name'], "DOES_NOT_CONTAIN"):
                 # database did not contain this item => insert it
+                log.debug("Inserting configuration item setConf(name='%s', value='%s', note='%s')"% \
+                        (item['name'], item['value'], item['note']))
                 self.setConf(item['name'], item['value'], item['note'])
 
     def getConf(self, name=None, pattern_name=None):
@@ -298,6 +319,7 @@ class Db():
         if not result.rowcount:
             result = self.execute('''INSERT INTO configuration
                     (name, value, note) VALUES (:name, :value, :note)''', data)
+        self.commit()
         return result
 
     def setConfVal(self, name, value):
@@ -308,8 +330,11 @@ class Db():
         result = self.execute('''UPDATE configuration 
                 SET value=:value WHERE name=:name''', data)
         if not result.rowcount:
+            log.error("Volba '%s' pro nastavení hodnoty '%s' neexistuje." %\
+                    (name, value))
             raise bdDbError("Volba '%s' pro nastavení hodnoty '%s' neexistuje." %\
                     (name, value))
+        self.commit()
         return True
             
     def delConf(self, name):
@@ -317,10 +342,11 @@ class Db():
         Delete configuration row.
         """
         result = self.execute('''DELETE FROM configuration 
-                WHERE name=?''', name)
+                WHERE name=:name''', {'name':name})
 #        if not result.rowcount:
 #            raise bdDbError("Volba '%s' pro nastavení hodnoty '%s' neexistuje." %\
 #                    (name, value))
+        self.commit()
         return True
  
 
@@ -330,6 +356,7 @@ class Db():
         """
         Add client to database.
         """
+        log.debug(rnl("Adding client to DB: %s" % client))
         result = self.execute('''INSERT INTO clients
                 (first_name, last_name, address, phone, mobile_phone1, mobile_phone2, notes) 
                 VALUES (:first_name, :last_name, :address, 
@@ -342,8 +369,28 @@ class Db():
                     note="%s (%s %s)" % 
                             (key, client.first_name, client.last_name))
                     
-        #TODO: services
         self.commit()
+
+    def updateClient(self, client):
+        """
+        Update client in database.
+        """
+        log.debug(rnl("Updating client in DB: %s" % client))
+        result = self.execute('''UPDATE clients
+                SET first_name=:first_name, last_name=:last_name, address=:address,
+                phone=:phone, mobile_phone1=:mobile_phone1, 
+                mobile_phone2=:mobile_phone2, notes=:notes 
+                WHERE id=:db_id''', 
+                client.getDict())
+        for key, value in client.preferences.iteritems():
+            self.setConf(name="preference_%s-%s" %(client.getDbId(), key),
+                    value=value, 
+                    note="%s (%s %s)" % 
+                            (key, client.first_name, client.last_name))
+                    
+        self.commit()
+
+
 
     def getClients(self):
         """
@@ -371,10 +418,44 @@ class Db():
                     mobile_phone2 = u(row[6]), 
                     notes =         u(row[7]))
             for pref in self.getConf(pattern_name="preference_%s-" % client.db_id):
+                pref['name'] = pref['name'].split('-', 1)[1]
                 client.preferences[pref['name']] = pref['value']
             clients.append(client)
 
         return clients
+
+    def getClient(self, db_id=None):
+        """
+        Get client.
+        """
+        if db_id:
+            result = self.execute('''SELECT id, first_name, last_name, address, 
+                phone, mobile_phone1, mobile_phone2, notes FROM clients
+                WHERE id=:db_id''', {'db_id': str(db_id)})
+        row = result.fetchone()
+        client = bd_clients.Client(
+                db_id =         u(row[0]),
+                first_name =    u(row[1]), 
+                last_name =     u(row[2]), 
+                address =       u(row[3]),
+                phone =         u(row[4]), 
+                mobile_phone1 = u(row[5]),
+                mobile_phone2 = u(row[6]), 
+                notes =         u(row[7]))
+        for pref in self.getConf(pattern_name="preference_%s-" % client.db_id):
+            pref['name'] = pref['name'].split('-', 1)[1]
+            client.preferences[pref['name']] = pref['value']
+
+        return client
+
+    def delClient(self, db_id):
+        """
+        Delete client
+        """
+        result = self.execute('''DELETE FROM clients WHERE id=:db_id''',
+                {'db_id': str(db_id)})
+        self.commit()
+        return True
 
 
 

@@ -36,6 +36,11 @@ CLASSES:
 #
 
 
+# setup logging 
+import bd_logging
+bd_logging.config()
+log = bd_logging.getLogger(__name__)
+log.debug("Start benedat2.py.")
 
 import sys
 try:
@@ -54,8 +59,6 @@ import os
 
 
 import bd_config
-import bd_logging
-bd_logging.config()
 
 
 def main():
@@ -65,13 +68,8 @@ def main():
 
     # load/create configuration
     conf = bd_config.getConfig()
-    # setup logging 
-    log = bd_logging.getLogger(__name__)
-    log.debug("Module '%s' loaded." % __name__)
     
-    # DEBUG:
-    print "last_open_file_backup=%s" % conf.get('main', "last_open_file_backup", None)
-    print "last_open_file=%s" % conf.get('main', "last_open_file", None)
+    log.info("last_open_file=%s" % conf.get('main', "last_open_file", None))
 
 
 
