@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 """
-Module for work with configuration (load and safe to configuration file)
+Module for work with configuration (load and save to configuration file)
 
 Class Config behave as singleton, it is necessary to obtain an instance
 through method Config.getInstance().

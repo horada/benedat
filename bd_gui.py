@@ -11,7 +11,6 @@ FUNCTIONS:
 CLASSES:
 
 """
-
 #
 # BeneDat - program pro výpočet ceny a vytvoření souhrnu za poskytnuté služby 
 #           klientům občanského sdružení BENEDIKTUS (podpora lidí s postižením)
@@ -61,6 +60,7 @@ from pprint import pprint
 import bd_config
 import bd_clients
 import bd_database
+from bd_descriptions import eSettings,teSettings
 import bd_logging
 from bd_logging import rnl
 
@@ -604,6 +604,7 @@ class WRecords():
         # Actual record
         self.actual_record = None
 
+        # TODO:???
         self.services = []
 
         # Window
@@ -615,6 +616,7 @@ class WRecords():
                 "on_wRecords_btNewRecord_clicked": self.newRecord,
                 "on_wRecords_btDeleteRecord_clicked": self.deleteRecord,
                 "on_wRecords_btClose_clicked": self.closeWRecords,
+                "on_wRecords_destroy": self.closeWRecords,
                 "on_wRecords_tbtFilter_toggled": self.nothing,
                 "on_wRecords_cbFilterMonth_changed": self.nothing,
                 "on_wRecords_cbFilterYear_changed": self.nothing,
@@ -752,14 +754,151 @@ class WSettings():
     BeneDat settings window.
     """
     def __init__(self):
+        # Window
         self.wxml = gtk.glade.XML(GLADEFILE, "wSettings")
         self.w = self.wxml.get_widget("wSettings")
 
+        # Signals
+        signals = {
+                "on_wSettings_destroy": self.nothing,
+                "on_wSettings_btCancel_clicked": self.closeWSettings,
+                "on_wSettings_btApply_clicked": self.applyWSettings,
+                "on_wSettings_btSave_clicked": self.saveWSettings,
+                }
+        self.wxml.signal_autoconnect(signals)
+
+        # Widgets
+        self.allWidgets = {}
+        self.ewidgets = (
+                # Editable fields
+                'eHoursLevelOS1',
+                'eHoursLevelOS2',
+                'eHoursLevelChB1',
+                'eHoursLevelChB2',
+                'eTransportPriceFuel',
+                'eTransportExp',
+                'eTransportK',
+                'eTransportEntryRate',
+                'eTransportClientPart',
+                'eTransportPriceChM',
+                'eDietRefreshmentCh',
+                'eDietRefreshmentM',
+                'eDietLunchCh',
+                'eDietLunchM',
+                'eDietBreakfastM',
+                'eDietDinnerM',
+                'eBilletChB1',
+                'eBilletChB2',
+                'eBilletChB3',
+                'eBilletOS',
+                'eSummaryCodeFixed',
+                'eSummaryCodeVariable',
+                'eSummaryTill',
+                'eAccountOS',
+                'eAccountOSBillet',
+                'eAccountChB',
+                'eAccountChBBillet',
+                'eAccountBillet',
+                'eAccountTransportClients',
+                'eAccountRefreshment',
+                'eAccountLunch',
+                'eAccountBreakfast',
+                'eAccountDinner',
+                'eAccountDiet',
+                )
+        widgets = (
+                # TextView
+                'teSummaryAddress',
+                'teSummaryInformation',
+                # Buttons
+                'btCancel',
+                'btApply',
+                'btSave',
+                )
+        for widget in self.ewidgets + widgets:
+            self.allWidgets[widget] = self.wxml.get_widget("wSettings_%s"%widget)
+
+        self.textBuffers = {}
+        for widget in ('teSummaryAddress', 'teSummaryInformation'):
+            w = self.wxml.get_widget("wSettings_%s"%widget)
+            self.textBuffers[widget] = w.get_buffer()
+
+
+        # load configuration and fill fields
+        self.loadSettings()
 
 
     def run(self):
         log.debug("<wSettings>.w.show_all()"%self)
         self.w.show_all()
+
+    def closeWSettings(self, widget):
+        """
+        """
+        log.debug("closeWSettings()")
+        self.w.destroy()
+
+    def applyWSettings(self, widget):
+        """
+        """
+        log.debug("applyWSettings()")
+        self.saveSettings()
+
+    def saveWSettings(self, widget):
+        """
+        """
+        log.debug("saveWSettings()")
+        self.saveSettings()
+        self.closeWSettings(None)
+
+    def saveSettings(self):
+        """
+        """
+        log.debug("saveSettings()")
+        # save Editable fields
+        for widget in self.ewidgets:
+            log.debug("Saving configuration '%s' - %s." % \
+                    (widget, eSettings[widget]))
+            db.setConf(name=widget, \
+                    value=self.allWidgets[widget].get_text(), \
+                    note=eSettings[widget],
+                    commit=False)
+            
+        # save TextView fields
+        for widget in ('teSummaryAddress', 'teSummaryInformation'):
+            db.setConf(name=widget, \
+                    value=self.textBuffers[widget].get_text( \
+                            *self.textBuffers[widget].get_bounds()), \
+                    note=teSettings[widget],
+                    commit=False)
+            
+        db.commit()
+
+    def loadSettings(self):
+        """
+        """
+        log.debug("loadSettings()")
+        # load Editable fields
+        for widget in self.ewidgets:
+            log.debug("Loading configuration '%s' - %s." % \
+                    (widget, eSettings[widget]))
+            self.allWidgets[widget].set_text( \
+                    db.getConfVal(name=widget, default=""))
+            
+        # load TextView fields
+        for widget in ('teSummaryAddress', 'teSummaryInformation'):
+            log.debug("Loading configuration '%s' - %s." % \
+                    (widget, teSettings[widget]))
+            self.textBuffers[widget].set_text( \
+                    db.getConfVal(name=widget, default=""))
+          
+
+
+
+    def nothing(self, widget, parameters=None):
+        log.debug("Do nothing (parameters: %s)"%parameters)
+
+
 
 
 

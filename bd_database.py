@@ -308,7 +308,7 @@ class Db():
         else:
             return default
 
-    def setConf(self, name, value, note=""):
+    def setConf(self, name, value, note="", commit=True):
         """
         Set (or insert) item in (to) configuration.
         """
@@ -319,10 +319,11 @@ class Db():
         if not result.rowcount:
             result = self.execute('''INSERT INTO configuration
                     (name, value, note) VALUES (:name, :value, :note)''', data)
-        self.commit()
+        if commit:
+            self.commit()
         return result
 
-    def setConfVal(self, name, value):
+    def setConfVal(self, name, value, commit=True):
         """
         Set value of item in configuration.
         """
@@ -334,10 +335,11 @@ class Db():
                     (name, value))
             raise bdDbError("Volba '%s' pro nastavení hodnoty '%s' neexistuje." %\
                     (name, value))
-        self.commit()
+        if commit:
+            self.commit()
         return True
             
-    def delConf(self, name):
+    def delConf(self, name, commit=True):
         """
         Delete configuration row.
         """
@@ -346,13 +348,14 @@ class Db():
 #        if not result.rowcount:
 #            raise bdDbError("Volba '%s' pro nastavení hodnoty '%s' neexistuje." %\
 #                    (name, value))
-        self.commit()
+        if commit:
+            self.commit()
         return True
  
 
 
 
-    def addClient(self, client):
+    def addClient(self, client, commit=True):
         """
         Add client to database.
         """
@@ -369,9 +372,10 @@ class Db():
                     note="%s (%s %s)" % 
                             (key, client.first_name, client.last_name))
                     
-        self.commit()
+        if commit:
+            self.commit()
 
-    def updateClient(self, client):
+    def updateClient(self, client, commit=True):
         """
         Update client in database.
         """
@@ -388,7 +392,8 @@ class Db():
                     note="%s (%s %s)" % 
                             (key, client.first_name, client.last_name))
                     
-        self.commit()
+        if commit:
+            self.commit()
 
 
 
@@ -448,13 +453,14 @@ class Db():
 
         return client
 
-    def delClient(self, db_id):
+    def delClient(self, db_id, commit=True):
         """
         Delete client
         """
         result = self.execute('''DELETE FROM clients WHERE id=:db_id''',
                 {'db_id': str(db_id)})
-        self.commit()
+        if commit:
+            self.commit()
         return True
 
 

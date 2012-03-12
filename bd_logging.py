@@ -50,6 +50,7 @@ def getLogger(name):
 
 
 def config(level=logging.DEBUG):
+#def config(level=logging.WARNING):
   logging.basicConfig(format='%(asctime)s %(levelname)-8s %(name)-15s |%(message)s|')
   log = logging.getLogger('bd')
   log.setLevel(level)
