@@ -462,7 +462,7 @@ class WClients():
         clients = db.getClients()
         self.clientsListStore.clear()
         for client in clients:
-            iter = self.clientsListStore.append([
+            self.clientsListStore.append([
                     client.db_id,
                     client.first_name,
                     client.last_name,
@@ -604,8 +604,8 @@ class WRecords():
         # Actual record
         self.actual_record = None
 
-        # TODO:???
-        self.services = []
+        # widgets for services
+        self.services = {}
 
         # Window
         self.wxml = gtk.glade.XML(GLADEFILE, "wRecords")
@@ -623,7 +623,7 @@ class WRecords():
                 "on_wRecords_btClient_clicked": self.clientsMenu,
                 "on_wRecords_btDate_clicked": self.nothing,
                 "on_wRecords_btAddService_clicked": self.addService,
-                "on_wRecords_btSaveRecord_clicked": self.nothing,
+                "on_wRecords_btSaveRecord_clicked": self.saveRecord,
                 }
         self.wxml.signal_autoconnect(signals)
 
@@ -635,6 +635,7 @@ class WRecords():
                 'eClient',
                 'eDate',
                 'tabServices',
+                'btAddService'
                 )
         for widget in widgets:
             self.allWidgets[widget] = self.wxml.get_widget("wRecords_%s"%widget)
@@ -645,10 +646,14 @@ class WRecords():
         # setup completion
         self.clientEntryCompletion()
 
+        # add one "line" for services
+        self.addService(None)
 
+        # put cursor to the eClient field
+        self.allWidgets['eClient'].grab_focus()
 
     def run(self):
-        log.debug("WRecords>.w.show_all()"%self)
+        log.debug("<WRecords>.w.show_all()"%self)
         self.w.show_all()
 
 
@@ -678,6 +683,12 @@ class WRecords():
                     self.actual_client.client.last_name),
                 title="[BeneDat] Dotaz - smazání záznamu")
 
+
+    def saveRecord(self, widget):
+        """
+        Save selected/created record.
+        """
+        log.debug("saveRecord(): %s" % repr(self.actual_record))
 
 
     def createClientsMenu(self):
@@ -709,37 +720,120 @@ class WRecords():
         Set up entry completion for client field.
         """
         completion = gtk.EntryCompletion()
+
+        self.clientsListStore = gtk.ListStore(
+                str, # Full Name
+                )
+        clients = db.getClients()
+        for client in clients:
+            # FirstName LastName
+            self.clientsListStore.append([
+                    "%s %s" % (client.last_name, client.first_name)
+                    ])
+            # LastName FirstName
+            self.clientsListStore.append([
+                    "%s %s" % (client.first_name, client.last_name)
+                    ])
+
         completion.set_model(self.clientsListStore)
-        self.allWidgets['eFirstName'].set_completion(completion)
-        completion.set_text_column(1)
+        self.allWidgets['eClient'].set_completion(completion)
+        completion.set_text_column(0)
         completion.set_minimum_key_length(0)
 
+    def serviceTypeCompletion(self, ewidget):
+        """
+        Set up entry completion for service type entry.
+        """
+        completion = gtk.EntryCompletion()
+
+        servicesListStore = gtk.ListStore(
+                str, # Servyce type
+                )
+        # TODO: - where to find properly services?
+        services = ('OS', 'STD', 'ChB')
+        for service in services:
+            servicesListStore.append([service])
+
+        completion.set_model(servicesListStore)
+        completion.set_text_column(0)
+        completion.set_minimum_key_length(0)
+        ewidget.set_completion(completion)
+
+
+    def serviceFillComboBox(self, cbwidget):
+        """
+        """
+        servicesListStore = gtk.ListStore(str)
+        cbwidget.set_model(servicesListStore)
+        cell = gtk.CellRendererText()
+        cbwidget.pack_start(cell, True)
+        cbwidget.add_attribute(cell, 'text', 0)
+
+        servicesListStore.clear()
+        services = ('OS', 'STD', 'ChB')
+        for service in services:
+            servicesListStore.append([service])
+        cbwidget.set_active(0)
 
 
 
     def addService(self, widget):
         """
-        Add service...
+        Add widget for service ...
         """
+        if self.services:
+            i = max(self.services.keys()) + 1
+        else:
+            i = 0
+        log.debug("Removing widgets for service (id=%s)."%i)
+        top_attach = i+1
+        bottom_attach = i+2
         service = {}
         # service type
         service['type'] = gtk.ComboBox()
-        self.allWidgets['tabServices'].attach(service['type'], 0,1,2,3)
+        self.serviceFillComboBox(service['type'])
+#        service['type'] = gtk.Entry()
+#        service['type'].set_width_chars(4)
+#        service['type'].set_max_length(4)
+#        self.serviceTypeCompletion(service['type'])
+        self.allWidgets['tabServices'].attach(service['type'], \
+                0,1,top_attach, bottom_attach)
         # from time 
         service['from'] = gtk.Entry()
         service['from'].set_width_chars(5)
         service['from'].set_max_length(5)
-        self.allWidgets['tabServices'].attach(service['from'], 1,2,2,3)
+        self.allWidgets['tabServices'].attach(service['from'], \
+                1,2,top_attach, bottom_attach)
         # to time
         service['to'] = gtk.Entry()
         service['to'].set_width_chars(5)
         service['to'].set_max_length(5)
-        self.allWidgets['tabServices'].attach(service['to'], 2,3,2,3)
+        self.allWidgets['tabServices'].attach(service['to'], \
+                2,3,top_attach, bottom_attach)
         # remove button
-        service['type'] = gtk.Button(label="-")
-        self.allWidgets['tabServices'].attach(service['type'], 3,4,2,3)
+        service['remove'] = gtk.Button(label="-")
+        service['remove'].connect('clicked', self.deleteService, i)
+        self.allWidgets['tabServices'].attach(service['remove'], \
+                3,4,top_attach, bottom_attach)
         # show all widgets
         self.allWidgets['tabServices'].show_all()
+        # put cursor to the first added field
+        service['type'].grab_focus()
+        # add service between all services
+        self.services[i]= service
+
+    def deleteService(self, widget, id_):
+        """
+        Delete widgets for service ...
+        """
+        log.debug("Adding widgets for service (id=%s)."%id_)
+        self.allWidgets['tabServices'].remove(self.services[id_]['type'])
+        self.allWidgets['tabServices'].remove(self.services[id_]['from'])
+        self.allWidgets['tabServices'].remove(self.services[id_]['to'])
+        self.allWidgets['tabServices'].remove(self.services[id_]['remove'])
+        self.allWidgets['btAddService'].grab_focus()
+        del self.services[id_]
+
 
 
     def nothing(self, widget, parameters=None):
