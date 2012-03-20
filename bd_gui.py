@@ -55,6 +55,7 @@ except:
     sys.exit(1)
 
 import os
+import time
 from pprint import pprint
 
 import bd_config
@@ -621,7 +622,7 @@ class WRecords():
                 "on_wRecords_cbFilterMonth_changed": self.nothing,
                 "on_wRecords_cbFilterYear_changed": self.nothing,
                 "on_wRecords_btClient_clicked": self.clientsMenu,
-                "on_wRecords_btDate_clicked": self.nothing,
+                "on_wRecords_btDate_clicked": self.calendarWindow,
                 "on_wRecords_btAddService_clicked": self.addService,
                 "on_wRecords_btSaveRecord_clicked": self.saveRecord,
                 }
@@ -704,7 +705,7 @@ class WRecords():
             c = "%s %s" % (client.last_name, client.first_name)
             c_item[c] = gtk.MenuItem("%s %s" % \
                     (client.last_name, client.first_name))
-            c_item[c].connect_object("activate", self.nothing, c)
+            c_item[c].connect_object("activate", self.clientsMenuClicked, c)
             self.MenuClients.append(c_item[c])
 
         self.MenuClients.show_all()
@@ -714,6 +715,15 @@ class WRecords():
         Popup menu with list of clients.
         """
         self.MenuClients.popup(None, None, None, 0, 0)
+
+    def clientsMenuClicked(self, data):
+        """
+        Serve clients menu clicked.
+        """
+        log.debug("clientsMenuClicked('%s')"%data)
+        self.allWidgets['eClient'].set_text(data)
+        self.allWidgets['eDate'].grab_focus()
+
 
     def clientEntryCompletion(self):
         """
@@ -739,6 +749,14 @@ class WRecords():
         self.allWidgets['eClient'].set_completion(completion)
         completion.set_text_column(0)
         completion.set_minimum_key_length(0)
+
+    def calendarWindow(self, widget):
+        """
+        Open window with calendar.
+        """
+        log.debug("calendarWindow")
+        self.allWidgets['eDate'].set_text(dialogCalendar(self.w))
+
 
     def serviceTypeCompletion(self, ewidget):
         """
@@ -996,8 +1014,49 @@ class WSettings():
 
 
 
+class DCalendar:
+    """
+    Calendar window.
+    """
+    def __init__(self, ancestor=None):
+        self.actual = ""
+        self.dialog = gtk.Dialog ("Kalendář", ancestor,
+            gtk.DIALOG_DESTROY_WITH_PARENT | gtk.DIALOG_MODAL, \
+            (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OK, \
+            gtk.RESPONSE_OK))
+        self.calendar = gtk.Calendar()
+        self.dialog.vbox.pack_start(self.calendar, True, True, 0)
+        self.calendar.connect('day_selected_double_click',\
+                self.day_selected_double_click, self.dialog)
+        timestamp = time.localtime()
+        if timestamp:
+            self.calendar.select_month(timestamp[1] - 1, timestamp[0])
+            self.calendar.select_day(timestamp[2])
+        self.dialog.show_all()
+        result = self.dialog.run()
+        if result == gtk.RESPONSE_OK:
+            self.check_date(self.calendar, self.dialog)
+        else:
+            self.dialog.destroy()
 
-class DialogQuestion:
+    def day_selected_double_click(self, widget, dialog):
+        self.check_date(widget, dialog)
+
+    def check_date(self, widget, dialog):
+        (year, month, day) = widget.get_date()
+        self.actual = str(day) + '.' + str(month+1) + '.' + str(year)
+        self.dialog.destroy()
+
+def dialogCalendar(predek = None):
+    """
+    Open window in calendar.
+    """
+    calendar =  DCalendar(predek)
+    return calendar.actual
+
+
+
+class DQuestion:
     """
     Dilog with question.
     """
@@ -1011,7 +1070,7 @@ class DialogQuestion:
         dialog.destroy()
 
 def dialogQuestion(text="", secondary_text="", title="Otázka"):
-    dialog = DialogQuestion(text, secondary_text, title)
+    dialog = DQuestion(text, secondary_text, title)
     return dialog.return_value
 
 
