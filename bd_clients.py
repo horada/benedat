@@ -54,9 +54,9 @@ class Client():
     """
     Class for representation clients.
     """
-    def __init__(self, first_name=None, last_name=None, address=None, 
-            phone=None, mobile_phone1=None, mobile_phone2=None, 
-            notes=None, preferences=None, db_id=None):
+    def __init__(self, first_name='', last_name='', address='',
+            phone='', mobile_phone1='', mobile_phone2='',
+            notes='', preferences='', db_id=''):
         self.__preferences = {}
         self.setFirstName(first_name)
         self.setLastName(last_name)
@@ -93,7 +93,7 @@ class Client():
         s += "notes='%s', " % self.getNotes()
         s += "preferences='%s', " % self.getPreferences()
         s += "db_id='%s')" % self.getDbId()
-        return s   
+        return s
 
     def __getitem__(self, key):
         """
@@ -103,7 +103,7 @@ class Client():
 
     def getDict(self):
         """
-        Return dictionary of clients informations and settings.
+        Return dictionary of client informations and settings.
         """
         data = {}
         data['db_id'] = self['db_id']

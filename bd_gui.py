@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
-
+#-*- coding: utf-8 -*- 
 """
 Gui for BeneDat.
 
@@ -64,6 +63,7 @@ import bd_database
 from bd_descriptions import eSettings,teSettings
 import bd_logging
 from bd_logging import rnl
+import bd_records
 
 
 
@@ -625,6 +625,8 @@ class WRecords():
                 "on_wRecords_btDate_clicked": self.calendarWindow,
                 "on_wRecords_btAddService_clicked": self.addService,
                 "on_wRecords_btSaveRecord_clicked": self.saveRecord,
+                "on_wRecords_eDate_focus_out_event": self.nothing,
+                "on_wRecords_eDate_key_release_event":self.eDate_key_release,
                 }
         self.wxml.signal_autoconnect(signals)
 
@@ -636,7 +638,26 @@ class WRecords():
                 'eClient',
                 'eDate',
                 'tabServices',
-                'btAddService'
+                'btAddService',
+                'eClient',
+                'eDate',
+                'eTransportServiceOther',
+                'eDietOther',
+                'eBilletOther',
+                'chTransportOnService',
+                'chTransportFromService',
+                'chTransportChMo',
+                'chTransportMoCh',
+                'chDietRefreshmentCh',
+                'chDietRefreshmentM',
+                'chDietLunchCh',
+                'chDietLunchM',
+                'chDietBreakfastM',
+                'chDietDinnerM',
+                'chBilletChB1',
+                'chBilletChB2',
+                'chBilletChB3',
+                'chBilletOS',
                 )
         for widget in widgets:
             self.allWidgets[widget] = self.wxml.get_widget("wRecords_%s"%widget)
@@ -690,7 +711,104 @@ class WRecords():
         Save selected/created record.
         """
         log.debug("saveRecord(): %s" % repr(self.actual_record))
+        # check filled fields
+        client = db.getClient(name=self.allWidgets['eClient'].get_text())
+        if not client:
+            return
+        # TODO: check filled fields
 
+        # update existing or add new record
+        if self.actual_record:
+            # update existing record
+            ar = self.actual_record
+            # TODO: update actual record
+        else:
+            # create (add) new record
+            self.actual_record = bd_records.Record(
+                    client = client,
+                    date = self.allWidgets['eDate'].get_text())
+            # insert time records
+            for key in self.services:
+                self.actual_record.addTimeRecord(
+                        service_type=self.services[key]['type']. \
+                                get_active_text(),
+                        time_from=self.services[key]['from'].get_text(),
+                        time_to=self.services[key]['to'].get_text())
+            # insert value records
+            self.actual_record.addValueRecord(
+                    service_type="TSO", 
+                    value=self.allWidgets["eTransportServiceOther"].get_text())
+            self.actual_record.addValueRecord(
+                    service_type="DO", 
+                    value=self.allWidgets["eDietOther"].get_text())
+            self.actual_record.addValueRecord(
+                    service_type="BO", 
+                    value=self.allWidgets["eBilletOther"].get_text())
+            self.actual_record.addValueRecord(
+                    service_type="TOS", 
+                    value=self.allWidgets["chTransportOnService"].get_active())
+            self.actual_record.addValueRecord(
+                    service_type="TFS", 
+                    value=self.allWidgets["chTransportFromService"].get_active())
+            self.actual_record.addValueRecord(
+                    service_type="TChMo", 
+                    value=self.allWidgets["chTransportChMo"].get_active())
+            self.actual_record.addValueRecord(
+                    service_type="TMoCh", 
+                    value=self.allWidgets["chTransportMoCh"].get_active())
+            self.actual_record.addValueRecord(
+                    service_type="DRCh", 
+                    value=self.allWidgets["chDietRefreshmentCh"].get_active())
+            self.actual_record.addValueRecord(
+                    service_type="DRM", 
+                    value=self.allWidgets["chDietRefreshmentM"].get_active())
+            self.actual_record.addValueRecord(
+                    service_type="DLCh", 
+                    value=self.allWidgets["chDietLunchCh"].get_active())
+            self.actual_record.addValueRecord(
+                    service_type="DLM", 
+                    value=self.allWidgets["chDietLunchM"].get_active())
+            self.actual_record.addValueRecord(
+                    service_type="DBM", 
+                    value=self.allWidgets["chDietBreakfastM"].get_active())
+            self.actual_record.addValueRecord(
+                    service_type="DDM", 
+                    value=self.allWidgets["chDietDinnerM"].get_active())
+            self.actual_record.addValueRecord(
+                    service_type="BChB1", 
+                    value=self.allWidgets["chBilletChB1"].get_active())
+            self.actual_record.addValueRecord(
+                    service_type="BChB2", 
+                    value=self.allWidgets["chBilletChB2"].get_active())
+            self.actual_record.addValueRecord(
+                    service_type="BChB3", 
+                    value=self.allWidgets["chBilletChB3"].get_active())
+            self.actual_record.addValueRecord(
+                    service_type="BOS", 
+                    value=self.allWidgets["chBilletOS"].get_active())
+
+######################################
+# TSO       eTransportServiceOther
+# DO        eDietOther
+# BO        eBilletOther
+# TOS       chTransportOnService
+# TFS       chTransportFromService
+# TChMo     chTransportChMo
+# TMoCh     chTransportMoCh
+# DRCh      chDietRefreshmentCh
+# DRM       chDietRefreshmentM
+# DLCh      chDietLunchCh
+# DLM       chDietLunchM
+# DBM       chDietBreakfastM
+# DDM       chDietDinnerM
+# BChB1     chBilletChB1
+# BChB2     chBilletChB2
+# BChB3     chBilletChB3
+# BOS       chBilletOS
+######################################
+            print self.actual_record
+            log.info(rnl('Create new record %s' % repr(self.actual_record)))
+            db.addRecord(self.actual_record)
 
     def createClientsMenu(self):
         """
@@ -755,29 +873,17 @@ class WRecords():
         Open window with calendar.
         """
         log.debug("calendarWindow")
-        self.allWidgets['eDate'].set_text(dialogCalendar(self.w))
+        date = dialogCalendar(self.w)
+        if date:
+            self.allWidgets['eDate'].set_text(date)
 
-
-    def serviceTypeCompletion(self, ewidget):
+    def eDate_key_release(self, widget, parameters):
         """
-        Set up entry completion for service type entry.
         """
-        completion = gtk.EntryCompletion()
-
-        servicesListStore = gtk.ListStore(
-                str, # Servyce type
-                )
-        # TODO: - where to find properly services?
-        services = ('OS', 'STD', 'ChB')
-        for service in services:
-            servicesListStore.append([service])
-
-        completion.set_model(servicesListStore)
-        completion.set_text_column(0)
-        completion.set_minimum_key_length(0)
-        ewidget.set_completion(completion)
-
-
+        if parameters.string in ('+', '-'):
+            widget.set_text(widget.get_text().replace('-','').replace('+',''))
+            # TODO update date
+            
     def serviceFillComboBox(self, cbwidget):
         """
         """
@@ -810,29 +916,29 @@ class WRecords():
         # service type
         service['type'] = gtk.ComboBox()
         self.serviceFillComboBox(service['type'])
-#        service['type'] = gtk.Entry()
-#        service['type'].set_width_chars(4)
-#        service['type'].set_max_length(4)
-#        self.serviceTypeCompletion(service['type'])
         self.allWidgets['tabServices'].attach(service['type'], \
-                0,1,top_attach, bottom_attach)
+                0,1,top_attach, bottom_attach, \
+                xoptions=gtk.FILL, yoptions=gtk.FILL)
         # from time 
         service['from'] = gtk.Entry()
         service['from'].set_width_chars(5)
         service['from'].set_max_length(5)
         self.allWidgets['tabServices'].attach(service['from'], \
-                1,2,top_attach, bottom_attach)
+                1,2,top_attach, bottom_attach, \
+                xoptions=gtk.FILL, yoptions=gtk.FILL)
         # to time
         service['to'] = gtk.Entry()
         service['to'].set_width_chars(5)
         service['to'].set_max_length(5)
         self.allWidgets['tabServices'].attach(service['to'], \
-                2,3,top_attach, bottom_attach)
+                2,3,top_attach, bottom_attach, \
+                xoptions=gtk.FILL, yoptions=gtk.FILL)
         # remove button
-        service['remove'] = gtk.Button(label="-")
+        service['remove'] = gtk.Button(label=" - ")
         service['remove'].connect('clicked', self.deleteService, i)
         self.allWidgets['tabServices'].attach(service['remove'], \
-                3,4,top_attach, bottom_attach)
+                3,4,top_attach, bottom_attach, \
+                xoptions=gtk.FILL, yoptions=gtk.FILL)
         # show all widgets
         self.allWidgets['tabServices'].show_all()
         # put cursor to the first added field

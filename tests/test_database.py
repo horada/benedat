@@ -30,11 +30,13 @@ Unittests for module bd_database.py.
 import os
 import sys
 import unittest
+from pprint import pprint
 
 sys.path.insert(0, os.path.abspath(os.path.join(
         os.path.split(os.path.abspath(sys.argv[0]))[0],'..')))
 import bd_database
 import bd_clients
+import bd_records
 
 
 class DatabaseTest(unittest.TestCase):
@@ -70,7 +72,7 @@ class DatabaseTest(unittest.TestCase):
         client.preferences["aaaa"] = "AAAAA"
         client.preferences["bbbb"] = "BBBBB"
         client.preferences["cccc"] = "CCCCC"
-        db.addClient(client)
+#        db.addClient(client)
         
 #        db.getClients()
         for client in db.getClients():
@@ -84,14 +86,30 @@ class DatabaseTest(unittest.TestCase):
 #            print client.getNotes()
 #            print client.getServices()
 #            print client.getDbId()
-            print client
+#            print client
+            pass
 
  
+    def test_addRecord(self):
+        db = bd_database.getDb("/tmp/tmp.db")
+
+        client = bd_clients.Client(first_name="Jan", last_name="Novák", 
+                address="Horní Dolní 123", phone="123234345", 
+                mobile_phone1="243432445", mobile_phone2="5675676543", 
+                notes="Super poznámka", db_id='1')
+
+        record = bd_records.Record(client, "30.3.2012")
+
+        record.addTimeRecord(record=bd_records.TimeRecord("OS", "10:00", "14:30"))
+        record.addTimeRecord(record=bd_records.TimeRecord("OS", "15:00", "18:30"))
+
+        record.addValueRecord(record=bd_records.ValueRecord("doprava_chm", "50"))
+        record.addValueRecord(record=bd_records.ValueRecord("doprava_mch", "40"))
 
 
+#        db.addRecord(record)
 
-
-
+        pprint(db.getRecords())
 
 
 

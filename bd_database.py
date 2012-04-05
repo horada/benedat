@@ -59,6 +59,7 @@ from bd_exceptions import *
 import bd_clients
 import bd_logging
 from bd_logging import rnl
+import bd_records
 
 
 # variable with actual object of class Db
@@ -191,7 +192,7 @@ class Db():
             )
             # create timed records table 
             self.execute("""
-                CREATE TABLE records_timed(
+                CREATE TABLE records_time(
                     id INTEGER NOT NULL,
                     id_record INTEGER NOT NULL,
                     service TEXT,
@@ -201,13 +202,13 @@ class Db():
                     );                    
             """
             )
-            # create numeric records table 
+            # create value records table 
             self.execute("""
-                CREATE TABLE records_numeric(
+                CREATE TABLE records_value(
                     id INTEGER NOT NULL,
                     id_record INTEGER NOT NULL,
                     service TEXT,
-                    value INTEGER,
+                    value TEXT,
                     PRIMARY KEY (ID)
                     );                    
             """
@@ -429,7 +430,7 @@ class Db():
 
         return clients
 
-    def getClient(self, db_id=None):
+    def getClient(self, db_id=None, name=None):
         """
         Get client.
         """
@@ -437,21 +438,28 @@ class Db():
             result = self.execute('''SELECT id, first_name, last_name, address, 
                 phone, mobile_phone1, mobile_phone2, notes FROM clients
                 WHERE id=:db_id''', {'db_id': str(db_id)})
+        elif name:
+            result = self.execute('''SELECT id, first_name, last_name, address, 
+                phone, mobile_phone1, mobile_phone2, notes FROM clients
+                WHERE first_name||' '||last_name=:name OR 
+                last_name||' '||first_name=:name''', {'name': str(name)})
         row = result.fetchone()
-        client = bd_clients.Client(
-                db_id =         u(row[0]),
-                first_name =    u(row[1]), 
-                last_name =     u(row[2]), 
-                address =       u(row[3]),
-                phone =         u(row[4]), 
-                mobile_phone1 = u(row[5]),
-                mobile_phone2 = u(row[6]), 
-                notes =         u(row[7]))
-        for pref in self.getConf(pattern_name="preference_%s-" % client.db_id):
-            pref['name'] = pref['name'].split('-', 1)[1]
-            client.preferences[pref['name']] = pref['value']
+        if row:
+            client = bd_clients.Client(
+                    db_id =         u(row[0]),
+                    first_name =    u(row[1]), 
+                    last_name =     u(row[2]), 
+                    address =       u(row[3]),
+                    phone =         u(row[4]), 
+                    mobile_phone1 = u(row[5]),
+                    mobile_phone2 = u(row[6]), 
+                    notes =         u(row[7]))
+            for pref in self.getConf(pattern_name="preference_%s-" % client.db_id):
+                pref['name'] = pref['name'].split('-', 1)[1]
+                client.preferences[pref['name']] = pref['value']
 
-        return client
+            return client
+        return None
 
     def delClient(self, db_id, commit=True):
         """
@@ -465,12 +473,106 @@ class Db():
 
 
 
+    def addRecord(self, record, commit=True):
+        """
+        Add record to database.
+        """
+        log.debug(rnl("Adding record to DB: %s" % record))
+        result = self.execute('''INSERT INTO records
+                (client, date)
+                VALUES (:client_id, :date)''',
+                record.getDict())
+        record.setDbId(result.lastrowid)
+        # insert time records
+        for time_record in record.time_records:
+            self.addTimeRecord(record.getDbId(), time_record, commit=False)
+        # insert value records
+        for value_record in record.value_records:
+            print value_record
+            self.addValueRecord(record.getDbId(), value_record, commit=False)
+        # commit changes immediately?
+        if commit:
+            self.commit()
 
+    def addTimeRecord(self, id_record, time_record, commit=True):
+        """
+        Add time record to database.
+        """
+        log.debug(rnl("Adding time record to DB: %s" % time_record))
+        result = self.execute('''INSERT INTO records_time
+                (id_record, service, time_from, time_to)
+                VALUES (:id_record, :service, :time_from, :time_to)''',
+                time_record.getDict(id_record=id_record))
+        time_record.setDbId(result.lastrowid)
+        # commit changes immediately?
+        if commit:
+            self.commit()
 
+    def addValueRecord(self, id_record, value_record, commit=True):
+        """
+        Add value record to database.
+        """
+        log.debug(rnl("Adding value record to DB: %s" % value_record))
+        result = self.execute('''INSERT INTO records_value
+                (id_record, service, value)
+                VALUES (:id_record, :service, :value)''',
+                value_record.getDict(id_record=id_record))
+        value_record.setDbId(result.lastrowid)
+        # commit changes immediately?
+        if commit:
+            self.commit()
 
+    def getRecords(self):
+        """
+        Get records.
+        """
+        records = []
+        result = self.execute('''SELECT id, client, date FROM records''')
+        for row in result:
+            record = bd_records.Record(
+                    db_id =         u(row[0]),
+                    client =        self.getClient(u(row[1])),
+                    date =         u(row[2]))
+            # get time records
+            record.setTimeRecords(self.getTimeRecords(record.db_id))
+            # get value records
+            record.setValueRecords(self.getValueRecords(record.db_id))
+            # append record to list of records
+            records.append(record)
+        return records
 
+    def getTimeRecords(self, id_record):
+        """
+        Get time records related to id_record.
+        """
+        time_records = []
+        result = self.execute('''SELECT id, id_record, service, time_from, time_to
+                FROM records_time WHERE id_record=:id_record''', \
+                {'id_record':str(id_record)})
+        for row in result:
+            time_record = bd_records.TimeRecord(
+                    db_id =         u(row[0]),
+                    service_type =  u(row[2]),
+                    time_from =     u(row[3]),
+                    time_to =       u(row[4]))
+            time_records.append(time_record)
+        return time_records
 
-
+    def getValueRecords(self, id_record):
+        """
+        Get value records related to id_record.
+        """
+        value_records = []
+        result = self.execute('''SELECT id, id_record, service, value
+                FROM records_value WHERE id_record=:id_record''', \
+                {'id_record':str(id_record)})
+        for row in result:
+            value_record = bd_records.ValueRecord(
+                    db_id =         u(row[0]),
+                    service_type =  u(row[2]),
+                    value =         u(row[3]))
+            value_records.append(value_record)
+        return value_records
 
 
 

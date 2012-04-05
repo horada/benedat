@@ -771,6 +771,7 @@
   </widget>
   <widget class="GtkWindow" id="wRecords">
     <property name="title" translatable="yes">Z&#xE1;znamy [BeneDat 2]</property>
+    <property name="icon">Benedat.png</property>
     <signal name="destroy" handler="on_wRecords_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox5">
@@ -860,10 +861,9 @@
             <property name="visible">True</property>
             <property name="spacing">5</property>
             <child>
-              <widget class="GtkVButtonBox" id="vbuttonbox2">
+              <widget class="GtkVBox" id="vbox26">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
-                <property name="layout_style">start</property>
                 <child>
                   <widget class="GtkButton" id="wRecords_btClient">
                     <property name="label" translatable="yes">Klient</property>
@@ -896,16 +896,13 @@
                 </child>
               </widget>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkVButtonBox" id="vbuttonbox3">
+              <widget class="GtkVBox" id="vbox27">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
-                <property name="layout_style">start</property>
                 <child>
                   <widget class="GtkButton" id="wRecords_btDate">
                     <property name="label" translatable="yes">Datum	</property>
@@ -930,6 +927,8 @@
                     <property name="invisible_char">&#x25CF;</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">10</property>
+                    <signal name="focus_out_event" handler="on_wRecords_eDate_focus_out_event"/>
+                    <signal name="key_release_event" handler="on_wRecords_eDate_key_release_event"/>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -939,8 +938,6 @@
                 </child>
               </widget>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -986,7 +983,7 @@
                     <child>
                       <widget class="GtkLabel" id="label71">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">           </property>
+                        <property name="label" translatable="yes">  </property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -997,6 +994,7 @@
                   </widget>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -1051,6 +1049,8 @@
                 </child>
               </widget>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">2</property>
               </packing>
             </child>
@@ -1078,7 +1078,6 @@
               </widget>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">False</property>
                 <property name="position">3</property>
               </packing>
             </child>
@@ -1095,7 +1094,7 @@
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton1">
+                          <widget class="GtkCheckButton" id="wRecords_chTransportOnService">
                             <property name="label" translatable="yes">Doprava na slu&#x17E;bu</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1107,7 +1106,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton3">
+                          <widget class="GtkCheckButton" id="wRecords_chTransportFromService">
                             <property name="label" translatable="yes">Doprava ze slu&#x17E;by</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1119,7 +1118,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton2">
+                          <widget class="GtkCheckButton" id="wRecords_chTransportChMo">
                             <property name="label" translatable="yes">Doprava Ch&gt;Mo</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1131,7 +1130,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton4">
+                          <widget class="GtkCheckButton" id="wRecords_chTransportMoCh">
                             <property name="label" translatable="yes">Doprava Mo&gt;Ch</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1147,7 +1146,7 @@
                             <property name="visible">True</property>
                             <property name="spacing">2</property>
                             <child>
-                              <widget class="GtkEntry" id="entry1">
+                              <widget class="GtkEntry" id="wRecords_eTransportServiceOther">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">&#x25CF;</property>
@@ -1158,7 +1157,7 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label68">
+                              <widget class="GtkLabel" id="transport_label_other">
                                 <property name="visible">True</property>
                                 <property name="xalign">0.10000000149011612</property>
                                 <property name="label" translatable="yes">Doprava v r&#xE1;mci slu&#x17E;by</property>
@@ -1199,7 +1198,7 @@
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton5">
+                          <widget class="GtkCheckButton" id="wRecords_chDietRefreshmentCh">
                             <property name="label" translatable="yes">Ob&#x10D;erstven&#xED; Chot&#x11B;bo&#x159;</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1211,7 +1210,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton6">
+                          <widget class="GtkCheckButton" id="wRecords_chDietRefreshmentM">
                             <property name="label" translatable="yes">Ob&#x10D;erstven&#xED; Modlet&#xED;n</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1223,7 +1222,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton7">
+                          <widget class="GtkCheckButton" id="wRecords_chDietLunchCh">
                             <property name="label" translatable="yes">Ob&#x11B;d Chot&#x11B;bo&#x159;</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1235,7 +1234,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton9">
+                          <widget class="GtkCheckButton" id="wRecords_chDietLunchM">
                             <property name="label" translatable="yes">Ob&#x11B;d Modlet&#xED;n</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1247,7 +1246,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton8">
+                          <widget class="GtkCheckButton" id="wRecords_chDietBreakfastM">
                             <property name="label" translatable="yes">Sn&#xED;dan&#x11B; Modlet&#xED;n</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1259,7 +1258,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton10">
+                          <widget class="GtkCheckButton" id="wRecords_chDietDinnerM">
                             <property name="label" translatable="yes">Ve&#x10D;e&#x159;e Modlet&#xED;n</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1275,7 +1274,7 @@
                             <property name="visible">True</property>
                             <property name="spacing">2</property>
                             <child>
-                              <widget class="GtkEntry" id="entry2">
+                              <widget class="GtkEntry" id="wRecords_eDietOther">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">&#x25CF;</property>
@@ -1327,7 +1326,7 @@
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton11">
+                          <widget class="GtkCheckButton" id="wRecords_chBilletChB1">
                             <property name="label" translatable="yes">Ubytov&#xE1;n&#xED; 1 v r&#xE1;mci ChB</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1339,7 +1338,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton12">
+                          <widget class="GtkCheckButton" id="wRecords_chBilletChB2">
                             <property name="label" translatable="yes">Ubytov&#xE1;n&#xED; 2 v r&#xE1;mci ChB</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1351,7 +1350,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton13">
+                          <widget class="GtkCheckButton" id="wRecords_chBilletChB3">
                             <property name="label" translatable="yes">Ubytov&#xE1;n&#xED; 3 v r&#xE1;mci ChB</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1363,7 +1362,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton14">
+                          <widget class="GtkCheckButton" id="wRecords_chBilletOS">
                             <property name="label" translatable="yes">Ubytov&#xE1;n&#xED; v r&#xE1;mci OS</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1379,7 +1378,7 @@
                             <property name="visible">True</property>
                             <property name="spacing">2</property>
                             <child>
-                              <widget class="GtkEntry" id="entry3">
+                              <widget class="GtkEntry" id="wRecords_eBilletOther">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">&#x25CF;</property>
@@ -1424,6 +1423,8 @@
                 </child>
               </widget>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">4</property>
               </packing>
             </child>
@@ -1532,6 +1533,7 @@
   </widget>
   <widget class="GtkWindow" id="wSummary">
     <property name="title" translatable="yes">Souhrn [BeneDat 2]</property>
+    <property name="icon">Benedat.png</property>
     <signal name="destroy" handler="on_wSummary_destroy"/>
     <child>
       <placeholder/>
@@ -1539,6 +1541,7 @@
   </widget>
   <widget class="GtkWindow" id="wSettings">
     <property name="title" translatable="yes">Nastaven&#xED; [BeneDat 2]</property>
+    <property name="icon">Benedat.png</property>
     <signal name="destroy" handler="on_wSettings_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox6">
