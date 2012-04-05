@@ -849,6 +849,7 @@
               <widget class="GtkTreeView" id="wRecords_tvRecordsTable">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="enable_grid_lines">both</property>
               </widget>
             </child>
           </widget>

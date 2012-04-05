@@ -54,7 +54,7 @@ class Record():
     """
     def __init__(self, client, date, time_records=None, value_records=None, db_id=''):
         self.__time_records = []
-        self.__value_records = []
+        self.__value_records = {}
         self.setClient(client)
         self.setDate(date)
         self.setTimeRecords(time_records)
@@ -131,9 +131,11 @@ class Record():
         return self.__value_records
     def setValueRecords(self, value):
         if type(value) == ValueRecord:
-            self.__value_records.append(value)
-        elif type(value) == list:
+            self.__value_records[value.service_type] = value
+        elif type(value) == dict:
             self.__value_records = value
+        elif type(value) == list:
+            self.__value_records = {vr.service_type:vr for vr in value}
     value_records = property(getValueRecords, setValueRecords)
 
     def addValueRecord(self, **values):
@@ -142,11 +144,11 @@ class Record():
                 - service_type, value
         """
         if values.has_key('record'):
-            self.__value_records.append(values['record'])
+            self.__value_records[values['record'].service_type] = values['record']
         else:
-            nr = ValueRecord(service_type = values['service_type'], \
+            vr = ValueRecord(service_type = values['service_type'], \
                     value = values['value'])
-            self.__value_records.append(nr)
+            self.__value_records[vr.service_type] = vr
 
     def getDbId(self):
         return self.__db_id
@@ -272,6 +274,10 @@ class ValueRecord():
     service_type = property(getServiceType, setServiceType)
 
     def getValue(self):
+        if type(self.__value) == bool:
+            self.__value = int(self.__value)
+        if self.__value == "":
+            self.__value = 0
         return self.__value
     def setValue(self, value):
         self.__value = value

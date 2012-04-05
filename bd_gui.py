@@ -382,6 +382,7 @@ class WClients():
 
         # Prepare and fill table of clients
         self.prepareClientsTable()
+
         # put cursor to the FirstName field
         self.allWidgets['eFirstName'].grab_focus()
 
@@ -391,6 +392,7 @@ class WClients():
         
     def prepareClientsTable(self):
         """
+        Prepare and fill table of clients.
         """
         # 
         self.clientsListStore = gtk.ListStore(
@@ -406,32 +408,32 @@ class WClients():
                 )
         self.allWidgets['tvClientsTable'].set_model(self.clientsListStore)
 
-        self.columns = {}
-        self.columns['id'] = gtk.TreeViewColumn("ID",
+        columns = {}
+        columns['id'] = gtk.TreeViewColumn("ID",
                 gtk.CellRendererText(),
                 text=0)
-        self.columns['firstName'] = gtk.TreeViewColumn("Jméno",
+        columns['firstName'] = gtk.TreeViewColumn("Jméno",
                 gtk.CellRendererText(),
                 text=1)
-        self.columns['lastName'] = gtk.TreeViewColumn("Příjmení",
+        columns['lastName'] = gtk.TreeViewColumn("Příjmení",
                 gtk.CellRendererText(),
                 text=2)
-        self.columns['address'] = gtk.TreeViewColumn("Adresa",
+        columns['address'] = gtk.TreeViewColumn("Adresa",
                 gtk.CellRendererText(),
                 text=3)
-        self.columns['phone'] = gtk.TreeViewColumn("Telefon",
+        columns['phone'] = gtk.TreeViewColumn("Telefon",
                 gtk.CellRendererText(),
                 text=4)
-        self.columns['mobilePhone1'] = gtk.TreeViewColumn("Mobil 1",
+        columns['mobilePhone1'] = gtk.TreeViewColumn("Mobil 1",
                 gtk.CellRendererText(),
                 text=5)
-        self.columns['mobilePhone2'] = gtk.TreeViewColumn("Mobil 2",
+        columns['mobilePhone2'] = gtk.TreeViewColumn("Mobil 2",
                 gtk.CellRendererText(),
                 text=6)
-        self.columns['notes'] = gtk.TreeViewColumn("Poznámka",
+        columns['notes'] = gtk.TreeViewColumn("Poznámka",
                 gtk.CellRendererText(),
                 text=7)
-        self.columns['distance'] = gtk.TreeViewColumn("Vzdálenost",
+        columns['distance'] = gtk.TreeViewColumn("Vzdálenost",
                 gtk.CellRendererText(),
                 text=8)
 
@@ -447,11 +449,11 @@ class WClients():
                 'distance',
                 )
         for column in columns_order:
-            self.allWidgets['tvClientsTable'].append_column(self.columns[column])
+            self.allWidgets['tvClientsTable'].append_column(columns[column])
         
-        # configure searching 
-        self.columns['id'].set_sort_column_id(0)
-        self.columns['lastName'].set_sort_column_id(2)
+        # configure sorting and searching
+        columns['id'].set_sort_column_id(0)
+        columns['lastName'].set_sort_column_id(2)
         self.allWidgets['tvClientsTable'].set_enable_search(True)
         self.allWidgets['tvClientsTable'].set_search_column(2)
         self.fillClientsTable()
@@ -635,6 +637,7 @@ class WRecords():
         widgets = (
                 'cbFilterMonth',
                 'cbFilterYear',
+                'tvRecordsTable',
                 'eClient',
                 'eDate',
                 'tabServices',
@@ -662,6 +665,12 @@ class WRecords():
         for widget in widgets:
             self.allWidgets[widget] = self.wxml.get_widget("wRecords_%s"%widget)
 
+        # connect signal for select row by simple click
+        self.allWidgets['tvRecordsTable'].get_selection().connect('changed',self.cursorChanged)
+
+        # prepare and fill table of records
+#        self.prepareRecordsTable()
+
         # create clients menu
         self.createClientsMenu()
 
@@ -674,9 +683,140 @@ class WRecords():
         # put cursor to the eClient field
         self.allWidgets['eClient'].grab_focus()
 
+        # TODO: this remove, the above uncomment
+        self.prepareRecordsTable()
+
     def run(self):
         log.debug("<WRecords>.w.show_all()"%self)
         self.w.show_all()
+
+    def prepareRecordsTable(self):
+        """
+        Prepare and fill table of records.
+        """
+        log.debug("prepareRecordsTable()")
+        self.recordsListStore = gtk.ListStore(
+                int, # 0 id
+                str, # 1 client (LastName FirstName)
+                str, # 2 date
+                str, # 3 service_type
+                str, # 4 time_from
+                str, # 5 time_to
+                str, # 6 transport
+                str, # 7 diet
+                str, # 8 billet
+                #
+                str, # 9 date for sorting
+                )
+        self.allWidgets['tvRecordsTable'].set_model(self.recordsListStore)
+
+        columns = {}
+        columns['name'] = gtk.TreeViewColumn("Jméno",
+                gtk.CellRendererText(),
+                text=1)
+        columns['date'] = gtk.TreeViewColumn("Datum",
+                gtk.CellRendererText(),
+                text=2)
+        columns['service_type'] = gtk.TreeViewColumn("Služba",
+                gtk.CellRendererText(),
+                text=3)
+        columns['time_from'] = gtk.TreeViewColumn("Čas od",
+                gtk.CellRendererText(),
+                text=4)
+        columns['time_to'] = gtk.TreeViewColumn("Čas do",
+                gtk.CellRendererText(),
+                text=5)
+        columns['transport'] = gtk.TreeViewColumn("Doprava",
+                gtk.CellRendererText(),
+                text=6)
+        columns['diet'] = gtk.TreeViewColumn("Strava",
+                gtk.CellRendererText(),
+                text=7)
+        columns['billet'] = gtk.TreeViewColumn("Ubytování",
+                gtk.CellRendererText(),
+                text=8)
+
+        columns_order = (
+                'name',
+                'date',
+                'service_type',
+                'time_from',
+                'time_to',
+                'transport',
+                'diet',
+                'billet',
+                )
+        for column in columns_order:
+            self.allWidgets['tvRecordsTable'].append_column(columns[column])
+
+        # configure sorting and searching
+        columns['name'].set_sort_column_id(1)
+        columns['date'].set_sort_column_id(9)
+        self.allWidgets['tvRecordsTable'].set_enable_search(True)
+        self.allWidgets['tvRecordsTable'].set_search_column(2)
+        self.fillRecordsTable()
+
+    def fillRecordsTable(self):
+        """
+        Fill records to the table.
+        """
+        log.debug("fillRecordsTable()")
+        records = db.getRecords()
+        self.recordsListStore.clear()
+        for record in records:
+            # prepare time records
+            time_records = {
+                    'service_type': '',
+                    'time_from': '',
+                    'time_to': ''}
+            for tr in record.time_records:
+                time_records['service_type'] += "%s\n" % tr.service_type
+                time_records['time_from'] += "%s\n" % tr.time_from
+                time_records['time_to'] += "%s\n" % tr.time_to
+            # prepare value records
+            def x(val):
+                return "x" if val else "-"
+            vrs = record.value_records
+            value_records = {
+                    'transport': "%s%s%s%s %skč" % (
+                        x(vrs['TOS'].value),
+                        x(vrs['TFS'].value),
+                        x(vrs['TChMo'].value),
+                        x(vrs['TMoCh'].value),
+                        vrs['TSO'].value,
+                        ),
+                    'diet': "%s%s%s%s%s%s %skč" % (
+                        x(vrs['DRCh'].value),
+                        x(vrs['DRM'].value),
+                        x(vrs['DLCh'].value),
+                        x(vrs['DLM'].value),
+                        x(vrs['DBM'].value),
+                        x(vrs['DDM'].value),
+                        vrs['DO'].value,
+                        ),
+                    'billet': "%s%s%s%s %skč" % (
+                        x(vrs['BChB1'].value),
+                        x(vrs['BChB2'].value),
+                        x(vrs['BChB3'].value),
+                        x(vrs['BOS'].value),
+                        vrs['BO'].value,
+                        )}
+
+            # fill records
+            self.recordsListStore.append([
+                    record.db_id,
+                    "%s %s" % (record.client.last_name, record.client.first_name),
+                    "%s" % record.date,
+                    time_records['service_type'].strip(),
+                    time_records['time_from'].strip(),
+                    time_records['time_to'].strip(),
+                    value_records['transport'],
+                    value_records['diet'],
+                    value_records['billet'],
+                    "%s" % record.date,
+                    ])
+
+
 
 
     def closeWRecords(self, widget):
@@ -809,6 +949,7 @@ class WRecords():
             print self.actual_record
             log.info(rnl('Create new record %s' % repr(self.actual_record)))
             db.addRecord(self.actual_record)
+            self.fillRecordsTable()
 
     def createClientsMenu(self):
         """
@@ -957,6 +1098,14 @@ class WRecords():
         self.allWidgets['tabServices'].remove(self.services[id_]['remove'])
         self.allWidgets['btAddService'].grab_focus()
         del self.services[id_]
+
+    def cursorChanged(self, selected):
+        log.debug("cursorChanged(%s)" % selected)
+        (model,iter) = selected.get_selected()
+#        if iter:
+#            record_id = self.recordsListStore.get_value(iter, 0)
+#            self.fillRecordForm(client_id)
+
 
 
 
