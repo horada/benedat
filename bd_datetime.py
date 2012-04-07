@@ -101,7 +101,7 @@ DATE_FORMAT_RE = {"dd.mm.rrrr": re.compile(r'''^\d?\d\.\d?\d\.(\d\d)?\d\d$'''),
     "dd.mm.": re.compile(r'''^\d?\d\.\d?\d\.?$'''),
     "dd/mm": re.compile(r'''^\d?\d\/\d?\d$'''),
     "dd.": re.compile(r'''^\d?\d\.?$'''),
-    "rrr-mm-dd": re.compile(r'''^\d\d\d\d-\d\d-\d\d$''')}
+    "rrrr-mm-dd": re.compile(r'''^\d\d\d\d-\d\d-\d\d$''')}
 
 TIME_FORMAT_RE = {"hh:mm": re.compile(r'''^\d?\d[:.,-]\d?\d$'''),
     "hhmm": re.compile(r'''^\d?\d\d\d$'''),
@@ -147,10 +147,9 @@ class Date():
             self.set(arg)
 
     def __str__(self):
-        return "%d.%d.%d" % (self.date.day, self.date.month, self.date.year)
-    
+        return self.get()   
     def __repr__(self):
-        return "%s('%s')" % (self.__class__, self.date.strftime('%d.%m.%Y'))
+        return "%s('%s')" % (self.__class__, self.get('dd.mm.rrrr'))
 
 
     def set(self, arg):
@@ -197,6 +196,22 @@ class Date():
             self.date = self.date.replace(year=emendYear(arg[0]),
                     month=arg[1], day=arg[2])
 
+    def get(self, format_='d.m.rrrr'):
+        """
+        Return date in selected format:
+            'd.m.rrrr' (default)
+            'dd.mm.rrrr'
+            'rrrr-mm-dd'
+            ''
+        """
+        if format_ == 'd.m.rrrr':
+            return self.date.strftime('%-1d.%-1m.%Y')
+        elif format_ == 'dd.mm.rrrr':
+            return self.date.strftime('%d.%m.%Y')
+        elif format_ == 'rrrr-mm-dd':
+            return self.date.strftime('%Y-%m-%d')
+
+
 
 class Time():
     """
@@ -211,17 +226,22 @@ class Time():
             self.set(arg)
 
     def __str__(self):
-        #return "%d:%0.2d" % (self.time.hour, self.time.minute) 
-        if self.midnight:
-            return "24:00"
-        else:
-            return self.time.strftime('%H:%M') 
+        return self.get()
 
     def __repr__(self):
-        if self.midnight:
-            return "%s('%s')" % (self.__class__, "24:00")
-        else:
-            return "%s('%s')" % (self.__class__, self.time.strftime('%H:%M'))
+        return "%s('%s')" % (self.__class__, self.get())
+
+    def get(self, format_='h:mm'):
+        """
+        Return time in selected format:
+            'h:mm' (default)
+            'hh:mm'
+            ''
+        """
+        if format_ == 'h:mm':
+            return self.time.strftime('%-1H:%M') if not self.midnight else '24:00'
+        elif format_ == 'hh:mm':
+            return self.time.strftime('%H:%M') if not self.midnight else '24:00'
 
     def __add__(a, b):
         """

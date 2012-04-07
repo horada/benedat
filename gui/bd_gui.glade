@@ -1087,9 +1087,10 @@
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkExpander" id="expander3">
+                  <widget class="GtkExpander" id="wRecords_expTravel">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <signal name="activate" handler="on_wRecords_expTravel_activate"/>
                     <child>
                       <widget class="GtkVBox" id="vbox22">
                         <property name="visible">True</property>
@@ -1191,9 +1192,10 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkExpander" id="expander4">
+                  <widget class="GtkExpander" id="wRecords_expDiet">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <signal name="activate" handler="on_wRecords_expDiet_activate"/>
                     <child>
                       <widget class="GtkVBox" id="vbox23">
                         <property name="visible">True</property>
@@ -1319,9 +1321,10 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkExpander" id="expander5">
+                  <widget class="GtkExpander" id="wRecords_expBillet">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <signal name="activate" handler="on_wRecords_expBillet_activate"/>
                     <child>
                       <widget class="GtkVBox" id="vbox24">
                         <property name="visible">True</property>

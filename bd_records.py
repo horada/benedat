@@ -14,6 +14,25 @@ Data in one record:
         - service type 
         - service value
 
+Value records (shortcuts):
+    TSO       eTransportServiceOther
+    DO        eDietOther
+    BO        eBilletOther
+    TOS       chTransportOnService
+    TFS       chTransportFromService
+    TChMo     chTransportChMo
+    TMoCh     chTransportMoCh
+    DRCh      chDietRefreshmentCh
+    DRM       chDietRefreshmentM
+    DLCh      chDietLunchCh
+    DLM       chDietLunchM
+    DBM       chDietBreakfastM
+    DDM       chDietDinnerM
+    BChB1     chBilletChB1
+    BChB2     chBilletChB2
+    BChB3     chBilletChB3
+    BOS       chBilletOS
+
 VARIABLES:
 
 FUNCTIONS:
@@ -86,7 +105,7 @@ class Record():
         data = {}
         data['db_id'] = self['db_id']
         data['client_id'] = self['client']['db_id']
-        data['date'] = str(self['date'])
+        data['date'] = self['date'].get('rrrr-mm-dd')
 #        data['preferences'] = self['preferences']
         return data
 
@@ -124,8 +143,20 @@ class Record():
         else:
             tr = TimeRecord(service_type = values['service_type'], \
                     time_from = values['time_from'], \
-                    time_to = values['time_to'])
+                    time_to = values['time_to'],
+                    db_id=0 if not values.has_key('db_id') else values['db_id'], )
             self.__time_records.append(tr)
+
+    def updateTimeRecord(self, service_type, time_from, time_to, db_id):
+        """
+        Update time record (identified by db_id).
+        """
+        for tr in self.__time_records:
+            if tr.db_id == db_id:
+                tr.setServiceType(service_type)
+                tr.setTimeFrom(time_from)
+                tr.setTimeTo(time_to)
+                break
 
     def getValueRecords(self):
         return self.__value_records
@@ -171,13 +202,13 @@ class TimeRecord():
         self.setDbId(db_id)
 
     def __str__(self):
-        s = "TimeRecord(service_type=%s, time_from=%s, time_to=%s)" % \
-                (self.service_type, self.time_from, self.time_to)
+        s = "TimeRecord(service_type=%s, time_from=%s, time_to=%s, db_id=%s)" % \
+                (self.service_type, self.time_from, self.time_to, self.db_id)
         return s
 
     def __repr__(self):
-        s = "TimeRecord(service_type=%s, time_from=%s, time_to=%s)" % \
-                (self.service_type, self.time_from, self.time_to)
+        s = "TimeRecord(service_type=%s, time_from=%s, time_to=%s, db_id=%s)" % \
+                (self.service_type, self.time_from, self.time_to, self.db_id)
         return s
 
     def __getitem__(self, key):
@@ -194,8 +225,8 @@ class TimeRecord():
         data['db_id'] = self['db_id']
         data['id_record'] = id_record
         data['service'] = self['service_type']
-        data['time_from'] = str(self['time_from'])
-        data['time_to'] = str(self['time_to'])
+        data['time_from'] = self['time_from'].get('hh:mm')
+        data['time_to'] = self['time_to'].get('hh:mm')
         return data
 
     def getServiceType(self):

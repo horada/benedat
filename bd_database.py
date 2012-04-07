@@ -406,14 +406,6 @@ class Db():
                 phone, mobile_phone1, mobile_phone2, notes FROM clients''')
         clients = []
         for row in result:
-            #print "%s" % row[0]
-            #print "%s" % row[1]
-            #print "%s" % row[2]
-            #print "%s" % row[3]
-            #print "%s" % row[4]
-            #print "%s" % row[5]
-            #print "%s" % row[6]
-            #print "%s" % row[7]
             client = bd_clients.Client(
                     db_id =         u(row[0]),
                     first_name =    u(row[1]), 
@@ -487,12 +479,40 @@ class Db():
         for time_record in record.time_records:
             self.addTimeRecord(record.getDbId(), time_record, commit=False)
         # insert value records
-        for value_record in record.value_records:
-            print value_record
+        for value_record in record.value_records.values():
             self.addValueRecord(record.getDbId(), value_record, commit=False)
         # commit changes immediately?
         if commit:
             self.commit()
+
+    def updateRecord(self, record, commit=True):
+        """
+        Update record in database.
+        """
+        log.debug(rnl("Updating record in DB: %s" % record))
+        result = self.execute('''UPDATE records
+                SET client=:client_id, date=:date
+                WHERE id=:db_id''',
+                record.getDict())
+        
+        # update (or insert) time records
+        for time_record in record.time_records:
+            if time_record.getDbId():
+                # update time record
+                self.updateTimeRecord(record.getDbId(), time_record, commit=False)
+            else:
+                # insert time record
+                self.addTimeRecord(record.getDbId(), time_record, commit=False)
+        # update value records
+        for value_record in record.value_records.values():
+            self.updateValueRecord(record.getDbId(), value_record, commit=False)
+        # commit changes immediately?
+        if commit:
+            self.commit()
+
+
+
+
 
     def addTimeRecord(self, id_record, time_record, commit=True):
         """
@@ -508,6 +528,21 @@ class Db():
         if commit:
             self.commit()
 
+    def updateTimeRecord(self, id_record, time_record, commit=True):
+        """
+        Update time record in database.
+        """
+        log.debug(rnl("Update time record in DB: %s" % time_record))
+        result = self.execute('''UPDATE records_time
+                SET id_record=:id_record, service=:service, 
+                time_from=:time_from, time_to=:time_to
+                WHERE id=:db_id''',
+                time_record.getDict(id_record=id_record))
+        # commit changes immediately?
+        if commit:
+            self.commit()
+
+
     def addValueRecord(self, id_record, value_record, commit=True):
         """
         Add value record to database.
@@ -518,6 +553,19 @@ class Db():
                 VALUES (:id_record, :service, :value)''',
                 value_record.getDict(id_record=id_record))
         value_record.setDbId(result.lastrowid)
+        # commit changes immediately?
+        if commit:
+            self.commit()
+
+    def updateValueRecord(self, id_record, value_record, commit=True):
+        """
+        Update value record in database.
+        """
+        log.debug(rnl("Update value record in DB: %s" % value_record))
+        result = self.execute('''UPDATE records_value
+                SET value=:value
+                WHERE id_record=:id_record AND service=:service''',
+                value_record.getDict(id_record=id_record))
         # commit changes immediately?
         if commit:
             self.commit()
@@ -541,13 +589,33 @@ class Db():
             records.append(record)
         return records
 
+    def getRecord(self, db_id=None):
+        """
+        Get record.
+        """
+        if db_id:
+            result = self.execute('''SELECT id, client, date FROM records 
+                    WHERE id=:db_id''', {'db_id':str(db_id)})
+        row = result.fetchone()
+        record = bd_records.Record(
+                db_id =     u(row[0]),
+                client =    self.getClient(u(row[1])),
+                date =      u(row[2]))
+        # get time records
+        record.setTimeRecords(self.getTimeRecords(db_id))
+        # get value records
+        record.setValueRecords(self.getValueRecords(db_id))
+        return record
+
+
     def getTimeRecords(self, id_record):
         """
         Get time records related to id_record.
         """
         time_records = []
         result = self.execute('''SELECT id, id_record, service, time_from, time_to
-                FROM records_time WHERE id_record=:id_record''', \
+                FROM records_time WHERE id_record=:id_record 
+                ORDER BY time_from''', \
                 {'id_record':str(id_record)})
         for row in result:
             time_record = bd_records.TimeRecord(
@@ -574,7 +642,56 @@ class Db():
             value_records.append(value_record)
         return value_records
 
+    def deleteRecord(self, db_id=None, commit=True):
+        """
+        Delete record...
+        """
+        if db_id:
+            log.debug("Removing record (db_id=%s)."%db_id)
+            result = self.execute('''DELETE FROM records
+                    WHERE id=:db_id''', {'db_id':db_id})
+            self.deleteTimeRecord(id_record=db_id, commit=False)
+            self.deleteValueRecord(id_record=db_id, commit=False)
+        # commit changes immediately?
+        if commit:
+            self.commit()
 
+    def deleteTimeRecord(self, db_id=None, id_record=None, commit=True):
+        """
+        Delete time record...
+        """
+        if db_id:
+            log.debug("Removing time record (db_id=%s)."%db_id)
+            result = self.execute('''DELETE FROM records_time
+                    WHERE id=:db_id''', {'db_id':db_id})
+        elif id_record:
+            log.debug("Removing time record (id_record=%s)."%id_record)
+            result = self.execute('''DELETE FROM records_time
+                    WHERE id_record=:id_record''', {'id_record':id_record})
+        # commit changes immediately?
+        if commit:
+            self.commit()
+
+    def deleteValueRecord(self, db_id=None, id_record=None, service=None, \
+            commit=True):
+        """
+        Delete value record...
+        """
+        if db_id:
+            log.debug("Removing value record (db_id=%s)."%db_id)
+            result = self.execute('''DELETE FROM records_value
+                    WHERE id=:db_id''', {'db_id':db_id})
+        elif id_record:
+            log.debug("Removing value record (id_record=%s)."%id_record)
+            result = self.execute('''DELETE FROM records_value
+                    WHERE id_record=:id_record''', {'id_record':id_record})
+        elif service:
+            log.debug("Removing value record (service=%s)."%service)
+            result = self.execute('''DELETE FROM records_value
+                    WHERE service=:service''', {'service':service})
+        # commit changes immediately?
+        if commit:
+            self.commit()
 
 
 
