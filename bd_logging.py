@@ -38,22 +38,24 @@ CLASSES:
 
 import logging
 import re
+import sys
 
 logger = logging.getLogger('bd.logging')
 logger.debug("Module '%s' loaded." % __name__)
 
 def getLogger(name):
-  """
-  return logger
-  """
-  return logging.getLogger('bd.%s'%name)
+    """
+    return logger
+    """
+    return logging.getLogger('bd.%s'%name)
 
 
-def config(level=logging.DEBUG):
-#def config(level=logging.WARNING):
-  logging.basicConfig(format='%(asctime)s %(levelname)-8s %(name)-15s |%(message)s|')
-  log = logging.getLogger('bd')
-  log.setLevel(level)
+def config(level=logging.WARNING):
+    if '--debug' in sys.argv:
+        level = logging.DEBUG
+    logging.basicConfig(format='%(asctime)s %(levelname)-8s %(name)-15s |%(message)s|')
+    log = logging.getLogger('bd')
+    log.setLevel(level)
 
 
 

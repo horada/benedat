@@ -570,12 +570,27 @@ class Db():
         if commit:
             self.commit()
 
-    def getRecords(self):
+    def getRecords(self, year=None, month=None):
         """
         Get records.
         """
         records = []
-        result = self.execute('''SELECT id, client, date FROM records''')
+        where = ''
+        where_data = {}
+        if year:
+            if where:
+                where += " AND" 
+            where += " strftime('%Y', date)=:year"
+            where_data['year'] = year
+        if month:
+            if where:
+                where += " AND" 
+            where += " strftime('%m', date)=:month"
+            where_data['month'] = month
+        if where:
+            where = "WHERE %s" % where
+        result = self.execute('''SELECT id, client, date FROM records %s''' %  \
+                where, where_data)
         for row in result:
             record = bd_records.Record(
                     db_id =         u(row[0]),
@@ -694,6 +709,17 @@ class Db():
             self.commit()
 
 
+    def getRecordsYears(self):
+        """
+        Return list of years containing records.
+        """
+        log.debug("getRecordsYears()")
+        years = []
+        result = self.execute('''SELECT strftime('%Y', date) AS year 
+                FROM records GROUP BY year''')
+        for row in result:
+            years.append(row[0])
+        return years
 
 
 

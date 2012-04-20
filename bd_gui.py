@@ -60,6 +60,7 @@ from pprint import pprint
 import bd_config
 import bd_clients
 import bd_database
+import bd_datetime
 from bd_descriptions import eSettings,teSettings
 import bd_logging
 from bd_logging import rnl
@@ -134,6 +135,7 @@ class WMain():
         """
         Exit BeneDat.
         """
+        db.commit()
         log.debug('gtk.main_quit()')
         gtk.main_quit()
 
@@ -621,9 +623,9 @@ class WRecords():
                 "on_wRecords_btDeleteRecord_clicked": self.deleteRecord,
                 "on_wRecords_btClose_clicked": self.closeWRecords,
                 "on_wRecords_destroy": self.closeWRecords,
-                "on_wRecords_tbtFilter_toggled": self.nothing,
-                "on_wRecords_cbFilterMonth_changed": self.nothing,
-                "on_wRecords_cbFilterYear_changed": self.nothing,
+                "on_wRecords_tbtFilter_toggled": self.filterChanged,
+                "on_wRecords_cbFilterMonth_changed": self.filterChanged,
+                "on_wRecords_cbFilterYear_changed": self.filterChanged,
                 "on_wRecords_btClient_clicked": self.clientsMenu,
                 "on_wRecords_btDate_clicked": self.calendarWindow,
                 "on_wRecords_btAddService_clicked": self.addService,
@@ -639,6 +641,7 @@ class WRecords():
         # Widgets
         self.allWidgets = {}
         widgets = (
+                'tbtFilter',
                 'cbFilterMonth',
                 'cbFilterYear',
                 'tvRecordsTable',
@@ -672,14 +675,20 @@ class WRecords():
         for widget in widgets:
             self.allWidgets[widget] = self.wxml.get_widget("wRecords_%s"%widget)
 
+        self.recordsListStore = None
+
+        # prepare filter
+        self.loadFilter()
+
         # connect signal for select row by simple click
         self.allWidgets['tvRecordsTable'].get_selection().connect('changed',self.cursorChanged)
 
-        # prepare and fill table of records
-        self.prepareRecordsTable()
-
         # create clients menu
         self.createClientsMenu()
+
+        # fill filter combo boxes
+#        self.fillComboBoxFilterMonth()
+#        self.fillComboBoxFilterYear()
 
         # setup completion
         self.clientEntryCompletion()
@@ -693,6 +702,71 @@ class WRecords():
     def run(self):
         log.debug("<WRecords>.w.show_all()"%self)
         self.w.show_all()
+
+    def fillComboBoxFilterMonth(self, month=''):
+        """
+        Fill combo box for filter (month).
+        """
+        monthListStore = gtk.ListStore(str, str)
+        self.allWidgets['cbFilterMonth'].set_model(monthListStore)
+        cell = gtk.CellRendererText()
+        self.allWidgets['cbFilterMonth'].pack_start(cell, True)
+        self.allWidgets['cbFilterMonth'].add_attribute(cell, 'text', 1)
+        monthListStore.clear()
+        months =  {
+                ''  : '',
+                '01': 'Leden',
+                '02': 'Únor',
+                '03': 'Březen',
+                '04': 'Duben',
+                '05': 'Květen',
+                '06': 'Červen',
+                '07': 'Červenec',
+                '08': 'Srpen',
+                '09': 'Září',
+                '10': 'Říjen',
+                '11': 'Listopad',
+                '12': 'Prosinec'}
+        mkeys = months.keys()
+        mkeys.sort()
+        for month_ in mkeys:
+            monthListStore.append([month_, months[month_]])
+        if month:
+            i = 0
+            for m in monthListStore:
+                if m[0] == month:
+                    break
+                else:
+                    i+=1
+            self.allWidgets['cbFilterMonth'].set_active(i)
+
+    def fillComboBoxFilterYear(self, year=None):
+        """
+        Fill combo box for filter (year).
+        """
+        yearListStore = gtk.ListStore(str)
+        self.allWidgets['cbFilterYear'].set_model(yearListStore)
+        cell = gtk.CellRendererText()
+        self.allWidgets['cbFilterYear'].pack_start(cell, True)
+        self.allWidgets['cbFilterYear'].add_attribute(cell, 'text', 0)
+        yearListStore.clear()
+        years = db.getRecordsYears()
+        this_year = "%s" % bd_datetime.Date().date.year
+        if not this_year in years:
+            years.append(this_year)
+        years.sort()
+        for year_ in years:
+            yearListStore.append([year_])
+        if year:
+            i = 0
+            for y in yearListStore:
+                if y[0] == year:
+                    break
+                else:
+                    i+=1
+            self.allWidgets['cbFilterYear'].set_active(i)
+
+
 
     def prepareRecordsTable(self):
         """
@@ -887,7 +961,17 @@ class WRecords():
         Fill records to the table.
         """
         log.debug("fillRecordsTable()")
-        records = db.getRecords()
+        if self.recordsListStore is None:
+            # prepare and fill table of records
+            self.prepareRecordsTable()
+
+        if self.allWidgets['tbtFilter'].get_active():
+            records = db.getRecords( \
+                    year=self.allWidgets['cbFilterYear'].get_active_text(), \
+                    month=self.allWidgets['cbFilterMonth'].get_active_text())
+        else:
+            records = db.getRecords()
+
         self.recordsListStore.clear()
         for record in records:
             # prepare time records
@@ -944,6 +1028,9 @@ class WRecords():
         """
         log.debug("newRecord()")
         self.actual_record = None
+        self.clearRecordForm()
+        # put cursor to the eClient field
+        self.allWidgets['eClient'].grab_focus()
 
     def deleteRecord(self, widget):
         """
@@ -952,10 +1039,11 @@ class WRecords():
         log.debug("deleteRecord(): %s" % repr(self.actual_record))
         if not self.actual_record:
             return
-        result = dialogQuestion(text="Opravdu si přejete smazat záznam:",
-                secondary_text="%s %s" % (self.actual_record.client.first_name, 
-                    self.actual_client.client.last_name),
-                title="[BeneDat] Dotaz - smazání záznamu")
+        #TODO:
+#        result = dialogQuestion(text="Opravdu si přejete smazat záznam:",
+#                secondary_text="%s %s" % (self.actual_record.client.first_name, 
+#                    self.actual_record.record.last_name),
+#                title="[BeneDat] Dotaz - smazání záznamu")
 
 
     def saveRecord(self, widget):
@@ -1059,13 +1147,14 @@ class WRecords():
             # update existing record
             log.info(rnl('Update record %s' % repr(self.actual_record)))
             db.updateRecord(self.actual_record)
-            self.fillRecordsTable()
         else:
             # create (add) new record
             log.info(rnl('Create new record %s' % repr(self.actual_record)))
             db.addRecord(self.actual_record)
-            self.fillRecordsTable()
-        # TODO clear input fields (form)
+
+        self.fillRecordsTable()
+        # clear input fields (form)
+        self.clearRecordForm()
 
 
     def createClientsMenu(self):
@@ -1142,8 +1231,9 @@ class WRecords():
             widget.set_text(widget.get_text().replace('-','').replace('+',''))
             # TODO update date
             
-    def serviceFillComboBox(self, cbwidget):
+    def fillComboBoxService(self, cbwidget):
         """
+        Fill combo box field for services (OS, STD, ChB)
         """
         servicesListStore = gtk.ListStore(str)
         cbwidget.set_model(servicesListStore)
@@ -1173,7 +1263,7 @@ class WRecords():
         service = {}
         # service type
         service['type'] = gtk.ComboBox()
-        self.serviceFillComboBox(service['type'])
+        self.fillComboBoxService(service['type'])
         self.allWidgets['tabServices'].attach(service['type'], \
                 0,1,top_attach, bottom_attach, \
                 xoptions=gtk.FILL, yoptions=gtk.FILL)
@@ -1181,6 +1271,7 @@ class WRecords():
         service['from'] = gtk.Entry()
         service['from'].set_width_chars(5)
         service['from'].set_max_length(5)
+        service['from'].set_activates_default(True)
         self.allWidgets['tabServices'].attach(service['from'], \
                 1,2,top_attach, bottom_attach, \
                 xoptions=gtk.FILL, yoptions=gtk.FILL)
@@ -1188,6 +1279,7 @@ class WRecords():
         service['to'] = gtk.Entry()
         service['to'].set_width_chars(5)
         service['to'].set_max_length(5)
+        service['to'].set_activates_default(True)
         self.allWidgets['tabServices'].attach(service['to'], \
                 2,3,top_attach, bottom_attach, \
                 xoptions=gtk.FILL, yoptions=gtk.FILL)
@@ -1203,12 +1295,19 @@ class WRecords():
         service['type'].grab_focus()
         service['db_id'] = 0
         
-        # Fill time_record to prepared field
-        if time_record:
+        # Fill time_record to prepared field 
+        if time_record: 
             log.debug("Fill time_record to prepared fields (time_record=%s)." % \
                     time_record)
-            # select service type (TODO)
-#            service['type'].
+            # select service type
+            i = 0
+            for type_ in service['type'].get_model():
+                if type_[0] == time_record.getServiceType():
+                    break
+                else:
+                    i+=1
+            service['type'].set_active(i)
+            #
             service['from'].set_text(time_record.time_from.get())
             service['to'].set_text(time_record.time_to.get())
             service['db_id'] = time_record.db_id
@@ -1222,13 +1321,8 @@ class WRecords():
         """
         log.debug("Removing widgets for service (id=%s)."%id_)
         if from_db:
-            print "==="*20
-            pprint(self.time_records_to_remove)
             if self.services[id_]['db_id']:
                 self.time_records_to_remove.append(self.services[id_]['db_id'])
-                print "---"*20
-                pprint(self.time_records_to_remove)
-                print "==="*20
         self.allWidgets['tabServices'].remove(self.services[id_]['type'])
         self.allWidgets['tabServices'].remove(self.services[id_]['from'])
         self.allWidgets['tabServices'].remove(self.services[id_]['to'])
@@ -1302,6 +1396,41 @@ class WRecords():
         self.allWidgets["chBilletOS"].set_active(
                 self.actual_record.value_records["BOS"].value)
 
+    def clearRecordForm(self):
+        log.debug("clearRecordForm()")
+        editable_fields = (
+                "eClient",
+                "eDate",
+                'eTransportServiceOther',
+                'eDietOther',
+                'eBilletOther',
+                )
+        for e in editable_fields:
+            self.allWidgets[e].set_text('')
+        fields = (
+                'chTransportOnService',
+                'chTransportFromService',
+                'chTransportChMo',
+                'chTransportMoCh',
+                'chDietRefreshmentCh',
+                'chDietRefreshmentM',
+                'chDietLunchCh',
+                'chDietLunchM',
+                'chDietBreakfastM',
+                'chDietDinnerM',
+                'chBilletChB1',
+                'chBilletChB2',
+                'chBilletChB3',
+                'chBilletOS',
+                )
+        for e in fields:
+            self.allWidgets[e].set_active(False)
+
+        # remove all time record fields
+        self.deleteAllServices()
+        #
+        self.addService(widget=None)
+        self.fillRecordsTable()
 
     def expTravel_activate(self, widget):
         self.allWidgets['expDiet'].set_expanded(False)
@@ -1312,6 +1441,43 @@ class WRecords():
     def expBillet_activate(self, widget):
         self.allWidgets['expDiet'].set_expanded(False)
         self.allWidgets['expTravel'].set_expanded(False)
+
+
+    def filterChanged(self, widget):
+        """
+        Reload records table when filter is changed.
+        """
+        self.fillRecordsTable()
+        self.saveFilter()
+
+    def saveFilter(self):
+        """
+        Save filter settings.
+        """
+        log.debug("saveFilter()")
+        db.setConf("WRecords_tbtFilter", \
+                int(self.allWidgets['tbtFilter'].get_active()), \
+                "Filter v okně záznamů.", commit=False)
+        if self.allWidgets['cbFilterYear'].get_model():
+            db.setConf("WRecords_cbFilterYear", \
+                    self.allWidgets['cbFilterYear'].get_active_text(), \
+                    "Filter v okně záznamů - rok.", commit=False)
+        if self.allWidgets['cbFilterMonth'].get_model():
+            db.setConf("WRecords_cbFilterMonth", \
+                    self.allWidgets['cbFilterMonth'].get_active_text(), \
+                    "Filter v okně záznamů - měsíc.", commit=False)
+
+    def loadFilter(self):
+        """
+        Load filter settings.
+        """
+        self.allWidgets['tbtFilter'].set_active( \
+                bool(int(db.getConfVal('WRecords_tbtFilter', 1))))
+        this_year = "%s" % bd_datetime.Date().date.year
+        self.fillComboBoxFilterYear( \
+                db.getConfVal('WRecords_cbFilterYear', this_year))
+        self.fillComboBoxFilterMonth( \
+                db.getConfVal('WRecords_cbFilterMonth', ''))
 
 
     def nothing(self, widget, parameters=None):
