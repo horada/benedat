@@ -124,6 +124,50 @@ class DatePublicInterfaceTest(unittest.TestCase):
         self.assertEqual(str(d), 
                 datetime.date.today().strftime('2.%-1m.%Y'))
 
+    def test_plusminus(self):
+        d = bd_datetime.Date('21.2.2012')
+        d.set("+")
+        self.assertEqual(d.get(), "22.2.2012")
+        d.set("-")
+        d.set("-")
+        self.assertEqual(d.get(), "20.2.2012")
+
+        d.set("28.2.2012")
+        self.assertEqual(d.get(), "28.2.2012")
+        d.set("+")
+        self.assertEqual(d.get(), "29.2.2012")
+        d.set("+")
+        self.assertEqual(d.get(), "1.3.2012")
+        d.set("+")
+        self.assertEqual(d.get(), "2.3.2012")
+        d.set("-")
+        self.assertEqual(d.get(), "1.3.2012")
+        d.set("-")
+        self.assertEqual(d.get(), "29.2.2012")
+        d.set("-")
+        self.assertEqual(d.get(), "28.2.2012")
+
+        d.set("31.3.2012")
+        self.assertEqual(d.get(), "31.3.2012")
+        d.set("+")
+        self.assertEqual(d.get(), "1.4.2012")
+        d.set("-")
+        self.assertEqual(d.get(), "31.3.2012")
+
+        d.set("31.12.2011")
+        self.assertEqual(d.get(), "31.12.2011")
+        d.set("+")
+        self.assertEqual(d.get(), "1.1.2012")
+        d.set("+")
+        self.assertEqual(d.get(), "2.1.2012")
+        d.set("-")
+        self.assertEqual(d.get(), "1.1.2012")
+        d.set("-")
+        self.assertEqual(d.get(), "31.12.2011")
+        d.set("-")
+        self.assertEqual(d.get(), "30.12.2011")
+
+
 
 
 class TimePublicInterfaceTest(unittest.TestCase):

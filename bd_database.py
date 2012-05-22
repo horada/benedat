@@ -340,7 +340,7 @@ class Db():
             self.commit()
         return True
             
-    def delConf(self, name, commit=True):
+    def deleteConf(self, name, commit=True):
         """
         Delete configuration row.
         """
@@ -453,7 +453,7 @@ class Db():
             return client
         return None
 
-    def delClient(self, db_id, commit=True):
+    def deleteClient(self, db_id, commit=True):
         """
         Delete client
         """

@@ -101,7 +101,9 @@ DATE_FORMAT_RE = {"dd.mm.rrrr": re.compile(r'''^\d?\d\.\d?\d\.(\d\d)?\d\d$'''),
     "dd.mm.": re.compile(r'''^\d?\d\.\d?\d\.?$'''),
     "dd/mm": re.compile(r'''^\d?\d\/\d?\d$'''),
     "dd.": re.compile(r'''^\d?\d\.?$'''),
-    "rrrr-mm-dd": re.compile(r'''^\d\d\d\d-\d\d-\d\d$''')}
+    "rrrr-mm-dd": re.compile(r'''^\d\d\d\d-\d\d-\d\d$'''),
+    "+": re.compile(r'''^\+$'''),
+    "-": re.compile(r'''^\-$''')}
 
 TIME_FORMAT_RE = {"hh:mm": re.compile(r'''^\d?\d[:.,-]\d?\d$'''),
     "hhmm": re.compile(r'''^\d?\d\d\d$'''),
@@ -168,8 +170,10 @@ class Date():
         """
         # remove any dot at the end
 #        arg = arg.rstrip('.')
-        
-        if DATE_FORMAT_RE["dd.mm.rrrr"].match(arg):
+        if type(arg) == datetime.date:
+            self.date = arg
+
+        elif DATE_FORMAT_RE["dd.mm.rrrr"].match(arg):
             arg = map(int, arg.split('.'))
             self.date = self.date.replace(year=emendYear(arg[2]),
                     month=arg[1], day=arg[0])
@@ -196,6 +200,12 @@ class Date():
             self.date = self.date.replace(year=emendYear(arg[0]),
                     month=arg[1], day=arg[2])
 
+        elif DATE_FORMAT_RE["+"].match(arg):
+            self.plusDays(1)
+
+        elif DATE_FORMAT_RE["-"].match(arg):
+            self.plusDays(-1)
+
     def get(self, format_='d.m.rrrr'):
         """
         Return date in selected format:
@@ -211,6 +221,10 @@ class Date():
         elif format_ == 'rrrr-mm-dd':
             return self.date.strftime('%Y-%m-%d')
 
+    def plusDays(self, days):
+        """
+        """
+        self.set(datetime.date.fromordinal(self.date.toordinal()+days))
 
 
 class Time():

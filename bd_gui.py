@@ -144,7 +144,7 @@ class WMain():
         Open window for records.
         """
         log.debug('openWRecords()')
-        windowRecords= WRecords()
+        windowRecords = WRecords()
         windowRecords.run()
 
     def openWSummary(self, widget):
@@ -152,7 +152,8 @@ class WMain():
         Open window for summary.
         """
         log.debug('openWSummary()')
-        pass
+        windowSummary = WSummary()
+        windowSummary.run()
 
     def openWClients(self, widget):
         """
@@ -384,6 +385,9 @@ class WClients():
 
         # Prepare and fill table of clients
         self.prepareClientsTable()
+        # sort records table by client
+        self.clientsListStore.set_sort_column_id(1, gtk.SORT_ASCENDING)
+        self.clientsListStore.set_sort_column_id(2, gtk.SORT_ASCENDING)
 
         # put cursor to the FirstName field
         self.allWidgets['eFirstName'].grab_focus()
@@ -456,6 +460,7 @@ class WClients():
         # configure sorting and searching
         columns['id'].set_sort_column_id(0)
         columns['lastName'].set_sort_column_id(2)
+        columns['firstName'].set_sort_column_id(1)
         self.allWidgets['tvClientsTable'].set_enable_search(True)
         self.allWidgets['tvClientsTable'].set_search_column(2)
         self.fillClientsTable()
@@ -504,7 +509,7 @@ class WClients():
                     self.actual_client.last_name),
                 title="[BeneDat] Dotaz - smazání klienta")
         if gtk.RESPONSE_YES == result:
-            db.delClient(self.actual_client.db_id)
+            db.deleteClient(self.actual_client.db_id)
             self.actual_client = None
             self.clearClientForm()
             self.fillClientsTable()
@@ -609,6 +614,9 @@ class WRecords():
         # Actual record
         self.actual_record = None
 
+        # "actual" date
+        self.actual_date = bd_datetime.Date()
+
         # widgets for services
         self.services = {}
         self.time_records_to_remove = []
@@ -630,7 +638,7 @@ class WRecords():
                 "on_wRecords_btDate_clicked": self.calendarWindow,
                 "on_wRecords_btAddService_clicked": self.addService,
                 "on_wRecords_btSaveRecord_clicked": self.saveRecord,
-                "on_wRecords_eDate_focus_out_event": self.nothing,
+                "on_wRecords_eDate_focus_out_event": self.eDate_focus_out_event,
                 "on_wRecords_eDate_key_release_event":self.eDate_key_release,
                 "on_wRecords_expTravel_activate":self.expTravel_activate,
                 "on_wRecords_expDiet_activate":self.expDiet_activate,
@@ -682,13 +690,12 @@ class WRecords():
 
         # connect signal for select row by simple click
         self.allWidgets['tvRecordsTable'].get_selection().connect('changed',self.cursorChanged)
+        # sort records table by date
+        self.recordsListStore.set_sort_column_id(1, gtk.SORT_ASCENDING)
+        self.recordsListStore.set_sort_column_id(23, gtk.SORT_ASCENDING)
 
         # create clients menu
         self.createClientsMenu()
-
-        # fill filter combo boxes
-#        self.fillComboBoxFilterMonth()
-#        self.fillComboBoxFilterYear()
 
         # setup completion
         self.clientEntryCompletion()
@@ -832,89 +839,89 @@ class WRecords():
         #
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['TOS'] = gtk.TreeViewColumn("TOS",
+        columns['TOS'] = gtk.TreeViewColumn("Doprava\nna službu",
                 crt,
                 active=6)
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['TFS'] = gtk.TreeViewColumn("TFS",
+        columns['TFS'] = gtk.TreeViewColumn("Doprava\nze služby",
                 crt,
                 active=7)
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['TChMo'] = gtk.TreeViewColumn("TChMo",
+        columns['TChMo'] = gtk.TreeViewColumn("Doprava\nCh>Mo",
                 crt,
                 active=8)
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['TMoCh'] = gtk.TreeViewColumn("TMoCh",
+        columns['TMoCh'] = gtk.TreeViewColumn("Doprava\nMo>Ch",
                 crt,
                 active=9)
         crt = gtk.CellRendererText()
         crt.set_alignment(1.0,0.0)
-        columns['TSO'] = gtk.TreeViewColumn("TSO",
+        columns['TSO'] = gtk.TreeViewColumn("Doprava\nostatní",
                 crt,
                 text=10)
 
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['DRCh'] = gtk.TreeViewColumn("DRCh",
+        columns['DRCh'] = gtk.TreeViewColumn("Občerstvení\nChotěboř",
                 crt,
                 active=11)
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['DRM'] = gtk.TreeViewColumn("DRM",
+        columns['DRM'] = gtk.TreeViewColumn("Občerstvení\nModletín",
                 crt,
                 active=12)
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['DLCh'] = gtk.TreeViewColumn("DLCh",
+        columns['DLCh'] = gtk.TreeViewColumn("Oběd\nChotěboř",
                 crt,
                 active=13)
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['DLM'] = gtk.TreeViewColumn("DLM",
+        columns['DLM'] = gtk.TreeViewColumn("Oběd\nModletín",
                 crt,
                 active=14)
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['DBM'] = gtk.TreeViewColumn("DRM",
+        columns['DBM'] = gtk.TreeViewColumn("Snídaně\nModletín",
                 crt,
                 active=15)
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['DDM'] = gtk.TreeViewColumn("DDM",
+        columns['DDM'] = gtk.TreeViewColumn("Večeře\nModletín",
                 crt,
                 active=16)
         crt = gtk.CellRendererText()
         crt.set_alignment(1.0,0.0)
-        columns['DO'] = gtk.TreeViewColumn("DO",
+        columns['DO'] = gtk.TreeViewColumn("Jídlo\nostatní",
                 crt,
                 text=17)
 
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['BChB1'] = gtk.TreeViewColumn("BChB1",
+        columns['BChB1'] = gtk.TreeViewColumn("Chráněné\nbydlení 1",
                 crt,
                 active=18)
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['BChB2'] = gtk.TreeViewColumn("BChB2",
+        columns['BChB2'] = gtk.TreeViewColumn("Chráněné\nbydlení 2",
                 crt,
                 active=19)
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['BChB3'] = gtk.TreeViewColumn("BChB3",
+        columns['BChB3'] = gtk.TreeViewColumn("Chráněné\nbydlení 2",
                 crt,
                 active=20)
         crt = gtk.CellRendererToggle()
         crt.set_alignment(0.5,0.0)
-        columns['BOS'] = gtk.TreeViewColumn("BOS",
+        columns['BOS'] = gtk.TreeViewColumn("Ubytování\nOS",
                 crt,
                 active=21)
         crt = gtk.CellRendererText()
         crt.set_alignment(1.0,0.0)
-        columns['BO'] = gtk.TreeViewColumn("BO",
+        columns['BO'] = gtk.TreeViewColumn("Ubytování\nostatní",
                 crt,
                 text=22)
         # empty space (because of expanding)
@@ -950,10 +957,10 @@ class WRecords():
             self.allWidgets['tvRecordsTable'].append_column(columns[column])
 
         # configure sorting and searching
-        columns['name'].set_sort_column_id(1)
         columns['date'].set_sort_column_id(23)
+        columns['name'].set_sort_column_id(1)
         self.allWidgets['tvRecordsTable'].set_enable_search(True)
-        self.allWidgets['tvRecordsTable'].set_search_column(2)
+        self.allWidgets['tvRecordsTable'].set_search_column(1)
         self.fillRecordsTable()
 
     def fillRecordsTable(self):
@@ -1014,6 +1021,7 @@ class WRecords():
                     vrs['BO'].value,        # 22
                     "%s" % record.date.get('rrrr-mm-dd'),   # 23
                     ])
+        
 
     def closeWRecords(self, widget):
         """
@@ -1039,11 +1047,16 @@ class WRecords():
         log.debug("deleteRecord(): %s" % repr(self.actual_record))
         if not self.actual_record:
             return
-        #TODO:
-#        result = dialogQuestion(text="Opravdu si přejete smazat záznam:",
-#                secondary_text="%s %s" % (self.actual_record.client.first_name, 
-#                    self.actual_record.record.last_name),
-#                title="[BeneDat] Dotaz - smazání záznamu")
+        result = dialogQuestion(text="Opravdu si přejete smazat záznam:",
+                secondary_text="%s %s" % (self.actual_record.client.first_name, 
+                    self.actual_record.client.last_name),
+                title="[BeneDat] Dotaz - smazání záznamu")
+        if gtk.RESPONSE_YES == result:
+            db.deleteRecord(self.actual_record.db_id)
+            self.actual_record = None
+            self.clearRecordForm()
+            self.fillRecordsTable()
+        self.allWidgets['eClient'].grab_focus()
 
 
     def saveRecord(self, widget):
@@ -1086,7 +1099,7 @@ class WRecords():
 
         # remove removed time_record
         for tr in self.time_records_to_remove:
-            db.deleteTimeRecord(db_id=tr)
+            db.delTimeRecord(db_id=tr)
         self.time_records_to_remove = []
 
         
@@ -1228,9 +1241,19 @@ class WRecords():
         """
         """
         if parameters.string in ('+', '-'):
-            widget.set_text(widget.get_text().replace('-','').replace('+',''))
-            # TODO update date
-            
+            log.debug("eDate_key_release('%s')" % parameters.string)
+            #widget.set_text(widget.get_text().replace('-','').replace('+',''))
+            self.actual_date.set(parameters.string)
+            self.allWidgets['eDate'].set_text(self.actual_date.get())
+
+    def eDate_focus_out_event(self, widget, parameters):
+        """
+        """
+        log.debug("eDate_focus_out_event()")
+        self.actual_date.set(self.allWidgets['eDate'].get_text())
+
+        self.allWidgets['eDate'].set_text(self.actual_date.get())
+
     def fillComboBoxService(self, cbwidget):
         """
         Fill combo box field for services (OS, STD, ChB)
@@ -1356,6 +1379,7 @@ class WRecords():
                         self.actual_record.client.first_name))
         # fill date
         self.allWidgets['eDate'].set_text(self.actual_record.date.get())
+        self.actual_date.set(self.actual_record.date.get())
         # fill time records
         self.deleteAllServices()
         for time_record in self.actual_record.time_records:
@@ -1485,6 +1509,70 @@ class WRecords():
 
 
 
+class WSummary():
+    """
+    BeneDat summary window.
+    """
+    def __init__(self):
+        # Window
+        self.wxml = gtk.glade.XML(GLADEFILE, "wSummary")
+        self.w = self.wxml.get_widget("wSummary")
+        
+        # Signals
+        signals = {
+                "": self.nothing,
+                "on_wSummary_destroy": self.nothing,
+                "on_wSummary_cbFilterMonth_changed": self.nothing,
+                "on_wSummary_cbFilterYear_changed": self.nothing,
+                "on_wSummary_cbDocumentType_changed": self.nothing,
+                "on_wSummary_btDateExposure_clicked": self.nothing,
+                "on_wSummary_btDatePayment_clicked": self.nothing,
+                "on_wSummary_btClose_clicked": self.closeWSummary,
+                "on_wSummary_btSave_clicked": self.nothing,
+                }
+        self.wxml.signal_autoconnect(signals)
+
+        # Widgets 
+        self.allWidgets = {}
+        widgets = (
+                "cbFilterMonth"
+                "cbFilterYear"
+                "cbDocumentType"
+                "tvClientsTable"
+                "btDateExposure"
+                "eDateExposure"
+                "btDatePayment"
+                "eDatePayment"
+                "eName"
+                "eCodeFixed"
+                "eCodeVariable"
+                "btClose"
+                "btSave"
+                )
+        for widget in widgets:
+            self.allWidgets[widget] = self.wxml.get_widget("wSummary_%s"%widget)
+
+        # TODO
+
+
+
+
+    def run(self):
+        log.debug("<wSummary>.w.show_all()")
+        self.w.show_all()
+
+
+    def closeWSummary(self, widget):
+        """
+        """
+        log.debug("closeWSummary()")
+        self.w.destroy()
+
+
+    def nothing(self, widget, parameters=None):
+        log.debug("Do nothing (parameters: %s)"%parameters)
+
+
 
 
 class WSettings():
@@ -1567,7 +1655,7 @@ class WSettings():
 
 
     def run(self):
-        log.debug("<wSettings>.w.show_all()"%self)
+        log.debug("<wSettings>.w.show_all()")
         self.w.show_all()
 
     def closeWSettings(self, widget):
