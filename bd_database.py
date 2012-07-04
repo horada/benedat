@@ -422,6 +422,49 @@ class Db():
 
         return clients
 
+    def getClientsOfRecords(self, year=None, month=None):
+        """
+        Get clients with records (in given period).
+        """
+        where = "WHERE clients.id=records.client"
+        where_data = {}
+        if year:
+            if where:
+                where += " AND" 
+            where += " strftime('%Y', records.date)=:year"
+            where_data['year'] = year
+        if month:
+            if where:
+                where += " AND" 
+            where += " strftime('%m', records.date)=:month"
+            where_data['month'] = month
+        result = self.execute('''SELECT clients.id, clients.first_name, 
+                clients.last_name, clients.address, clients.phone, 
+                clients.mobile_phone1, clients.mobile_phone2, clients.notes 
+                FROM clients, records %s GROUP BY clients.id''' %  \
+                where, where_data)
+        clients = []
+        for row in result:
+            client = bd_clients.Client(
+                    db_id =         u(row[0]),
+                    first_name =    u(row[1]), 
+                    last_name =     u(row[2]), 
+                    address =       u(row[3]),
+                    phone =         u(row[4]), 
+                    mobile_phone1 = u(row[5]),
+                    mobile_phone2 = u(row[6]), 
+                    notes =         u(row[7]))
+            for pref in self.getConf(pattern_name="preference_%s-" % client.db_id):
+                pref['name'] = pref['name'].split('-', 1)[1]
+                client.preferences[pref['name']] = pref['value']
+            clients.append(client)
+
+        return clients
+
+ 
+
+
+
     def getClient(self, db_id=None, name=None):
         """
         Get client.

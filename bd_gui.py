@@ -1232,7 +1232,7 @@ class WRecords():
         """
         Open window with calendar.
         """
-        log.debug("calendarWindow")
+        log.debug("calendarWindow()")
         date = dialogCalendar(self.w)
         if date:
             self.allWidgets['eDate'].set_text(date)
@@ -1522,11 +1522,12 @@ class WSummary():
         signals = {
                 "": self.nothing,
                 "on_wSummary_destroy": self.nothing,
-                "on_wSummary_cbFilterMonth_changed": self.nothing,
-                "on_wSummary_cbFilterYear_changed": self.nothing,
+                "on_wSummary_cbFilterMonth_changed": self.filterChangedMonth,
+                "on_wSummary_cbFilterYear_changed": self.filterChangedYear,
+                "on_wSummary_btFilterToday_clicked": self.filterToday,
                 "on_wSummary_cbDocumentType_changed": self.nothing,
-                "on_wSummary_btDateExposure_clicked": self.nothing,
-                "on_wSummary_btDatePayment_clicked": self.nothing,
+                "on_wSummary_btDateExposure_clicked": self.calendarWindowExposure,
+                "on_wSummary_btDatePayment_clicked": self.calendarWindowPayment,
                 "on_wSummary_btClose_clicked": self.closeWSummary,
                 "on_wSummary_btSave_clicked": self.nothing,
                 }
@@ -1535,26 +1536,44 @@ class WSummary():
         # Widgets 
         self.allWidgets = {}
         widgets = (
-                "cbFilterMonth"
-                "cbFilterYear"
-                "cbDocumentType"
-                "tvClientsTable"
-                "btDateExposure"
-                "eDateExposure"
-                "btDatePayment"
-                "eDatePayment"
-                "eName"
-                "eCodeFixed"
-                "eCodeVariable"
-                "btClose"
-                "btSave"
+                "cbFilterMonth",
+                "cbFilterYear",
+                "btFilterToday",
+                "cbDocumentType",
+                "tvClientsTable",
+                "btDateExposure",
+                "eDateExposure",
+                "btDatePayment",
+                "eDatePayment",
+                "eName",
+                "eCodeFixed",
+                "eCodeVariable",
+                "btClose",
+                "btSave",
                 )
         for widget in widgets:
             self.allWidgets[widget] = self.wxml.get_widget("wSummary_%s"%widget)
 
-        # TODO
+        # prepare filter
+        self.prepareFilter()
+        # prepare clients table
+        self.prepareClientsTable()
+        # load filter
+        self.loadFilter()
 
+        # fill date fields
+        self.allWidgets['eDateExposure'].set_text(bd_datetime.Date().get())
+        self.allWidgets['eDatePayment'].set_text(bd_datetime.Date().get())
 
+        # fill name
+        self.allWidgets['eName'].set_text( \
+                db.getConfVal("eSummaryName", ""))
+        
+        # fill summary code
+        self.allWidgets['eCodeFixed'].set_text( \
+                db.getConfVal("eSummaryCodeFixed", "XXXX"))
+        self.allWidgets['eCodeVariable'].set_text( \
+                db.getConfVal("eSummaryCodeVariable", "0001"))
 
 
     def run(self):
@@ -1567,6 +1586,188 @@ class WSummary():
         """
         log.debug("closeWSummary()")
         self.w.destroy()
+
+    def filterToday(self, widget):
+        """
+        Set filter to "today".
+        """
+        log.debug("filterToday()")
+        #TODO
+        this_year = "%s" % bd_datetime.Date().date.year
+        self.fillComboBoxFilterYear(this_year)
+        this_month = "%02d" % bd_datetime.Date().date.month
+        self.fillComboBoxFilterMonth(this_month)
+
+    def filterChanged(self):
+        """
+        Reload clients table when filter is changed.
+        """
+        self.fillClientsTable()
+
+    def filterChangedYear(self, widget):
+        self.saveFilterYear()
+        self.filterChanged()
+
+    def filterChangedMonth(self, widget):
+        self.saveFilterMonth()
+        self.filterChanged()
+
+    def prepareFilter(self):
+        self.prepareComboBoxFilterYear()
+        self.prepareComboBoxFilterMonth()
+
+
+    def loadFilter(self):
+        """
+        Load filter.
+        """
+        this_year = "%s" % bd_datetime.Date().date.year
+        self.fillComboBoxFilterYear( \
+                db.getConfVal('WSummary_cbFilterYear', this_year))
+        this_month = "%02d" % bd_datetime.Date().date.month
+        self.fillComboBoxFilterMonth( \
+                db.getConfVal('WSummary_cbFilterMonth', this_month))
+
+    def saveFilterYear(self):
+        """
+        Save year filter settings.
+        """
+        log.debug("saveFilterYear()")
+        if self.allWidgets['cbFilterYear'].get_model():
+            db.setConf("WSummary_cbFilterYear", \
+                    self.allWidgets['cbFilterYear'].get_active_text(), \
+                    "Filter v okně sestav - rok.", commit=False)
+
+    def saveFilterMonth(self):
+        """
+        Save month filter settings.
+        """
+        log.debug("saveFilterMonth()")
+        if self.allWidgets['cbFilterMonth'].get_model():
+            db.setConf("WSummary_cbFilterMonth", \
+                    self.allWidgets['cbFilterMonth'].get_active_text(), \
+                    "Filter v okně sestav - měsíc.", commit=False)
+
+    def prepareComboBoxFilterYear(self):
+        self.yearListStore = gtk.ListStore(str)
+        self.allWidgets['cbFilterYear'].set_model(self.yearListStore)
+        cell = gtk.CellRendererText()
+        self.allWidgets['cbFilterYear'].pack_start(cell, True)
+        self.allWidgets['cbFilterYear'].add_attribute(cell, 'text', 0)
+
+    def fillComboBoxFilterYear(self, year=None):
+        """
+        Fill combo box for filter (year).
+        """
+        self.yearListStore.clear()
+        years = db.getRecordsYears()
+        this_year = "%s" % bd_datetime.Date().date.year
+        if not this_year in years:
+            years.append(this_year)
+        years.sort()
+        for year_ in years:
+            self.yearListStore.append([year_])
+        if year:
+            i = 0
+            for y in self.yearListStore:
+                if y[0] == year:
+                    break
+                else:
+                    i+=1
+            self.allWidgets['cbFilterYear'].set_active(i)
+
+    def prepareComboBoxFilterMonth(self):
+        self.monthListStore = gtk.ListStore(str, str)
+        self.allWidgets['cbFilterMonth'].set_model(self.monthListStore)
+        cell = gtk.CellRendererText()
+        self.allWidgets['cbFilterMonth'].pack_start(cell, True)
+        self.allWidgets['cbFilterMonth'].add_attribute(cell, 'text', 1)
+
+    def fillComboBoxFilterMonth(self, month=''):
+        """
+        Fill combo box for filter (month).
+        """
+        self.monthListStore.clear()
+        months =  {
+                '01': 'Leden',
+                '02': 'Únor',
+                '03': 'Březen',
+                '04': 'Duben',
+                '05': 'Květen',
+                '06': 'Červen',
+                '07': 'Červenec',
+                '08': 'Srpen',
+                '09': 'Září',
+                '10': 'Říjen',
+                '11': 'Listopad',
+                '12': 'Prosinec'}
+        mkeys = months.keys()
+        mkeys.sort()
+        for month_ in mkeys:
+            self.monthListStore.append([month_, months[month_]])
+        if month:
+            i = 0
+            for m in self.monthListStore:
+                if m[0] == month:
+                    break
+                else:
+                    i+=1
+            self.allWidgets['cbFilterMonth'].set_active(i)
+
+
+    def prepareClientsTable(self):
+        """
+        Prepare clients table.
+        """
+        log.debug("prepareClientsTable()")
+        self.allWidgets['tvClientsTable'].get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+
+        self.clientsListStore = gtk.ListStore(
+                int,
+                str,
+                )
+        self.allWidgets['tvClientsTable'].set_model(self.clientsListStore)
+        column_client = gtk.TreeViewColumn("Klient",
+                gtk.CellRendererText(),
+                text=1)
+        self.allWidgets['tvClientsTable'].append_column(column_client)
+
+        self.fillClientsTable()
+
+    def fillClientsTable(self):
+        """
+        Fill clients to the table.
+        """
+        log.debug("fillClientsTable()")
+        year = self.allWidgets['cbFilterYear'].get_active_text()
+        month = self.allWidgets['cbFilterMonth'].get_active_text()
+
+        clients = db.getClientsOfRecords(year=year, month=month)
+        pprint(clients)
+        self.clientsListStore.clear()
+        for client in clients:
+            self.clientsListStore.append([
+                    client.db_id,
+                    "%s %s" % (client.last_name, client.first_name),
+                    ])
+
+    def calendarWindowExposure(self, widget):
+        """
+        Open window with calendar.
+        """
+        log.debug("calendarWindowExposure()")
+        date = dialogCalendar(self.w)
+        if date:
+            self.allWidgets['eDateExposure'].set_text(date)
+
+    def calendarWindowPayment(self, widget):
+        """
+        Open window with calendar.
+        """
+        log.debug("calendarWindowPayment()")
+        date = dialogCalendar(self.w)
+        if date:
+            self.allWidgets['eDatePayment'].set_text(date)
 
 
     def nothing(self, widget, parameters=None):

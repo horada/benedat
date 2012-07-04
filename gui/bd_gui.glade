@@ -1582,6 +1582,20 @@
                         <property name="position">1</property>
                       </packing>
                     </child>
+                    <child>
+                      <widget class="GtkButton" id="wSummary_btFilterToday">
+                        <property name="label" translatable="yes">Aktu&#xE1;ln&#xED; m&#x11B;s&#xED;c</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <signal name="clicked" handler="on_wSummary_btFilterToday_clicked"/>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
                   </widget>
                 </child>
               </widget>
@@ -1665,6 +1679,7 @@
                       <widget class="GtkTreeView" id="wSummary_tvClientsTable">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="headers_visible">False</property>
                       </widget>
                     </child>
                   </widget>
@@ -1837,7 +1852,8 @@
                             <child>
                               <widget class="GtkEntry" id="wSummary_eCodeFixed">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="editable">False</property>
                                 <property name="invisible_char">&#x25CF;</property>
                                 <property name="width_chars">8</property>
                               </widget>
