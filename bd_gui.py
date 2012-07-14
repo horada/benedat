@@ -87,6 +87,7 @@ if _last_open_file:
 
 
 
+import bd_summary
 
 class WMain():
     """
@@ -1529,7 +1530,7 @@ class WSummary():
                 "on_wSummary_btDateExposure_clicked": self.calendarWindowExposure,
                 "on_wSummary_btDatePayment_clicked": self.calendarWindowPayment,
                 "on_wSummary_btClose_clicked": self.closeWSummary,
-                "on_wSummary_btSave_clicked": self.nothing,
+                "on_wSummary_btSave_clicked": self.saveSummary,
                 }
         self.wxml.signal_autoconnect(signals)
 
@@ -1561,13 +1562,16 @@ class WSummary():
         # load filter
         self.loadFilter()
 
+        # prepare document type combobox
+        self.prepareComboBoxDocumentType()
+
         # fill date fields
         self.allWidgets['eDateExposure'].set_text(bd_datetime.Date().get())
         self.allWidgets['eDatePayment'].set_text(bd_datetime.Date().get())
 
         # fill name
         self.allWidgets['eName'].set_text( \
-                db.getConfVal("eSummaryName", ""))
+                db.getConfVal("wSummary_eName", ""))
         
         # fill summary code
         self.allWidgets['eCodeFixed'].set_text( \
@@ -1575,6 +1579,8 @@ class WSummary():
         self.allWidgets['eCodeVariable'].set_text( \
                 db.getConfVal("eSummaryCodeVariable", "0001"))
 
+        # list of selected clients
+        self.clients = []
 
     def run(self):
         log.debug("<wSummary>.w.show_all()")
@@ -1714,6 +1720,36 @@ class WSummary():
                     i+=1
             self.allWidgets['cbFilterMonth'].set_active(i)
 
+    def prepareComboBoxDocumentType(self):
+        log.debug("prepareComboBoxDocumentType()")
+        self.documentTypeListStore = gtk.ListStore(str, str)
+        self.allWidgets['cbDocumentType'].set_model(self.documentTypeListStore)
+        cell = gtk.CellRendererText()
+        self.allWidgets['cbDocumentType'].pack_start(cell, True)
+        self.allWidgets['cbDocumentType'].add_attribute(cell, 'text', 1)
+        self.fillComboBoxDocumentType()
+
+
+    def fillComboBoxDocumentType(self):
+        log.debug("fillComboBoxDocumentType()")
+        self.documentTypeListStore.clear()
+        document_types = {
+                'PPD': "Příjmový pokladní doklad",
+                'JV': "Jednoduchý výpis",
+                }
+        dkeys = document_types.keys()
+        for type_ in dkeys:
+            self.documentTypeListStore.append([type_, document_types[type_]])
+        document_type = db.getConfVal("wSummary_cbDocumentType", 'PPD')
+        i = 0
+        for t in self.documentTypeListStore:
+            if t[0] == document_type:
+                break
+            else:
+                i+=1
+        self.allWidgets['cbDocumentType'].set_active(i)
+
+
 
     def prepareClientsTable(self):
         """
@@ -1750,6 +1786,8 @@ class WSummary():
                     client.db_id,
                     "%s %s" % (client.last_name, client.first_name),
                     ])
+        # Sort clients table
+        self.clientsListStore.set_sort_column_id(1, gtk.SORT_ASCENDING)
 
     def calendarWindowExposure(self, widget):
         """
@@ -1768,6 +1806,48 @@ class WSummary():
         date = dialogCalendar(self.w)
         if date:
             self.allWidgets['eDatePayment'].set_text(date)
+
+
+    def saveSummary(self, widget):
+        """
+        Create summary.
+        """
+        db.setConf("wSummary_eName", \
+                self.allWidgets['eName'].get_text(),
+                "Doklad vystavil")
+        db.setConf("wSummary_cbDocumentType", \
+                self.allWidgets['cbDocumentType'].get_active_text(),
+                "Typ vystavovaného dokladu")
+        self.allWidgets['tvClientsTable'].get_selection().selected_foreach(self.callback_selected_foreach)
+        
+        if not self.clients:
+            return
+
+        year = self.allWidgets['cbFilterYear'].get_active_text()
+        month = self.allWidgets['cbFilterMonth'].get_active_text()
+        document_type = self.allWidgets['cbDocumentType'].get_active_text()
+        date_exposure = self.allWidgets['eDateExposure'].get_text()
+        date_payment = self.allWidgets['eDatePayment'].get_text()
+        name = self.allWidgets['eName'].get_text()
+        code_fixed = self.allWidgets['eCodeFixed'].get_text()
+        code_variable = self.allWidgets['eCodeVariable'].get_text()
+
+        summary = bd_summary.Summary(year=year, month=month, \
+                clients=self.clients)
+
+        # TODO
+
+        print summary
+
+        self.clients = []
+#        self.w.destroy()
+
+    def callback_selected_foreach(self, treemodel, path, iter):
+        log.debug("callback_selected_foreach()")
+        client_id = self.clientsListStore.get_value(iter, 0)
+        self.clients.append(client_id)
+
+
 
 
     def nothing(self, widget, parameters=None):

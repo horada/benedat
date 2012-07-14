@@ -441,7 +441,8 @@ class Db():
         result = self.execute('''SELECT clients.id, clients.first_name, 
                 clients.last_name, clients.address, clients.phone, 
                 clients.mobile_phone1, clients.mobile_phone2, clients.notes 
-                FROM clients, records %s GROUP BY clients.id''' %  \
+                FROM clients, records %s 
+                GROUP BY clients.id''' %  \
                 where, where_data)
         clients = []
         for row in result:
@@ -613,13 +614,18 @@ class Db():
         if commit:
             self.commit()
 
-    def getRecords(self, year=None, month=None):
+    def getRecords(self, client=None, year=None, month=None):
         """
         Get records.
         """
         records = []
         where = ''
         where_data = {}
+        if client:
+            if where:
+                where += " AND" 
+            where += " client=:client"
+            where_data['client'] = client
         if year:
             if where:
                 where += " AND" 
@@ -632,7 +638,8 @@ class Db():
             where_data['month'] = month
         if where:
             where = "WHERE %s" % where
-        result = self.execute('''SELECT id, client, date FROM records %s''' %  \
+        result = self.execute('''SELECT id, client, date FROM records %s
+                ORDER BY date''' %  \
                 where, where_data)
         for row in result:
             record = bd_records.Record(
