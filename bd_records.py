@@ -65,7 +65,7 @@ CLASSES:
 #
 
 from bd_clients import Client
-from bd_datetime import Date,Time
+from bd_datetime import Date,Time, minutesToPretty
 
 class Record():
     """
@@ -187,7 +187,19 @@ class Record():
         self.__db_id = value
     db_id = property(getDbId, setDbId)
 
+    def getTimeSum(self):
+        time_sum = {}
+        for time_record in self.__time_records:
+            time_sum[time_record.service_type] = \
+                    time_sum.get(time_record.service_type, 0) + \
+                    time_record.getTimeDifference()
+        return time_sum
 
+    def getTimeSumPretty(self):
+        time_sum = self.getTimeSum()
+        time_sum = {service_type:minutesToPretty(time_sum[service_type]) \
+                for service_type in time_sum.keys()}
+        return time_sum
 
 
 
@@ -259,7 +271,8 @@ class TimeRecord():
         self.__db_id = value
     db_id = property(getDbId, setDbId)
 
-
+    def getTimeDifference(self):
+        return self.time_to - self.time_from
 
 
 class ValueRecord():

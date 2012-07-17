@@ -715,6 +715,7 @@ class WRecords():
         """
         Fill combo box for filter (month).
         """
+        log.debug("fillComboBoxFilterMonth")
         monthListStore = gtk.ListStore(str, str)
         self.allWidgets['cbFilterMonth'].set_model(monthListStore)
         cell = gtk.CellRendererText()
@@ -752,6 +753,7 @@ class WRecords():
         """
         Fill combo box for filter (year).
         """
+        log.debug("fillComboBoxFilterYear")
         yearListStore = gtk.ListStore(str)
         self.allWidgets['cbFilterYear'].set_model(yearListStore)
         cell = gtk.CellRendererText()
@@ -974,6 +976,7 @@ class WRecords():
             self.prepareRecordsTable()
 
         if self.allWidgets['tbtFilter'].get_active():
+            log.debug("fillRecordsTable - line 979 --------------------------")
             records = db.getRecords( \
                     year=self.allWidgets['cbFilterYear'].get_active_text(), \
                     month=self.allWidgets['cbFilterMonth'].get_active_text())
@@ -1468,10 +1471,11 @@ class WRecords():
         self.allWidgets['expTravel'].set_expanded(False)
 
 
-    def filterChanged(self, widget):
+    def filterChanged(self, widget=None):
         """
         Reload records table when filter is changed.
         """
+        log.debug("filterChanged()")
         self.fillRecordsTable()
         self.saveFilter()
 
@@ -1496,6 +1500,11 @@ class WRecords():
         """
         Load filter settings.
         """
+        log.debug("loadFilter()")
+        # block signal handler when changing filter
+        self.allWidgets['cbFilterYear'].handler_block_by_func(self.filterChanged)
+        self.allWidgets['cbFilterMonth'].handler_block_by_func(self.filterChanged)
+        # load filter
         self.allWidgets['tbtFilter'].set_active( \
                 bool(int(db.getConfVal('WRecords_tbtFilter', 1))))
         this_year = "%s" % bd_datetime.Date().date.year
@@ -1503,6 +1512,10 @@ class WRecords():
                 db.getConfVal('WRecords_cbFilterYear', this_year))
         self.fillComboBoxFilterMonth( \
                 db.getConfVal('WRecords_cbFilterMonth', ''))
+        # unblock signal handler when changing filter
+        self.allWidgets['cbFilterYear'].handler_unblock_by_func(self.filterChanged)
+        self.allWidgets['cbFilterMonth'].handler_unblock_by_func(self.filterChanged)
+        self.filterChanged()
 
 
     def nothing(self, widget, parameters=None):
@@ -1527,7 +1540,7 @@ class WSummary():
                 "on_wSummary_cbFilterYear_changed": self.filterChangedYear,
                 "on_wSummary_btFilterToday_clicked": self.filterToday,
                 "on_wSummary_cbDocumentType_changed": self.nothing,
-                "on_wSummary_btDateExposure_clicked": self.calendarWindowExposure,
+                "on_wSummary_btDateIssue_clicked": self.calendarWindowIssue,
                 "on_wSummary_btDatePayment_clicked": self.calendarWindowPayment,
                 "on_wSummary_btClose_clicked": self.closeWSummary,
                 "on_wSummary_btSave_clicked": self.saveSummary,
@@ -1542,11 +1555,11 @@ class WSummary():
                 "btFilterToday",
                 "cbDocumentType",
                 "tvClientsTable",
-                "btDateExposure",
-                "eDateExposure",
+                "btDateIssue",
+                "eDateIssue",
                 "btDatePayment",
                 "eDatePayment",
-                "eName",
+                "eClerkName",
                 "eCodeFixed",
                 "eCodeVariable",
                 "btClose",
@@ -1566,12 +1579,12 @@ class WSummary():
         self.prepareComboBoxDocumentType()
 
         # fill date fields
-        self.allWidgets['eDateExposure'].set_text(bd_datetime.Date().get())
+        self.allWidgets['eDateIssue'].set_text(bd_datetime.Date().get())
         self.allWidgets['eDatePayment'].set_text(bd_datetime.Date().get())
 
-        # fill name
-        self.allWidgets['eName'].set_text( \
-                db.getConfVal("wSummary_eName", ""))
+        # fill clerk_name
+        self.allWidgets['eClerkName'].set_text( \
+                db.getConfVal("wSummary_eClerkName", ""))
         
         # fill summary code
         self.allWidgets['eCodeFixed'].set_text( \
@@ -1608,6 +1621,7 @@ class WSummary():
         """
         Reload clients table when filter is changed.
         """
+        log.debug("filterChanged()")
         self.fillClientsTable()
 
     def filterChangedYear(self, widget):
@@ -1627,6 +1641,8 @@ class WSummary():
         """
         Load filter.
         """
+        log.debug("loadFilter()")
+        # load filter
         this_year = "%s" % bd_datetime.Date().date.year
         self.fillComboBoxFilterYear( \
                 db.getConfVal('WSummary_cbFilterYear', this_year))
@@ -1789,14 +1805,14 @@ class WSummary():
         # Sort clients table
         self.clientsListStore.set_sort_column_id(1, gtk.SORT_ASCENDING)
 
-    def calendarWindowExposure(self, widget):
+    def calendarWindowIssue(self, widget):
         """
         Open window with calendar.
         """
-        log.debug("calendarWindowExposure()")
+        log.debug("calendarWindowIssue()")
         date = dialogCalendar(self.w)
         if date:
-            self.allWidgets['eDateExposure'].set_text(date)
+            self.allWidgets['eDateIssue'].set_text(date)
 
     def calendarWindowPayment(self, widget):
         """
@@ -1812,8 +1828,8 @@ class WSummary():
         """
         Create summary.
         """
-        db.setConf("wSummary_eName", \
-                self.allWidgets['eName'].get_text(),
+        db.setConf("wSummary_eClerkName", \
+                self.allWidgets['eClerkName'].get_text(),
                 "Doklad vystavil")
         db.setConf("wSummary_cbDocumentType", \
                 self.allWidgets['cbDocumentType'].get_active_text(),
@@ -1826,14 +1842,21 @@ class WSummary():
         year = self.allWidgets['cbFilterYear'].get_active_text()
         month = self.allWidgets['cbFilterMonth'].get_active_text()
         document_type = self.allWidgets['cbDocumentType'].get_active_text()
-        date_exposure = self.allWidgets['eDateExposure'].get_text()
+        date_issue = self.allWidgets['eDateIssue'].get_text()
         date_payment = self.allWidgets['eDatePayment'].get_text()
-        name = self.allWidgets['eName'].get_text()
+        clerk_name = self.allWidgets['eClerkName'].get_text()
         code_fixed = self.allWidgets['eCodeFixed'].get_text()
         code_variable = self.allWidgets['eCodeVariable'].get_text()
 
         summary = bd_summary.Summary(year=year, month=month, \
-                clients=self.clients)
+                clients=self.clients, 
+                document_type=document_type,
+                date_issue=date_issue,
+                date_payment=date_payment,
+                clerk_name=clerk_name,
+                code_fixed=code_fixed,
+                code_variable=code_variable,
+                )
 
         # TODO
 

@@ -274,20 +274,20 @@ class TimePublicInterfaceTest(unittest.TestCase):
     def test_timeDifference(self):
         t1 = bd_datetime.Time("7:30")
         t2 = bd_datetime.Time("15:15")
-        self.assertEqual(str(t2-t1), '7:45')
+        self.assertEqual(str(t2-t1), '465')
         t1 = bd_datetime.Time("9:15")
         t2 = bd_datetime.Time("11:30")
-        self.assertEqual(str(t2-t1), '2:15')
+        self.assertEqual(str(t2-t1), '135')
 
     def test_timeSuma(self):
         t1 = bd_datetime.Time("9:15")
         t2 = bd_datetime.Time("11:30")
-        self.assertEqual(str(t2+t1), '20:45')
-        self.assertEqual(str(t1+t2), '20:45')
+        self.assertEqual(str(t2+t1), '1245')
+        self.assertEqual(str(t1+t2), '1245')
         t1 = bd_datetime.Time("8:30")
         t2 = bd_datetime.Time("17:00")
-        self.assertEqual(str(t2+t1), '25:30')
-        self.assertEqual(str(t1+t2), '25:30')
+        self.assertEqual(str(t2+t1), '1530')
+        self.assertEqual(str(t1+t2), '1530')
 
     def test_timeDifferenceSuma(self):
         return

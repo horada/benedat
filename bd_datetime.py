@@ -132,10 +132,19 @@ def allToIntMinutes(*values):
     """
     output = []
     for value in values:
-        if type(value) == Time:
+        if hasattr(value, "toMinutes"):
             output.append(value.toMinutes())
+        elif type(value) == int:
+            output.append(value)
     return output
 
+def minutesToPretty(value):
+    """
+    Convert number of minutes to pretty format HH:MM.
+    """
+    h = int(value)//60
+    m = value % 60
+    return "%2d:%02d" % (h, m)
 
 class Date():
     """
@@ -263,7 +272,9 @@ class Time():
         """
 #        print a
 #        print b
-        return TimePeriod(a.toMinutes() + b.toMinutes())
+#        return TimePeriod(a.toMinutes() + b.toMinutes())
+        a, b = allToIntMinutes(a, b)
+        return a + b
 
     def __sub__(a, b):
         """
@@ -271,7 +282,9 @@ class Time():
         """
 #        print a
 #        print b
-        return TimePeriod(a.toMinutes() - b.toMinutes())
+#        return TimePeriod(a.toMinutes() - b.toMinutes())
+        a, b = allToIntMinutes(a, b)
+        return a - b
 
     def set(self, arg):
         """

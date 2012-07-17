@@ -43,6 +43,7 @@ import bd_database
 import bd_clients
 import bd_records
 import bd_logging
+from bd_datetime import minutesToPretty
 
 
 # get configuration
@@ -55,45 +56,79 @@ db = bd_database.getDb()
 
 
 class Summary():
-  """
-  Data for whole summary.
-  """
-  def __init__(self, clients=None, year=None, month=None):
-    self.year = year
-    self.month = month
-    self.clients = clients
+    """
+    Data for whole summary.
+    """
 
-    self.summaries = []
-    for client in clients:
-      self.summaries.append(ClientSummary(client=client, year=self.year, month=self.month))
+    def __init__(self, clients=None, year=None, month=None, \
+            document_type=None, date_issue=None, date_payment=None, \
+            clerk_name=None, code_fixed=None, code_variable=None):
+        self.year = year
+        self.month = month
+        self.clients = clients
+        self.document_type = document_type
+        self.date_issue = date_issue
+        self.date_payment = date_payment
+        self.clerk_name = clerk_name
+        self.code_fixed = code_fixed
+        self.code_variable = code_variable
+
+        self.summaries = []
+        for client in clients:
+            self.summaries.append(ClientSummary(client=client, year=self.year, month=self.month))
 
 
-  def __str__(self):
-    tmp = ""
-    for summary in self.summaries:
-      tmp += "%s\n" % str(summary)
-    return tmp
+    def __str__(self):
+        tmp = ""
+        tmp += "Typ dokladu: %s\n" % self.document_type
+        tmp += "Datum vystavení: %s\n" % self.date_issue
+        tmp += "Datum platby: %s\n" % self.date_payment
+        tmp += "Vystavil: %s\n" % self.clerk_name
+        tmp += "Kód dokladu: %s%s\n" % (self.code_fixed, self.code_variable)
+        for summary in self.summaries:
+            tmp += "%s\n" % str(summary)
+        return tmp
 
 
 
 
 
 class ClientSummary():
-  """
-  Summary for one client.
-  """
-  def __init__(self, client, year=None, month=None):
-    self.client = db.getClient(client)
-    self.records = db.getRecords(client, year, month)
-#    print "===" * 30
-#    print self.records
-#    print "---" * 30
+    """
+    Summary for one client.
+    """
+    def __init__(self, client, year=None, month=None):
+        self.client = db.getClient(client)
+        self.records = db.getRecords(client, year, month)
 
-  def __str__(self):
-    tmp = ""
-    tmp += "Client: %s %s\n" % (self.client.last_name, self.client.first_name)
-    for record in self.records:
-      tmp += "%s %s\n" % (record.date, record.time_records)
-    return tmp
+        self.__timeSum()
+#        print "===" * 30
+#        print self.records
+#        print "---" * 30
 
 
+    def __str__(self):
+        tmp = ""
+        tmp += "Client: %s %s\n" % (self.client.last_name, self.client.first_name)
+        tmp += "Celkový čas: %s\n" % {key:minutesToPretty(self.time_sum[key]) for key in self.time_sum}
+        for record in self.records:
+            tmp += "%s %s %s\n" % (record.date, record.getTimeSumPretty(), record.time_records)
+        return tmp
+
+
+    def __timeSum(self):
+        """
+        Count total time sum.
+        """
+        self.time_sum = {}
+        for record in self.records:
+            record_time_sum = record.getTimeSum()
+            for key in record_time_sum.keys():
+                self.time_sum[key] = \
+                    self.time_sum.get(key, 0) + \
+                    record_time_sum[key]
+    
+
+
+# vim:tabstop=4:shiftwidth=4:softtabstop=4:
+# eof
