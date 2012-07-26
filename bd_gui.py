@@ -362,6 +362,8 @@ class WClients():
                 "on_wClients_btDeleteClient_clicked": self.deleteClient,
                 "on_wClients_btSaveClient_clicked": self.saveClient,
                 "on_wClients_btClose_clicked": self.closeWClients,
+                "on_wClients_chOS_toggled": self.chOStoggled,
+                "on_wClients_chChB_toggled": self.chChBtoggled,
                 }
         self.wxml.signal_autoconnect(signals)
 
@@ -376,13 +378,32 @@ class WClients():
                 'eMobilePhone2',
                 'eNotes',
                 'eDistance',
-                'tvClientsTable'
+                'cbDocumentType',
+                'chOS',
+                'chSTD',
+                'chChB',
+                'tvClientsTable',
+                'exOS',
+                'exChB',
+                'eOSMonthRate',
+                'eOSMonthHoursRate',
+                'eOSHoursRate1',
+                'eOSHoursRate2',
+                'eOSHoursRate3',
+                'eChBMonthRate',
+                'eChBMonthHoursRate',
+                'eChBHoursRate1',
+                'eChBHoursRate2',
+                'eChBHoursRate3',
                 )
         for widget in widgets:
             self.allWidgets[widget] = self.wxml.get_widget("wClients_%s"%widget)
 
         # connect signal for select row by simple click
         self.allWidgets['tvClientsTable'].get_selection().connect('changed',self.cursorChanged)
+
+        # prepare document type combobox
+        self.prepareComboBoxDocumentType()
 
         # Prepare and fill table of clients
         self.prepareClientsTable()
@@ -397,6 +418,38 @@ class WClients():
         log.debug("<wClients>.w.show_all()"%self)
         self.w.show_all()
         
+    def prepareComboBoxDocumentType(self):
+        log.debug("prepareComboBoxDocumentType()")
+        self.documentTypeListStore = gtk.ListStore(str, str)
+        self.allWidgets['cbDocumentType'].set_model(self.documentTypeListStore)
+        cell = gtk.CellRendererText()
+        self.allWidgets['cbDocumentType'].pack_start(cell, True)
+        self.allWidgets['cbDocumentType'].add_attribute(cell, 'text', 1)
+        self.fillComboBoxDocumentType()
+
+
+    def fillComboBoxDocumentType(self,document_type = "PPD"):
+        log.debug("fillComboBoxDocumentType()")
+        self.documentTypeListStore.clear()
+        document_types = {
+                'PPD': "Příjmový pokladní doklad",
+                'JV': "Jednoduchý výpis",
+                }
+        dkeys = document_types.keys()
+        for type_ in dkeys:
+            self.documentTypeListStore.append([type_, document_types[type_]])
+        i = 0
+        for t in self.documentTypeListStore:
+            if t[0] == document_type:
+                break
+            else:
+                i+=1
+        self.allWidgets['cbDocumentType'].set_active(i)
+
+
+
+
+
     def prepareClientsTable(self):
         """
         Prepare and fill table of clients.
@@ -411,7 +464,7 @@ class WClients():
                 str, # mobilePhone1
                 str, # mobilePhone2
                 str, # notes
-                int, # distance
+                int, # eDistance
                 )
         self.allWidgets['tvClientsTable'].set_model(self.clientsListStore)
 
@@ -440,7 +493,7 @@ class WClients():
         columns['notes'] = gtk.TreeViewColumn("Poznámka",
                 gtk.CellRendererText(),
                 text=7)
-        columns['distance'] = gtk.TreeViewColumn("Vzdálenost",
+        columns['eDistance'] = gtk.TreeViewColumn("Vzdálenost",
                 gtk.CellRendererText(),
                 text=8)
 
@@ -453,7 +506,7 @@ class WClients():
                 'mobilePhone1',
                 'mobilePhone2',
                 'notes',
-                'distance',
+                'eDistance',
                 )
         for column in columns_order:
             self.allWidgets['tvClientsTable'].append_column(columns[column])
@@ -482,7 +535,7 @@ class WClients():
                     client.mobile_phone1,
                     client.mobile_phone2,
                     client.notes,
-                    client.getPreferenceInt('distance', 0),
+                    client.getPreferenceInt('eDistance', 0),
                     ])
 
 
@@ -535,7 +588,34 @@ class WClients():
             ac.setMobilePhone1(self.allWidgets["eMobilePhone1"].get_text())
             ac.setMobilePhone2(self.allWidgets["eMobilePhone2"].get_text())
             ac.setNotes(self.allWidgets["eNotes"].get_text())
-            ac.setPreference("distance",self.allWidgets["eDistance"].get_text())
+            ac.setPreference("eDistance",self.allWidgets["eDistance"].get_text())
+            ac.setPreference("cbDocumentType",self.allWidgets["cbDocumentType"].get_active_text())
+            ac.setPreference("chOS", int(self.allWidgets["chOS"].get_active()))
+            ac.setPreference("chSTD", int(self.allWidgets["chSTD"].get_active()))
+            ac.setPreference("chChB", int(self.allWidgets["chChB"].get_active()))
+            # OS
+            ac.setPreference("eOSMonthRate", \
+                    self.allWidgets["eOSMonthRate"].get_text())
+            ac.setPreference("eOSMonthHoursRate", \
+                    self.allWidgets["eOSMonthHoursRate"].get_text())
+            ac.setPreference("eOSHoursRate1", \
+                    self.allWidgets["eOSHoursRate1"].get_text())
+            ac.setPreference("eOSHoursRate2", \
+                    self.allWidgets["eOSHoursRate2"].get_text())
+            ac.setPreference("eOSHoursRate3", \
+                    self.allWidgets["eOSHoursRate3"].get_text())
+            # ChB
+            ac.setPreference("eChBMonthRate", \
+                    self.allWidgets["eChBMonthRate"].get_text())
+            ac.setPreference("eChBMonthHoursRate", \
+                    self.allWidgets["eChBMonthHoursRate"].get_text())
+            ac.setPreference("eChBHoursRate1", \
+                    self.allWidgets["eChBHoursRate1"].get_text())
+            ac.setPreference("eChBHoursRate2", \
+                    self.allWidgets["eChBHoursRate2"].get_text())
+            ac.setPreference("eChBHoursRate3", \
+                    self.allWidgets["eChBHoursRate3"].get_text())
+            
             log.info(rnl('Update existing client %s' % repr(self.actual_client)))
             db.updateClient(self.actual_client)
         else:
@@ -548,7 +628,23 @@ class WClients():
                     mobile_phone1=self.allWidgets["eMobilePhone1"].get_text(),
                     mobile_phone2=self.allWidgets["eMobilePhone2"].get_text(),
                     notes=self.allWidgets["eNotes"].get_text(),
-                    preferences={"distance":self.allWidgets["eDistance"].get_text()})
+                    preferences={ \
+                        "eDistance":self.allWidgets["eDistance"].get_text(),
+                        "cbDocumentType":self.allWidgets["cbDocumentType"].get_active_text(),
+                        "chOS":int(self.allWidgets["chOS"].get_active()),
+                        "chSTD":int(self.allWidgets["chSTD"].get_active()),
+                        "chChB":int(self.allWidgets["chChB"].get_active()),
+                        "eOSMonthRate":self.allWidgets["eOSMonthRate"].get_text(),
+                        "eOSMonthHoursRate":self.allWidgets["eOSMonthHoursRate"].get_text(),
+                        "eOSHoursRate1":self.allWidgets["eOSHoursRate1"].get_text(),
+                        "eOSHoursRate2":self.allWidgets["eOSHoursRate2"].get_text(),
+                        "eOSHoursRate3":self.allWidgets["eOSHoursRate3"].get_text(),
+                        "eChBMonthRate":self.allWidgets["eChBMonthRate"].get_text(),
+                        "eChBMonthHoursRate":self.allWidgets["eChBMonthHoursRate"].get_text(),
+                        "eChBHoursRate1":self.allWidgets["eChBHoursRate1"].get_text(),
+                        "eChBHoursRate2":self.allWidgets["eChBHoursRate2"].get_text(),
+                        "eChBHoursRate3":self.allWidgets["eChBHoursRate3"].get_text(),
+                        })
             log.info(rnl('Create new client %s' % repr(self.actual_client)))
             #TODO: check if similar client not exist
             db.addClient(self.actual_client)
@@ -577,7 +673,32 @@ class WClients():
         self.allWidgets["eMobilePhone1"].set_text(self.actual_client.mobile_phone1)
         self.allWidgets["eMobilePhone2"].set_text(self.actual_client.mobile_phone2)
         self.allWidgets["eNotes"].set_text(self.actual_client.notes)
-        self.allWidgets["eDistance"].set_text("%s" % self.actual_client.getPreferenceInt('distance', 0))
+        self.allWidgets["eDistance"].set_text("%s" % self.actual_client.getPreferenceInt('eDistance', 0))
+        self.fillComboBoxDocumentType(self.actual_client.getPreference('cbDocumentType', "PPD"))
+        self.allWidgets["chOS"].set_active(self.actual_client.getPreferenceInt('chOS', 0))
+        self.allWidgets["chSTD"].set_active(self.actual_client.getPreferenceInt('chSTD', 0))
+        self.allWidgets["chChB"].set_active(self.actual_client.getPreferenceInt('chChB', 0))
+
+        self.allWidgets["eOSMonthRate"].set_text("%s" % \
+                self.actual_client.getPreferenceInt('eOSMonthRate', 0))
+        self.allWidgets["eOSMonthHoursRate"].set_text("%s" % \
+                self.actual_client.getPreferenceInt('eOSMonthHoursRate', 0))
+        self.allWidgets["eOSHoursRate1"].set_text("%s" % \
+                self.actual_client.getPreferenceInt('eOSHoursRate1', 0))
+        self.allWidgets["eOSHoursRate2"].set_text("%s" % \
+                self.actual_client.getPreferenceInt('eOSHoursRate2', 0))
+        self.allWidgets["eOSHoursRate3"].set_text("%s" % \
+                self.actual_client.getPreferenceInt('eOSHoursRate3', 0))
+        self.allWidgets["eChBMonthRate"].set_text("%s" % \
+                self.actual_client.getPreferenceInt('eChBMonthRate', 0))
+        self.allWidgets["eChBMonthHoursRate"].set_text("%s" % \
+                self.actual_client.getPreferenceInt('eChBMonthHoursRate', 0))
+        self.allWidgets["eChBHoursRate1"].set_text("%s" % \
+                self.actual_client.getPreferenceInt('eChBHoursRate1', 0))
+        self.allWidgets["eChBHoursRate2"].set_text("%s" % \
+                self.actual_client.getPreferenceInt('eChBHoursRate2', 0))
+        self.allWidgets["eChBHoursRate3"].set_text("%s" % \
+                self.actual_client.getPreferenceInt('eChBHoursRate3', 0))
  
 
 
@@ -592,9 +713,29 @@ class WClients():
                 "eMobilePhone2",
                 "eNotes",
                 "eDistance",
+                "eOSMonthRate",
+                "eOSMonthHoursRate",
+                "eOSHoursRate1",
+                "eOSHoursRate2",
+                "eOSHoursRate3",
+                "eChBMonthRate",
+                "eChBMonthHoursRate",
+                "eChBHoursRate1",
+                "eChBHoursRate2",
+                "eChBHoursRate3",
                 )
         for e in editable_fields:
             self.allWidgets[e].set_text('')
+        
+        ch_fields = (
+                "chOS",
+                "chSTD",
+                "chChB",
+                )
+        for e in ch_fields:
+            self.allWidgets[e].set_active(False)
+        
+        self.fillComboBoxDocumentType()
 
     def cursorChanged(self, selected):
         log.debug("cursorChanged(%s)" % selected)
@@ -602,6 +743,16 @@ class WClients():
         if iter:
             client_id = self.clientsListStore.get_value(iter, 0)
             self.fillClientForm(client_id)
+
+    def chOStoggled(self, widget):
+        log.debug("chOStoggled()")
+        self.allWidgets['exOS'].set_expanded( \
+                self.allWidgets['chOS'].get_active())
+
+    def chChBtoggled(self, widget):
+        log.debug("chChBtoggled")
+        self.allWidgets['exChB'].set_expanded( \
+                self.allWidgets['chChB'].get_active())
 
     def nothing(self, widget, parameters=None):
         log.debug("Do nothing (parameters: %s)"%parameters)
@@ -1539,7 +1690,7 @@ class WSummary():
                 "on_wSummary_cbFilterMonth_changed": self.filterChangedMonth,
                 "on_wSummary_cbFilterYear_changed": self.filterChangedYear,
                 "on_wSummary_btFilterToday_clicked": self.filterToday,
-                "on_wSummary_cbDocumentType_changed": self.nothing,
+                "on_wSummary_cbDocumentType_changed": self.cbDocumentType_changed,
                 "on_wSummary_btDateIssue_clicked": self.calendarWindowIssue,
                 "on_wSummary_btDatePayment_clicked": self.calendarWindowPayment,
                 "on_wSummary_btClose_clicked": self.closeWSummary,
@@ -1765,6 +1916,24 @@ class WSummary():
                 i+=1
         self.allWidgets['cbDocumentType'].set_active(i)
 
+    def cbDocumentType_changed(self, widget):
+        log.debug("cbDocumentType_changed()")
+        self.markClientsInClientsTable()
+
+    def markClientsInClientsTable(self):
+        log.debug("markClientsInClientsTable()")
+        print 
+        self.allWidgets['tvClientsTable'].get_selection().unselect_all()
+        i = 0
+        for client_id,_ in self.clientsListStore:
+            client = db.getClient(db_id=client_id)
+            if client.getPreference('cbDocumentType', 'PPD') == \
+                    self.allWidgets['cbDocumentType'].get_active_text():
+                self.allWidgets['tvClientsTable'].get_selection().select_path(i)
+            i += 1
+
+
+
 
 
     def prepareClientsTable(self):
@@ -1804,6 +1973,7 @@ class WSummary():
                     ])
         # Sort clients table
         self.clientsListStore.set_sort_column_id(1, gtk.SORT_ASCENDING)
+        self.markClientsInClientsTable()
 
     def calendarWindowIssue(self, widget):
         """

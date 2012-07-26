@@ -120,6 +120,7 @@ class Db():
         """
         Execute database query.
         """
+        log.debug("Db.execute()")
         # variable for connection cursor 
         dbcc = self.__dbc.cursor()
         try:
@@ -138,13 +139,14 @@ class Db():
         """
         Commit changes to database.
         """
-        log.debug("Database cursor commit().")
+        log.debug("Db.commit()")
         self.__dbc.commit()
     
     def create_database(self, db_file):
         """
         Create new database and insert initial data.
         """
+        log.debug("Db.create_database()")
         # create database file
         try:
             self.__dbc = sqlite3.connect(db_file)
@@ -227,6 +229,7 @@ class Db():
             raise bdDbError("Problém s vložením výchozího nastavení: %s" %e)
 
     def open_database(self, db_file):
+        log.debug("Db.open_database()")
         # open database file
         try:
             self.__dbc = sqlite3.connect(db_file)
@@ -240,6 +243,7 @@ class Db():
         """
         Db verification.
         """
+        log.debug("Db.verification()")
         try: 
             log.info("db_major_version=%s" % self.getConfVal("db_major_version"))
             log.info("db_version=%s" % self.getConfVal("db_version"))
@@ -255,6 +259,7 @@ class Db():
         Update configuration in database (insert only non exist items).
         update_set = ({'name':"NAME", 'value':"VALUE", ''note': "NOTE"}, {..},...)
         """
+        log.debug("Db.updateConfiguration()")
         for item in update_set:
             # check if item is not in database
             if "DOES_NOT_CONTAIN" == \
@@ -268,6 +273,7 @@ class Db():
         """
         Return configuration along to name, pattern_name or whole configuration.
         """
+        log.debug("Db.getConf()")
         if name:
             result = self.execute('''SELECT name,value,note FROM configuration 
                 WHERE name=:name''', {'name':name})
@@ -301,6 +307,7 @@ class Db():
         Return configuration value from database, 
         if not exist, return 'default'.
         """
+        log.debug("Db.getConfVal()")
         result = self.execute('''SELECT value FROM configuration 
                 WHERE name=:name''', {'name':name})
         result = result.fetchone()
@@ -313,6 +320,7 @@ class Db():
         """
         Set (or insert) item in (to) configuration.
         """
+        log.debug("Db.setConf()")
         data = {'name':name, 'value':value, 'note':note}
         result = self.execute('''UPDATE configuration 
                 SET value=:value, note=:note
@@ -328,6 +336,7 @@ class Db():
         """
         Set value of item in configuration.
         """
+        log.debug("Db.setConfVal()")
         data = {'name':name, 'value':value}
         result = self.execute('''UPDATE configuration 
                 SET value=:value WHERE name=:name''', data)
@@ -344,6 +353,7 @@ class Db():
         """
         Delete configuration row.
         """
+        log.debug("Db.deleteConf()")
         result = self.execute('''DELETE FROM configuration 
                 WHERE name=:name''', {'name':name})
 #        if not result.rowcount:
@@ -360,6 +370,7 @@ class Db():
         """
         Add client to database.
         """
+        log.debug("Db.addClient()")
         log.debug(rnl("Adding client to DB: %s" % client))
         result = self.execute('''INSERT INTO clients
                 (first_name, last_name, address, phone, mobile_phone1, mobile_phone2, notes) 
@@ -380,6 +391,7 @@ class Db():
         """
         Update client in database.
         """
+        log.debug("Db.updateClient()")
         log.debug(rnl("Updating client in DB: %s" % client))
         result = self.execute('''UPDATE clients
                 SET first_name=:first_name, last_name=:last_name, address=:address,
@@ -391,7 +403,8 @@ class Db():
             self.setConf(name="preference_%s-%s" %(client.getDbId(), key),
                     value=value, 
                     note="%s (%s %s)" % 
-                            (key, client.first_name, client.last_name))
+                            (key, client.first_name, client.last_name),
+                    commit=False)
                     
         if commit:
             self.commit()
@@ -402,6 +415,7 @@ class Db():
         """
         Get clients.
         """
+        log.debug("Db.getClients()")
         result = self.execute('''SELECT id, first_name, last_name, address, 
                 phone, mobile_phone1, mobile_phone2, notes FROM clients''')
         clients = []
@@ -426,6 +440,7 @@ class Db():
         """
         Get clients with records (in given period).
         """
+        log.debug("Db.getClientsOfRecords()")
         where = "WHERE clients.id=records.client"
         where_data = {}
         if year:
@@ -470,6 +485,7 @@ class Db():
         """
         Get client.
         """
+        log.debug("Db.getClient()")
         if db_id:
             result = self.execute('''SELECT id, first_name, last_name, address, 
                 phone, mobile_phone1, mobile_phone2, notes FROM clients
@@ -501,6 +517,7 @@ class Db():
         """
         Delete client
         """
+        log.debug("Db.deleteClient()")
         result = self.execute('''DELETE FROM clients WHERE id=:db_id''',
                 {'db_id': str(db_id)})
         if commit:
@@ -513,6 +530,7 @@ class Db():
         """
         Add record to database.
         """
+        log.debug("Db.addRecord()")
         log.debug(rnl("Adding record to DB: %s" % record))
         result = self.execute('''INSERT INTO records
                 (client, date)
@@ -533,6 +551,7 @@ class Db():
         """
         Update record in database.
         """
+        log.debug("Db.updateRecord()")
         log.debug(rnl("Updating record in DB: %s" % record))
         result = self.execute('''UPDATE records
                 SET client=:client_id, date=:date
@@ -562,6 +581,7 @@ class Db():
         """
         Add time record to database.
         """
+        log.debug("Db.addTimeRecord()")
         log.debug(rnl("Adding time record to DB: %s" % time_record))
         result = self.execute('''INSERT INTO records_time
                 (id_record, service, time_from, time_to)
@@ -576,6 +596,7 @@ class Db():
         """
         Update time record in database.
         """
+        log.debug("Db.updateTimeRecord()")
         log.debug(rnl("Update time record in DB: %s" % time_record))
         result = self.execute('''UPDATE records_time
                 SET id_record=:id_record, service=:service, 
@@ -591,6 +612,7 @@ class Db():
         """
         Add value record to database.
         """
+        log.debug("Db.addValueRecord()")
         log.debug(rnl("Adding value record to DB: %s" % value_record))
         result = self.execute('''INSERT INTO records_value
                 (id_record, service, value)
@@ -605,6 +627,7 @@ class Db():
         """
         Update value record in database.
         """
+        log.debug("Db.updateValueRecord()")
         log.debug(rnl("Update value record in DB: %s" % value_record))
         result = self.execute('''UPDATE records_value
                 SET value=:value
@@ -618,6 +641,7 @@ class Db():
         """
         Get records.
         """
+        log.debug("Db.getRecord()")
         records = []
         where = ''
         where_data = {}
@@ -658,6 +682,7 @@ class Db():
         """
         Get record.
         """
+        log.debug("Db.getRecord()")
         if db_id:
             result = self.execute('''SELECT id, client, date FROM records 
                     WHERE id=:db_id''', {'db_id':str(db_id)})
@@ -677,6 +702,7 @@ class Db():
         """
         Get time records related to id_record.
         """
+        log.debug("Db.getTimeRecords()")
         time_records = []
         result = self.execute('''SELECT id, id_record, service, time_from, time_to
                 FROM records_time WHERE id_record=:id_record 
@@ -695,6 +721,7 @@ class Db():
         """
         Get value records related to id_record.
         """
+        log.debug("Db.getValueRecords()")
         value_records = []
         result = self.execute('''SELECT id, id_record, service, value
                 FROM records_value WHERE id_record=:id_record''', \
@@ -711,6 +738,7 @@ class Db():
         """
         Delete record...
         """
+        log.debug("Db.deleteRecord()")
         if db_id:
             log.debug("Removing record (db_id=%s)."%db_id)
             result = self.execute('''DELETE FROM records
@@ -725,6 +753,7 @@ class Db():
         """
         Delete time record...
         """
+        log.debug("Db.deleteTimeRecord()")
         if db_id:
             log.debug("Removing time record (db_id=%s)."%db_id)
             result = self.execute('''DELETE FROM records_time
@@ -742,6 +771,7 @@ class Db():
         """
         Delete value record...
         """
+        log.debug("Db.deleteValueRecord()")
         if db_id:
             log.debug("Removing value record (db_id=%s)."%db_id)
             result = self.execute('''DELETE FROM records_value
@@ -763,7 +793,7 @@ class Db():
         """
         Return list of years containing records.
         """
-        log.debug("getRecordsYears()")
+        log.debug("Db.getRecordsYears()")
         years = []
         result = self.execute('''SELECT strftime('%Y', date) AS year 
                 FROM records GROUP BY year''')
