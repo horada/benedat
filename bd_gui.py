@@ -2030,8 +2030,12 @@ class WSummary():
                 )
 
         # TODO
-
         print summary
+        import bd_pdf
+        pdf = bd_pdf.PdfSummary(summary)
+        pdf.createPdfSummary()
+
+
 
         self.clients = []
 #        self.w.destroy()
