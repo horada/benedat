@@ -75,7 +75,12 @@ class Summary():
 
         self.summaries = []
         for client in clients:
-            self.summaries.append(ClientSummary(client=client, year=self.year, month=self.month))
+            self.summaries.append(ClientSummary(client=client, 
+                year=self.year, month=self.month,
+                code="%s%s" % (self.code_fixed, self.code_variable)))
+            self.increaseCode()
+        # save last used variable part of summary code
+        db.setConfVal("eSummaryCodeVariable", self.code_variable)
 
 
     def __str__(self):
@@ -84,12 +89,17 @@ class Summary():
         tmp += "Datum vystavení: %s\n" % self.date_issue
         tmp += "Datum platby: %s\n" % self.date_payment
         tmp += "Vystavil: %s\n" % self.clerk_name
-        tmp += "Kód dokladu: %s%s\n" % (self.code_fixed, self.code_variable)
         for summary in self.summaries:
             tmp += "%s\n" % str(summary)
         return tmp
 
 
+    def increaseCode(self, step=1):
+        """
+        """
+        code_len = len(self.code_variable)
+        self.code_variable = ("%%0.%sd" % code_len) % \
+                (int(self.code_variable) + step)
 
 
 
@@ -97,11 +107,13 @@ class ClientSummary():
     """
     Summary for one client.
     """
-    def __init__(self, client, year=None, month=None):
+    def __init__(self, client, year=None, month=None, code=None):
         self.client = db.getClient(client)
         self.records = db.getRecords(client, year, month)
+        self.code = code
 
         self.__timeSum()
+        self.__valuesSum()
 #        print "===" * 30
 #        print self.records
 #        print "---" * 30
@@ -110,7 +122,9 @@ class ClientSummary():
     def __str__(self):
         tmp = ""
         tmp += "Client: %s %s\n" % (self.client.last_name, self.client.first_name)
+        tmp += "Kód dokladu: %s\n" % (self.code)
         tmp += "Celkový čas: %s\n" % {key:minutesToPretty(self.time_sum[key]) for key in self.time_sum}
+        tmp += "Variables sum: %s\n" % self.variables_sum
         for record in self.records:
             tmp += "%s %s %s\n" % (record.date, record.getTimeSumPretty(), record.time_records)
         return tmp
@@ -125,9 +139,20 @@ class ClientSummary():
             record_time_sum = record.getTimeSum()
             for key in record_time_sum.keys():
                 self.time_sum[key] = \
-                    self.time_sum.get(key, 0) + \
-                    record_time_sum[key]
+                        self.time_sum.get(key, 0) + \
+                        record_time_sum[key]
     
+    def __valuesSum(self):
+        """
+        Count variables sum.
+        """
+        self.variables_sum = {}
+        for record in self.records:
+            record_variables_sum = record.getVariablesSum()
+            for key in record_variables_sum.keys():
+                self.variables_sum[key] = \
+                        self.variables_sum.get(key, 0) + \
+                        record_variables_sum[key]
 
 
 # vim:tabstop=4:shiftwidth=4:softtabstop=4:

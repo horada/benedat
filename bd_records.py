@@ -64,6 +64,8 @@ CLASSES:
 # along with BeneDat.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from pprint import pprint
+
 from bd_clients import Client
 from bd_datetime import Date,Time, minutesToPretty
 
@@ -188,6 +190,10 @@ class Record():
     db_id = property(getDbId, setDbId)
 
     def getTimeSum(self):
+        """
+        Return time sum (in minutes):
+            e.g. {'ChB': 360, 'OS': 480}
+        """
         time_sum = {}
         for time_record in self.__time_records:
             time_sum[time_record.service_type] = \
@@ -196,11 +202,25 @@ class Record():
         return time_sum
 
     def getTimeSumPretty(self):
+        """
+        Return time sum (in pretty format HH:MM):
+            e.g. {'ChB': ' 6:00', 'OS': ' 8:00'}
+        """
         time_sum = self.getTimeSum()
         time_sum = {service_type:minutesToPretty(time_sum[service_type]) \
                 for service_type in time_sum.keys()}
         return time_sum
 
+    def getVariablesSum(self):
+        """
+        Return sum for value records.
+        """
+        variables_sum = {}
+        for value_record in self.__value_records.values():
+            variables_sum[value_record.service_type] = \
+                    variables_sum.get(value_record.service_type, 0) + \
+                    value_record.getValue()
+        return variables_sum
 
 
 class TimeRecord():
