@@ -1719,15 +1719,15 @@ class WSummary():
         for widget in widgets:
             self.allWidgets[widget] = self.wxml.get_widget("wSummary_%s"%widget)
 
+        # prepare document type combobox
+        self.prepareComboBoxDocumentType()
+
         # prepare filter
         self.prepareFilter()
         # prepare clients table
         self.prepareClientsTable()
         # load filter
         self.loadFilter()
-
-        # prepare document type combobox
-        self.prepareComboBoxDocumentType()
 
         # fill date fields
         self.allWidgets['eDateIssue'].set_text(bd_datetime.Date().get())
@@ -1899,6 +1899,8 @@ class WSummary():
 
     def fillComboBoxDocumentType(self):
         log.debug("fillComboBoxDocumentType()")
+        # block signal handler when filling cbDocumentType
+        self.allWidgets['cbDocumentType'].handler_block_by_func(self.cbDocumentType_changed)
         self.documentTypeListStore.clear()
         document_types = {
                 'PPD': "Příjmový pokladní doklad",
@@ -1915,6 +1917,8 @@ class WSummary():
             else:
                 i+=1
         self.allWidgets['cbDocumentType'].set_active(i)
+        # unblock signal handler
+        self.allWidgets['cbDocumentType'].handler_unblock_by_func(self.cbDocumentType_changed)
 
     def cbDocumentType_changed(self, widget):
         log.debug("cbDocumentType_changed()")
@@ -1922,7 +1926,7 @@ class WSummary():
 
     def markClientsInClientsTable(self):
         log.debug("markClientsInClientsTable()")
-        print 
+#        print 
         self.allWidgets['tvClientsTable'].get_selection().unselect_all()
         i = 0
         for client_id,_ in self.clientsListStore:
@@ -1931,9 +1935,6 @@ class WSummary():
                     self.allWidgets['cbDocumentType'].get_active_text():
                 self.allWidgets['tvClientsTable'].get_selection().select_path(i)
             i += 1
-
-
-
 
 
     def prepareClientsTable(self):
@@ -1964,7 +1965,7 @@ class WSummary():
         month = self.allWidgets['cbFilterMonth'].get_active_text()
 
         clients = db.getClientsOfRecords(year=year, month=month)
-        pprint(clients)
+#        pprint(clients)
         self.clientsListStore.clear()
         for client in clients:
             self.clientsListStore.append([
