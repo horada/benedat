@@ -119,28 +119,88 @@ class PdfClientSummary():
         """
         Create pdf summary for one client.
         """
-        a_x = cm
-        a_y = height
-
-        self.c.setFont('LinLibertine_Bd', 14)
-
+        log.debug("PdfClientSummary.createPdfClientSummary()")
         # move 0,0 to top left
         self.c.translate(0,height)
 
+        # top left header
+        self.topLeftHeader()
+        # top right header
+        self.topRightHeader()
+
+        # head frame
+        self.headFrame()
+
+        # left address
+        self.leftHeadAddress()
+        # left information
+        self.leftHeadInformation()
+
+        # right address
+        self.rightHeadAddress()
+
+        # right information
+        self.rightHeadInformation()
+
+
+
+
+        ## EXAMPLES ##########################################################
+        #self.c.setFont('LinLibertine_Bd', 32)
+        #self.c.drawString(10, 150, "+ěščřžýáíé=")
+        #self.c.rotate(90)
+        #self.c.drawString(-10*cm, -10*cm, "Nahnuto")
+        #self.c.rotate(-90)
+        #self.c.drawString(10*cm, -10*cm, "Nehnuto")
+        #self.c.drawString(10, -100, "ěščřžýáíé=a TT Font!")
+        #self.c.drawCentredString(units.toLength("10.5cm"), units.toLength("-15cm"), "čřžýáííáýžAAAA")
+        #self.c.drawRightString(units.toLength("20cm"), units.toLength("-5cm"), "čřžýáííáýžBBBB")
+        ######################################################################
+
+        # "close" page
+        self.c.showPage()
+
+
+
+    def topLeftHeader(self):
+        """
+        Top left header:
+            "Občanské sdružení BENEDIKTUS"
+        """
+        log.debug("PdfClientSummary.topLeftHeader()")
+        size = 14
+        self.c.setFont('LinLibertine_Bd', size)
         self.c.drawString(cm,-cm,"Občanské sdružení BENEDIKTUS")
 
-        self.c.drawRightString(width-cm,-cm,"Příjmový pokladní doklad č.%s" % self.summary.code)
+    def topRightHeader(self):
+        """
+        Top left header:
+            "Příjmový pokladní doklad č.XXXX0000"
+            "Výpis poskytnutých služeb"
+        """
+        log.debug("PdfClientSummary.topRightHeader()")
+        if self.summary.info.document_type == "PPD":
+            text = "Příjmový pokladní doklad č.%s" % self.summary.info.code
+        elif self.summary.info.document_type == "JV":
+            text = "Výpis poskytnutých služeb"
+        size = 14
+        self.c.setFont('LinLibertine_Bd', size)
+        self.c.drawRightString(width-cm,-cm,text)
 
+    def headFrame(self):
+        """
+        Head frame.
+        """
+        log.debug("PdfClientSummary.headFrame()")
         # head thin frame
         self.c.setLineWidth(0.5)
         self.c.lines((
             (cm, -cm*1.3, width-cm, -cm*1.3),
-            (cm, -cm*7.3, width-cm, -cm*7.3),
-            (cm, -cm*1.3, cm, -cm*7.3),
-            (width-cm, -cm*1.3, width-cm, -cm*7.3),
-            (width/2, -cm*1.3, width/2, -cm*7.3),
+            (cm, -cm*6.0, width-cm, -cm*6.0),
+            (cm, -cm*1.3, cm, -cm*6.0),
+            (width-cm, -cm*1.3, width-cm, -cm*6.0),
+            (width/2, -cm*1.3, width/2, -cm*6.0),
             ))
-
         # head thick frame (from...)
         self.c.setLineWidth(2)
         self.c.lines((
@@ -151,26 +211,93 @@ class PdfClientSummary():
             ))
 
 
-        self.c.setFont('LinLibertine_Bd', 32)
-        self.c.drawString(10, 150, "+ěščřžýáíé=")
+    def leftHeadAddress(self):
+        """
+        Left address.
+        """
+        log.debug("PdfClientSummary.leftHeadAddress()")
+        size = 12
+        # left address
+        self.__y = 0
+        self.c.setFont('LinLibertine_Bd', size)
+        address = db.getConfVal("teSummaryAddress", "")
+        for line in address.split("\n"):
+            self.c.drawString(1.5*cm, -2*cm + self.__y, line)
+            self.__y -= size*1.2
 
-        self.c.rotate(90)
-        self.c.drawString(20*cm, -10*cm, "Nahnuto")
-        self.c.rotate(-90)
-        self.c.drawString(10*cm, 20*cm, "Nehnuto")
+    def leftHeadInformation(self):
+        """
+        Left head information.
+        """
+        log.debug("PdfClientSummary.leftHeadInformation()")
+        # left additional information
+        size = 10
+        self.c.setFont('LinLibertine_Re', size)
+        information = db.getConfVal("teSummaryInformation", "")
+        self.__y -= size
+        for line in information.split("\n"):
+            self.c.drawString(1.5*cm, -2*cm + self.__y, line)
+            self.__y -= size*1.2
+        
 
-        self.c.drawString(10, 100, "ěščřžýáíé=a TT Font!")
-        self.c.drawCentredString(units.toLength("10.5cm"), units.toLength("15cm"), "čřžýáííáýžAFS")
-        self.c.drawRightString(units.toLength("20cm"), units.toLength("5cm"), "čřžýáííáýžAFS")
+    def rightHeadAddress(self):
+        """
+        Right address.
+        """
+        log.debug("PdfClientSummary.rightHeadAddress()")
+        # right name
+        size = 10
+        self.c.setFont('LinLibertine_Re', size)
+        self.c.drawString(width/2+0.5*cm, -2*cm, "Přijato od")
+        size = 14
+        self.c.setFont('LinLibertine_Bd', size)
+        name = "%s %s" % (self.summary.client.last_name, self.summary.client.first_name)
+        self.c.drawString(width/2+0.5*cm, -2*cm - size*1.2, name)
 
-        # "close" page
-        self.c.showPage()
+    def rightHeadInformation(self):
+        """
+        Right head information.
+        """
+        log.debug("PdfClientSummary.rightHeadInformation()")
+        # right information
+        size = 12
+        # descriptions
+        self.c.setFont('LinLibertine_Re', size)
+        if self.summary.info.document_type == "PPD":
+            information = [
+                    "Datum vystavení: ",
+                    "Datum platby:",
+                    "Pokladna:",]
+        elif self.summary.info.document_type == "JV":
+            information = [
+                    "Datum vystavení: ",]
+        self.__y = -4*cm
+        for line in information:
+            self.c.drawString(width/2+0.5*cm, self.__y, line)
+            self.__y -= size*1.2
+        # values
+        self.c.setFont('LinLibertine_Bd', size)
+        if self.summary.info.document_type == "PPD":
+            information = [
+                    self.summary.info.date_issue,
+                    self.summary.info.date_payment,
+                    db.getConfVal("eSummaryTill", ""),]
+        elif self.summary.info.document_type == "JV":
+            information = [
+                    self.summary.info.date_issue,]
+        self.__y = -4*cm
+        for line in information:
+            self.c.drawString(width/2+4.5*cm, self.__y, line)
+            self.__y -= size*1.2
+        # Firma není plátce DPH.
+        self.c.setFont('LinLibertine_Bd', 10)
+        self.c.drawString(width/2+0.5*cm, self.__y, "Firma není plátce DPH.")
 
 
-
-
-
-
+#    def (self):
+#        """
+#        """
+#        log.debug("PdfClientSummary.()")
 
 
 # vim:tabstop=4:shiftwidth=4:softtabstop=4:

@@ -2161,6 +2161,7 @@ class WSettings():
         """
         log.debug("saveSettings()")
         # save Editable fields
+        pprint(dir(self))
         for widget in self.ewidgets:
             log.debug("Saving configuration '%s' - %s." % \
                     (widget, eSettings[widget]))

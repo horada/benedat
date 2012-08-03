@@ -75,10 +75,22 @@ class Summary():
 
         self.summaries = []
         for client in clients:
+            if self.document_type == "PPD":
+                code="%s%s" % (self.code_fixed, self.code_variable),
+            else:
+                code=""
             self.summaries.append(ClientSummary(client=client, 
-                year=self.year, month=self.month,
-                code="%s%s" % (self.code_fixed, self.code_variable)))
-            self.increaseCode()
+                summary_info=SummaryInfo(
+                    year=self.year, 
+                    month=self.month,
+                    document_type=self.document_type,
+                    date_issue=self.date_issue,
+                    date_payment=self.date_payment,
+                    clerk_name=self.clerk_name,
+                    code=code,
+                    )))
+            if self.document_type == "PPD":
+                self.increaseCode()
         # save last used variable part of summary code
         db.setConfVal("eSummaryCodeVariable", self.code_variable)
 
@@ -107,10 +119,10 @@ class ClientSummary():
     """
     Summary for one client.
     """
-    def __init__(self, client, year=None, month=None, code=None):
+    def __init__(self, client, summary_info):
+        self.info = summary_info
         self.client = db.getClient(client)
-        self.records = db.getRecords(client, year, month)
-        self.code = code
+        self.records = db.getRecords(client, self.info.year, self.info.month)
 
         self.__timeSum()
         self.__valuesSum()
@@ -122,7 +134,7 @@ class ClientSummary():
     def __str__(self):
         tmp = ""
         tmp += "Client: %s %s\n" % (self.client.last_name, self.client.first_name)
-        tmp += "Kód dokladu: %s\n" % (self.code)
+        tmp += "Kód dokladu: %s\n" % (self.info.code)
         tmp += "Celkový čas: %s\n" % {key:minutesToPretty(self.time_sum[key]) for key in self.time_sum}
         tmp += "Variables sum: %s\n" % self.variables_sum
         for record in self.records:
@@ -153,6 +165,73 @@ class ClientSummary():
                 self.variables_sum[key] = \
                         self.variables_sum.get(key, 0) + \
                         record_variables_sum[key]
+
+
+
+
+class SummaryInfo():
+    """
+    Additional data for summary:
+        year,
+        month,
+        document_type,
+        date_issue,
+        date_payment,
+        clerk_name,
+        code,
+    """
+    def __init__(self, year, month, document_type, date_issue, date_payment, clerk_name, code):
+        """
+        """
+        self.setYear(year)
+        self.setMonth(month)
+        self.setDocumentType(document_type)
+        self.setDateIssue(date_issue)
+        self.setDatePayment(date_payment)
+        self.setClerkName(clerk_name)
+        self.setCode(code)
+
+    def getYear(self):
+        return self.__year
+    def setYear(self, value):
+        self.__year = value
+    year = property(getYear, setYear)
+
+    def getMonth(self):
+        return self.__month
+    def setMonth(self, value):
+        self.__month = value
+    month = property(getMonth, setMonth)
+
+    def getDocumentType(self):
+        return self.__document_type
+    def setDocumentType(self, value):
+        self.__document_type = value
+    document_type = property(getDocumentType, setDocumentType)
+
+    def getDateIssue(self):
+        return self.__date_issue
+    def setDateIssue(self, value):
+        self.__date_issue = value
+    date_issue = property(getDateIssue, setDateIssue)
+
+    def getDatePayment(self):
+        return self.__date_payment
+    def setDatePayment(self, value):
+        self.__date_payment = value
+    date_payment = property(getDatePayment, setDatePayment)
+
+    def getClerkName(self):
+        return self.__clerk_name
+    def setClerkName(self, value):
+        self.__clerk_name = value
+    clerk_name = property(getClerkName, setClerkName)
+
+    def getCode(self):
+        return self.__code
+    def setCode(self, value):
+        self.__code = value
+    code = property(getCode, setCode)
 
 
 # vim:tabstop=4:shiftwidth=4:softtabstop=4:
