@@ -142,7 +142,7 @@ class PdfClientSummary():
         # right information
         self.rightHeadInformation()
 
-
+        self.summaryTable()
 
 
         ## EXAMPLES ##########################################################
@@ -193,6 +193,8 @@ class PdfClientSummary():
         """
         log.debug("PdfClientSummary.headFrame()")
         # head thin frame
+        self.c.setLineJoin(2)
+        self.c.setLineCap(2)
         self.c.setLineWidth(0.5)
         self.c.lines((
             (cm, -cm*1.3, width-cm, -cm*1.3),
@@ -292,6 +294,34 @@ class PdfClientSummary():
         # Firma není plátce DPH.
         self.c.setFont('LinLibertine_Bd', 10)
         self.c.drawString(width/2+0.5*cm, self.__y, "Firma není plátce DPH.")
+
+    def summaryTable(self):
+        """
+        Summary table.
+        """
+        self.__y -= 1*cm
+        size = 10
+        self.c.setFont('LinLibertine_Re', size)
+        # table header 
+        # table body
+        for record in self.summary.records:
+            self.c.drawRightString(2*cm, self.__y, "%s" % record.date)
+            for time_record in record.time_records:
+                self.c.drawRightString(3*cm, self.__y, "%s" % \
+                        time_record.service_type)
+                self.c.drawRightString(4*cm, self.__y, "%s" % \
+                        time_record.time_from)
+                self.c.drawRightString(5*cm, self.__y, "%s" % \
+                        time_record.time_to)
+                self.__y -= size*1.2
+
+            self.__y += size*1.2*len(record.getTimeSum())
+            for key,value in record.getTimeSumPretty().items():
+                self.c.drawRightString(7*cm, self.__y, "%s: %s" % \
+                        (key, value))
+                self.__y -= size*1.2
+
+#            self.__y -= size*1.2
 
 
 #    def (self):

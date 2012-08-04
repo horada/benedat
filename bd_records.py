@@ -207,7 +207,7 @@ class Record():
             e.g. {'ChB': ' 6:00', 'OS': ' 8:00'}
         """
         time_sum = self.getTimeSum()
-        time_sum = {service_type:minutesToPretty(time_sum[service_type]) \
+        time_sum = {service_type:time_sum[service_type]/float(60) \
                 for service_type in time_sum.keys()}
         return time_sum
 

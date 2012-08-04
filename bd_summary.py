@@ -37,6 +37,8 @@ CLASSES:
 
 from pprint import pprint
 
+import time
+
 from bd_exceptions import *
 import bd_config
 import bd_database
@@ -63,6 +65,7 @@ class Summary():
     def __init__(self, clients=None, year=None, month=None, \
             document_type=None, date_issue=None, date_payment=None, \
             clerk_name=None, code_fixed=None, code_variable=None):
+        self.start = time.time()
         self.year = year
         self.month = month
         self.clients = clients
@@ -97,12 +100,10 @@ class Summary():
 
     def __str__(self):
         tmp = ""
-        tmp += "Typ dokladu: %s\n" % self.document_type
-        tmp += "Datum vystavení: %s\n" % self.date_issue
-        tmp += "Datum platby: %s\n" % self.date_payment
-        tmp += "Vystavil: %s\n" % self.clerk_name
         for summary in self.summaries:
-            tmp += "%s\n" % str(summary)
+            tmp += "==" * 30
+            tmp += "\n%s\n\n" % str(summary)
+        tmp += "Generated in: %0.3fs" % (time.time() - self.start)
         return tmp
 
 
@@ -125,7 +126,9 @@ class ClientSummary():
         self.records = db.getRecords(client, self.info.year, self.info.month)
 
         self.__timeSum()
+        self.__timePrice()
         self.__valuesSum()
+        self.__valuesPrice()
 #        print "===" * 30
 #        print self.records
 #        print "---" * 30
@@ -133,10 +136,16 @@ class ClientSummary():
 
     def __str__(self):
         tmp = ""
+        tmp += "Typ dokladu: %s\n" % self.info.document_type
+        tmp += "Datum vystavení: %s\n" % self.info.date_issue
+        tmp += "Datum platby: %s\n" % self.info.date_payment
+        tmp += "Vystavil: %s\n" % self.info.clerk_name
         tmp += "Client: %s %s\n" % (self.client.last_name, self.client.first_name)
         tmp += "Kód dokladu: %s\n" % (self.info.code)
         tmp += "Celkový čas: %s\n" % {key:minutesToPretty(self.time_sum[key]) for key in self.time_sum}
+        tmp += "Cena (časové údaje): %s\n" % self.time_price
         tmp += "Variables sum: %s\n" % self.variables_sum
+        tmp += "Cena (ostatní): %s\n" % self.variables_price
         for record in self.records:
             tmp += "%s %s %s\n" % (record.date, record.getTimeSumPretty(), record.time_records)
         return tmp
@@ -154,6 +163,16 @@ class ClientSummary():
                         self.time_sum.get(key, 0) + \
                         record_time_sum[key]
     
+    def __timePrice(self):
+        """
+        Count price for time related records.
+        """
+        self.time_price = {}
+        for key in self.time_sum:
+            self.time_price[key] = \
+                    getattr(self, "_ClientSummary__price%s" % key, \
+                    lambda:0)()
+    
     def __valuesSum(self):
         """
         Count variables sum.
@@ -165,8 +184,236 @@ class ClientSummary():
                 self.variables_sum[key] = \
                         self.variables_sum.get(key, 0) + \
                         record_variables_sum[key]
+    
+    def __valuesPrice(self):
+        """
+        Count price for time related records.
+        """
+        self.variables_price = {}
+        for key in self.variables_sum:
+            self.variables_price[key] = \
+                    getattr(self, "_ClientSummary__price%s" % key, \
+                    lambda:0)()
 
+    def __priceOS(self):
+        """
+        Calculation of OS price from number of hours. 
+        """
+        if self.time_sum.has_key("OS"):
+            hours = self.time_sum["OS"] / float(60)
+            monthHoursRate = float(self.client.getPreference("eOSMonthHoursRate", 0))
+            monthRate = float(self.client.getPreference("eOSMonthRate", 0))
+            hoursLevelOS1 = float(db.getConfVal("eHoursLevelOS1", 0))
+            hoursLevelOS2 = float(db.getConfVal("eHoursLevelOS2", 0))
+            osHoursRate1 = float(self.client.getPreference("eOSHoursRate1", 0))
+            osHoursRate2 = float(self.client.getPreference("eOSHoursRate2", 0))
+            osHoursRate3 = float(self.client.getPreference("eOSHoursRate3", 0))
 
+            if hours < (monthHoursRate/2):
+                os_price = monthRate/2
+            else:
+                os_price = monthRate
+
+            if hours > hoursLevelOS2:
+                os_price += osHoursRate3 * (hours - hoursLevelOS2) + \
+                        osHoursRate2 * (hoursLevelOS2 - hoursLevelOS1) + \
+                        osHoursRate1 * hoursLevelOS1
+            elif hours > hoursLevelOS1:
+                os_price += osHoursRate2 * (hours - hoursLevelOS1) + \
+                        osHoursRate1 * hoursLevelOS1
+            else:
+                os_price += osHoursRate1 * hours
+            return round(os_price, 2)
+        else:
+            return None
+
+    def __priceChB(self):
+        """
+        Calculation of ChB price from number of hours. 
+        """
+        if self.time_sum.has_key("ChB"):
+            hours = self.time_sum["ChB"] / float(60)
+            monthHoursRate = float(self.client.getPreference("eChBMonthHoursRate", 0))
+            monthRate = float(self.client.getPreference("eChBMonthRate", 0))
+            hoursLevelChB1 = float(db.getConfVal("eHoursLevelChB1", 0))
+            hoursLevelChB2 = float(db.getConfVal("eHoursLevelChB2", 0))
+            chBHoursRate1 = float(self.client.getPreference("eChBHoursRate1", 0))
+            chBHoursRate2 = float(self.client.getPreference("eChBHoursRate2", 0))
+            chBHoursRate3 = float(self.client.getPreference("eChBHoursRate3", 0))
+
+            if hours < (monthHoursRate/2):
+                chB_price = monthRate/2
+            else:
+                chB_price = monthRate
+
+            if hours > hoursLevelChB2:
+                chB_price += chBHoursRate3 * (hours - hoursLevelChB2) + \
+                        chBHoursRate2 * (hoursLevelChB2 - hoursLevelChB1) + \
+                        chBHoursRate1 * hoursLevelChB1
+            elif hours > hoursLevelChB1:
+                chB_price += chBHoursRate2 * (hours - hoursLevelChB1) + \
+                        chBHoursRate1 * hoursLevelChB1
+            else:
+                chB_price += chBHoursRate1 * hours
+            return round(chB_price, 2)
+        else:
+            return None
+
+    def __priceTSO(self):
+        """
+        Calculation of price for eTransportServiceOther. 
+        """
+        value = self.variables_sum["TSO"]
+        return value
+
+    def __priceDO(self):
+        """
+        Calculation of price for eDietOther.
+        """
+        value = self.variables_sum["DO"]
+        return value
+
+    def __priceBO(self):
+        """
+        Calculation of price for eBilletOther.
+        """
+        value = self.variables_sum["BO"]
+        return value
+
+    def __priceTOS(self):
+        """
+        Calculation of price for chTransportOnService.
+        """
+        value = self.variables_sum["TOS"]
+        price = self.__priceTransport()
+
+        return value * price
+
+    def __priceTFS(self):
+        """
+        Calculation of price for chTransportFromService.
+        """
+        value = self.variables_sum["TFS"]
+        price = self.__priceTransport()
+        return value * price
+
+    def __priceTChMo(self):
+        """
+        Calculation of price for chTransportChMo.
+        """
+        value = self.variables_sum["TChMo"]
+        price = db.getConfVal("eTransportPriceChM", 0)
+        return value * price
+
+    def __priceTMoCh(self):
+        """
+        Calculation of price for chTransportMoCh.
+        """
+        value = self.variables_sum["TMoCh"]
+        price = db.getConfVal("eTransportPriceChM", 0)
+        return value * price
+
+    def __priceDRCh(self):
+        """
+        Calculation of price for chDietRefreshmentCh.
+        """
+        value = self.variables_sum["DRCh"]
+        price = db.getConfVal("eDietRefreshmentCh", 0)
+        return value * price
+
+    def __priceDRM(self):
+        """
+        Calculation of price for chDietRefreshmentM.
+        """
+        value = self.variables_sum["DRM"]
+        price = db.getConfVal("eDietRefreshmentM", 0)
+        return value * price
+
+    def __priceDLCh(self):
+        """
+        Calculation of price for chDietLunchCh.
+        """
+        value = self.variables_sum["DLCh"]
+        price = db.getConfVal("eDietLunchCh", 0)
+        return value * price
+
+    def __priceDLM(self):
+        """
+        Calculation of price for chDietLunchM.
+        """
+        value = self.variables_sum["DLM"]
+        price = db.getConfVal("eDietLunchM", 0)
+        return value * price
+
+    def __priceDBM(self):
+        """
+        Calculation of price for chDietBreakfastM.
+        """
+        value = self.variables_sum["DBM"]
+        price = db.getConfVal("eDietBreakfastM", 0)
+        return value * price
+
+    def __priceDDM(self):
+        """
+        Calculation of price for chDietDinnerM.
+        """
+        value = self.variables_sum["DDM"]
+        price = db.getConfVal("eDietDinnerM", 0)
+        return value * price
+
+    def __priceBChB1(self):
+        """
+        Calculation of price for chBilletChB1.
+        """
+        value = self.variables_sum["BChB1"]
+        price = db.getConfVal("eBilletChB1", 0)
+        return value * price
+
+    def __priceBChB2(self):
+        """
+        Calculation of price for chBilletChB2.
+        """
+        value = self.variables_sum["BChB2"]
+        price = db.getConfVal("eBilletChB2", 0)
+        return value * price
+
+    def __priceBChB3(self):
+        """
+        Calculation of price for chBilletChB3.
+        """
+        value = self.variables_sum["BChB3"]
+        price = db.getConfVal("eBilletChB3", 0)
+        return value * price
+
+    def __priceBOS(self):
+        """
+        Calculation of price for chBilletOS.
+        """
+        value = self.variables_sum["BOS"]
+        price = db.getConfVal("eBilletOS", 0)
+        return value * price
+
+    def __priceTransport(self):
+        """
+        Price of one trip to/from service.
+        """
+        priceFuel = float(db.getConfVal("eTransportPriceFuel", 0))
+        exp = float(db.getConfVal("eTransportExp", 0))
+        k = float(db.getConfVal("eTransportK", 0))
+        entryRate = float(db.getConfVal("eTransportEntryRate", 0))
+        clientPart = float(db.getConfVal("eTransportClientPart", 0))
+        distance = float(self.client.getPreference("eDistance", 0))
+
+        # rounding to higher even number
+        if distance % 2:
+            distance+= 1
+        # price calculation
+        price = entryRate + clientPart * \
+            (k / 100.0 * \
+            priceFuel * \
+            (distance ** exp))
+        # rounding price
+        return round(price, 0)
 
 
 class SummaryInfo():
