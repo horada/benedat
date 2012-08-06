@@ -809,8 +809,6 @@ class WRecords():
                 'eDate',
                 'tabServices',
                 'btAddService',
-                'eClient',
-                'eDate',
                 'eTransportServiceOther',
                 'eDietOther',
                 'eBilletOther',
@@ -1127,7 +1125,6 @@ class WRecords():
             self.prepareRecordsTable()
 
         if self.allWidgets['tbtFilter'].get_active():
-            log.debug("fillRecordsTable - line 979 --------------------------")
             records = db.getRecords( \
                     year=self.allWidgets['cbFilterYear'].get_active_text(), \
                     month=self.allWidgets['cbFilterMonth'].get_active_text())

@@ -477,7 +477,17 @@ class Db():
 
         return clients
 
- 
+    def getClientsServices(self, db_id):
+        """
+        Get services allowed for one client.
+        """
+        log.debug("Db.getClientsServices(db_id=%s)" % db_id)
+        services = ('OS', 'STD', 'ChB')
+        clients_services = []
+        for service in services:
+            if int(self.getConfVal("preference_%s-ch%s" % (db_id, service))):
+                clients_services.append(service)
+        return clients_services
 
 
 
@@ -485,12 +495,12 @@ class Db():
         """
         Get client.
         """
-        log.debug("Db.getClient()")
-        if db_id:
+        log.debug("Db.getClient(db_id=%s, name=%s)" % (db_id, name))
+        if db_id is not None:
             result = self.execute('''SELECT id, first_name, last_name, address, 
                 phone, mobile_phone1, mobile_phone2, notes FROM clients
                 WHERE id=:db_id''', {'db_id': str(db_id)})
-        elif name:
+        elif name is not None:
             result = self.execute('''SELECT id, first_name, last_name, address, 
                 phone, mobile_phone1, mobile_phone2, notes FROM clients
                 WHERE first_name||' '||last_name=:name OR 
