@@ -790,6 +790,7 @@ class WRecords():
                 "on_wRecords_btSaveRecord_clicked": self.saveRecord,
                 "on_wRecords_eDate_focus_out_event": self.eDate_focus_out_event,
                 "on_wRecords_eDate_key_release_event":self.eDate_key_release,
+                "on_wRecords_eClient_focus_out_event": self.eClient_focus_out_event,
                 }
         self.wxml.signal_autoconnect(signals)
 
@@ -829,6 +830,7 @@ class WRecords():
             self.allWidgets[widget] = self.wxml.get_widget("wRecords_%s"%widget)
 
         self.recordsListStore = None
+        self.servicesListStore = gtk.ListStore(str)
 
         # prepare filter
         self.loadFilter()
@@ -1357,6 +1359,7 @@ class WRecords():
         log.debug("clientsMenuClicked('%s')"%data)
         self.allWidgets['eClient'].set_text(data)
         self.allWidgets['eDate'].grab_focus()
+        self.prepareServicesListStore()
 
 
     def clientEntryCompletion(self):
@@ -1417,20 +1420,30 @@ class WRecords():
         d = Time(widget.get_text())
         widget.set_text(d.get())
 
+    def eClient_focus_out_event(self, widget, parameters):
+        """
+        """
+        log.debug("WRecords.eClient_focus_out_event()")
+        self.prepareServicesListStore()
+
+    def prepareServicesListStore(self):
+        log.debug("WRecords.prepareServicesListStore()")
+        self.servicesListStore.clear()
+        client = db.getClient(name=self.allWidgets['eClient'].get_text())
+        if client:
+            services = db.getClientsServices(client.db_id)
+            for service in services:
+                self.servicesListStore.append([service])
+
     def fillComboBoxService(self, cbwidget):
         """
         Fill combo box field for services (OS, STD, ChB)
         """
-        servicesListStore = gtk.ListStore(str)
-        cbwidget.set_model(servicesListStore)
+        log.debug("WRecords.fillComboBoxService()")
+        cbwidget.set_model(self.servicesListStore)
         cell = gtk.CellRendererText()
         cbwidget.pack_start(cell, True)
         cbwidget.add_attribute(cell, 'text', 0)
-
-        servicesListStore.clear()
-        services = ('OS', 'STD', 'ChB')
-        for service in services:
-            servicesListStore.append([service])
         cbwidget.set_active(0)
 
 
