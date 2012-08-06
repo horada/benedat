@@ -649,9 +649,6 @@ class WClients():
             #TODO: check if similar client not exist
             db.addClient(self.actual_client)
         self.newClient()
-        self.fillClientsTable()
-        # put cursor to the firstName field
-        self.allWidgets['eFirstName'].grab_focus()
         
 
     def closeWClients(self, widget):
@@ -1182,7 +1179,7 @@ class WRecords():
         self.w.destroy()
 
 
-    def newRecord(self, widget):
+    def newRecord(self, widget=None):
         """
         Clear input field and set actual_record to None.
         """
@@ -1215,7 +1212,7 @@ class WRecords():
         """
         Save selected/created record.
         """
-        log.debug("saveRecord(): %s" % repr(self.actual_record))
+        log.debug("saveRecord(): actual_record=%s" % repr(self.actual_record))
         # check filled fields
         client = db.getClient(name=self.allWidgets['eClient'].get_text())
         if not client:
@@ -1251,7 +1248,7 @@ class WRecords():
 
         # remove removed time_record
         for tr in self.time_records_to_remove:
-            db.delTimeRecord(db_id=tr)
+            db.deleteTimeRecord(db_id=tr)
         self.time_records_to_remove = []
 
         
@@ -1319,7 +1316,7 @@ class WRecords():
 
         self.fillRecordsTable()
         # clear input fields (form)
-        self.clearRecordForm()
+        self.newRecord()
 
 
     def createClientsMenu(self):
