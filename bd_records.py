@@ -171,6 +171,13 @@ class Record():
             self.__value_records = {vr.service_type:vr for vr in value}
     value_records = property(getValueRecords, setValueRecords)
 
+    def getValueRecord(self, service_type, default=None):
+        record = self.__value_records.get(service_type, default)
+        if hasattr(record, 'value'):
+            return record.value
+        else:
+            return default
+
     def addValueRecord(self, **values):
         """
         values: - record
