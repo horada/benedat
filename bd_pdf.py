@@ -299,29 +299,181 @@ class PdfClientSummary():
         """
         Summary table.
         """
-        self.__y -= 1*cm
+        self.__y -= 2*cm
         size = 10
-        self.c.setFont('LinLibertine_Re', size)
         # table header 
+        self.c.setFont('LinLibertine_Bd', size)
+        self.c.drawString(1*cm, self.__y, "%s" % "datum")
+        self.c.drawString(2.5*cm, self.__y, "%s" % "služba")
+        self.c.drawString(3.5*cm, self.__y, "%s" % "od")
+        self.c.drawString(4.5*cm, self.__y, "%s" % "do")
+        self.c.drawString(5.5*cm, self.__y, "%s" % "celkem")
+
+        self.__y -= size*1.2
+        self.c.rotate(90)
+        self.c.drawString(self.__y, -7.7*cm, "%s" % "doprava")
+        self.c.drawString(self.__y,-10.7*cm, "%s" % "strava")
+        self.c.drawString(self.__y, -14.7*cm, "%s" % "ubytování")
+        self.c.rotate(-90)
+#        self.c.drawString(14*cm, self.__y, "%s" % "snídaně")
+#        self.c.drawString(16*cm, self.__y, "%s" % "večeře")
+#        self.c.drawString(18*cm, self.__y, "%s" % "stravování")
+        ##### -------------------------------------------
+#        self.c.drawString( 8.5*cm, self.__y, "%s" % "2XX")
+#        self.c.drawString( 9.5*cm, self.__y, "%s" % "3XX")
+#        self.c.drawString(10.5*cm, self.__y, "%s" % "4XX")
+#        self.c.drawString(11.5*cm, self.__y, "%s" % "5XX")
+#        self.c.drawString(12.5*cm, self.__y, "%s" % "6XX")
+#        self.c.drawString(13.5*cm, self.__y, "%s" % "7XX")
+#        self.c.drawString(14.5*cm, self.__y, "%s" % "8XX")
+#        self.c.drawString(15.5*cm, self.__y, "%s" % "9XX")
+#        self.c.drawString(16.5*cm, self.__y, "%s" % "10XX")
+#        self.c.drawString(17.5*cm, self.__y, "%s" % "11XX")
+#        self.c.drawString(18.5*cm, self.__y, "%s" % "12XX")
+        ##### -------------------------------------------
+        # table header 2nd line
+        size = 8
+        self.c.setFont('LinLibertine_It', size)
+        self.c.drawString(5.5*cm, self.__y, "%s" % "OS/STD/ChB")
+#        self.c.drawString( 8*cm, self.__y, "%s" % "na/ze/Mo/Ch/o")
+        self.c.rotate(90)
+        # transport
+        self.c.drawString(self.__y, -8*cm-0*(1.2*size), "na službu")
+        self.c.drawString(self.__y, -8*cm-1*(1.2*size), "ze služby")
+        self.c.drawString(self.__y, -8*cm-2*(1.2*size), "Ch > Mo")
+        self.c.drawString(self.__y, -8*cm-3*(1.2*size), "Mo > Ch")
+        self.c.drawString(self.__y, -8*cm-4*(1.2*size), "ostatní")
+        # diet
+        self.c.drawString(self.__y, -11*cm-0*(1.2*size), "občerstvení Ch")
+        self.c.drawString(self.__y, -11*cm-1*(1.2*size), "občerstvení Mo")
+        self.c.drawString(self.__y, -11*cm-2*(1.2*size), "oběd Ch")
+        self.c.drawString(self.__y, -11*cm-3*(1.2*size), "oběd Mo")
+        self.c.drawString(self.__y, -11*cm-4*(1.2*size), "snídaně Mo")
+        self.c.drawString(self.__y, -11*cm-5*(1.2*size), "večeře Mo")
+        self.c.drawString(self.__y, -11*cm-6*(1.2*size), "ostatní")
+        # billet
+        self.c.drawString(self.__y, -15*cm-0*(1.2*size), "ChB1")
+        self.c.drawString(self.__y, -15*cm-1*(1.2*size), "ChB2")
+        self.c.drawString(self.__y, -15*cm-2*(1.2*size), "ChB3")
+        self.c.drawString(self.__y, -15*cm-3*(1.2*size), "OS")
+        self.c.drawString(self.__y, -15*cm-4*(1.2*size), "ostatní")
+        self.c.rotate(-90)
+
+        self.__y -= size*0.5
+        # table header line
+        self.c.setLineJoin(2)
+        self.c.setLineCap(2)
+        self.c.setLineWidth(0.5)
+        self.c.lines((
+            (1*cm, self.__y, width-cm, self.__y),
+            ))
+        self.__y -= size
         # table body
+        self.c.setFont('LinLibertine_Re', size)
         for record in self.summary.records:
-            self.c.drawRightString(2*cm, self.__y, "%s" % record.date)
+            self.c.drawString(1*cm, self.__y, "%s" % record.date)
+
+            # time records sum
+#            self.__y += size*1.2*len(record.time_records)
+            time_sum = record.getTimeSumPretty()
+            self.c.drawString(5.5*cm, self.__y, "%s/%s/%s" % \
+                    (pfv(time_sum.get('OS', '0')), \
+                    pfv(time_sum.get('STD', '0')), \
+                    pfv(time_sum.get('ChB', '0'))))
+
+            # transport
+            self.c.drawString(8*cm+0*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord("TOS")))
+            self.c.drawString(8*cm+1*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord("TFS")))
+            self.c.drawString(8*cm+2*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord("TChMo")))
+            self.c.drawString(8*cm+3*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord("TMoCh")))
+            self.c.drawString(8*cm+4*(1.2*size)-size/2, self.__y, pkcv(record.getValueRecord("TSO")))
+
+            # diet
+            self.c.drawString(11*cm+0*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DRCh')))
+            self.c.drawString(11*cm+1*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DRM')))
+            self.c.drawString(11*cm+2*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DLCh')))
+            self.c.drawString(11*cm+3*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DLM')))
+            self.c.drawString(11*cm+4*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DBM')))
+            self.c.drawString(11*cm+5*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DDM')))
+            self.c.drawString(11*cm+6*(1.2*size)-size/2, self.__y, pkcv(record.getValueRecord('DO')))
+
+            # billet
+            self.c.drawString(15*cm+0*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('BChB1')))
+            self.c.drawString(15*cm+1*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('BChB2')))
+            self.c.drawString(15*cm+2*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('BChB3')))
+            self.c.drawString(15*cm+3*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('BOS')))
+            self.c.drawString(15*cm+4*(1.2*size)-size/2, self.__y, pkcv(record.getValueRecord('BO')))
+
+            # time records
             for time_record in record.time_records:
-                self.c.drawRightString(3*cm, self.__y, "%s" % \
+                self.c.drawString(2.5*cm, self.__y, "%s" % \
                         time_record.service_type)
-                self.c.drawRightString(4*cm, self.__y, "%s" % \
+                self.c.drawString(3.5*cm, self.__y, "%s" % \
                         time_record.time_from)
-                self.c.drawRightString(5*cm, self.__y, "%s" % \
+                self.c.drawString(4.5*cm, self.__y, "%s" % \
                         time_record.time_to)
                 self.__y -= size*1.2
-
-            self.__y += size*1.2*len(record.getTimeSum())
-            for key,value in record.getTimeSumPretty().items():
-                self.c.drawRightString(7*cm, self.__y, "%s: %s" % \
-                        (key, value))
-                self.__y -= size*1.2
+#            self.__y -= size*1.2
+#            self.__y -= size*1.2*len(record.time_records)
 
 #            self.__y -= size*1.2
+
+def prettyBooleanValue(value):
+    """
+    Return boolean value in pretty format x/-.
+    """
+    value = int(value)
+    if value:
+        return 'x'
+    else:
+        return '-'
+pbv = prettyBooleanValue
+
+def prettyIntegerValue(value):
+    """
+    Return integer value in pretty format 3/-.
+    """
+    value = int(value)
+    if value:
+        return str(value)
+    else:
+        return '-'
+piv = prettyIntegerValue
+
+def prettyFloatValue(value):
+    """
+    Return float value in pretty format 3.2/-.
+    """
+    value = float(value)
+    if value:
+        return str(value)
+    else:
+        return '-'
+pfv = prettyFloatValue
+
+def prettyKCValue(value):
+    """
+    Return float value in pretty format 3.2/-.
+    """
+    value = float(value)
+    if value:
+        return "%0.2f kč" % value
+    else:
+        return '-'
+    
+pkcv = prettyKCValue
+
+    
+
+
+#    def (self):
+#        """
+#        """
+#        log.debug("PdfClientSummary.()")
+
+
+# vim:tabstop=4:shiftwidth=4:softtabstop=4:
+    
 
 
 #    def (self):
