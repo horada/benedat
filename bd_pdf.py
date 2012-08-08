@@ -47,6 +47,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 # import other Benedat related modules
+from bd_datetime import minutesToPretty,minutesToHours
 import bd_logging
 import bd_database
 
@@ -66,7 +67,21 @@ pdfmetrics.registerFont(TTFont('LinLibertine_Re', 'fonts/LinLibertine_Re.ttf'))
 width, height = pagesizes.A4 #keep for later
 
 
-
+## LAYOUT CONFIGURATION VARIABLES ####################################
+# table configuration variables
+x_date      = 1
+x_service   = 2.5
+x_total     = 6
+x_transport = 10
+x_diet      = 13
+x_billet    = 17
+table_max_page_y  = 28
+# summary configuration variables
+x_sum_item      = 7
+x_sum_total     = 12
+x_sum_price     = 18
+summary_max_page_y = 20
+# ####################################################################
 
 
 
@@ -85,18 +100,29 @@ class PdfSummary():
         """
         log.debug("PdfSummary.createPdfSummary()")
 
-        canvas = pdfgencanvas.Canvas("hello.pdf", pagesizes.A4, verbosity=9)
+        canvas = pdfgencanvas.Canvas("%s.pdf" % self.summary.output_file, \
+                pagesizes.A4, verbosity=9)
 
         for client_summary in self.summary.summaries:
             client_pdf = PdfClientSummary(client_summary, canvas)
             client_pdf.createPdfClientSummary()
 
-        # metadata
-        canvas.setAuthor("Daniel Horák")
-        canvas.setTitle("Můj název")
-        canvas.setSubject("ěščřžýáíéĚŠČŘŽÝÁÍÉ")
-        canvas.setCreator("BeneDat 2 (ReportLab)")
-        canvas.setKeywords("souhrn")
+        # METADATA
+        # author
+        canvas.setAuthor("%s - %s" % \
+                (db.getConfVal("teSummaryAddress").split("\n")[0],
+                self.summary.clerk_name))
+        # title
+        if self.summary.document_type == "PPD":
+            canvas.setTitle("Příjmový pokladní doklad")
+        elif self.summary.document_type == "JV":
+            canvas.setTitle("Výpis poskytnutých služeb")
+        else:
+            canvas.setTitle("UNKNOWN")
+        # subject
+        canvas.setSubject("")
+        canvas.setCreator("BeneDat 2")
+        canvas.setKeywords("souhrn, doklad")
         #canvas.pageHasData()
         #canvas.getPageNumber()
         #print canvas.getAvailableFonts()
@@ -142,8 +168,15 @@ class PdfClientSummary():
         # right information
         self.rightHeadInformation()
 
+        self.__y = -6*cm
+        # summary table
         self.summaryTable()
 
+        # summary
+        self.summarySummary()
+
+        # footer
+        self.footer()
 
         ## EXAMPLES ##########################################################
         #self.c.setFont('LinLibertine_Bd', 32)
@@ -160,7 +193,30 @@ class PdfClientSummary():
         # "close" page
         self.c.showPage()
 
+    def anotherPage(self):
+        """
+        create new page (inside one client summary)
+        """
+        log.debug("PdfClientSummary.anotherPage()")
+        size = 8
+        self.c.setFont('LinLibertine_It', size)
+        self.c.drawCentredString(width/2,-height+cm, \
+                "pokračování na další stránce")
+        self.c.showPage()
+        # move 0,0 to top left
+        self.c.translate(0,height)
+        self.c.setFont('LinLibertine_It', size)
+        self.c.drawCentredString(width/2,-cm, \
+                "pokračování z předchozí stránky")
+        self.__y = -1*cm
 
+    def anotherTablePage(self):
+        """
+        create new page (inside one client summary)
+        """
+        log.debug("PdfClientSummary.anotherTablePage()")
+        self.anotherPage()
+        self.summaryTableHeader()
 
     def topLeftHeader(self):
         """
@@ -295,72 +351,145 @@ class PdfClientSummary():
         self.c.setFont('LinLibertine_Bd', 10)
         self.c.drawString(width/2+0.5*cm, self.__y, "Firma není plátce DPH.")
 
+    def summaryTableHeader(self):
+        """
+        Summary table header.
+        """
+        size = 10
+        self.__y -= 2.0*cm
+        # table header 
+        self.c.setFont('LinLibertine_Bd', size)
+        self.c.drawString(x_date*cm, self.__y, "%s" % "datum")
+        self.c.drawString(x_service*cm, self.__y, "%s" % "služba")
+        self.c.drawString(x_total*cm, self.__y, "%s" % "celkem")
+
+        self.__y -= size*1.2
+        self.c.rotate(90)
+        self.c.drawString(self.__y,-x_transport*cm+1*(1.2*size), "%s" % "doprava")
+        self.c.drawString(self.__y,-x_diet*cm+1*(1.2*size), "%s" % "strava")
+        self.c.drawString(self.__y,-x_billet*cm+1*(1.2*size), "%s" % "ubytování")
+        self.c.rotate(-90)
+
+        # table header 2nd line
+        self.c.setFont('LinLibertine_It', size)
+        self.c.drawString(x_service*cm+0*cm, self.__y, "%s" % "typ")
+        self.c.drawString(x_service*cm+1*cm, self.__y, "%s" % "od")
+        self.c.drawString(x_service*cm+2*cm, self.__y, "%s" % "do")
+        self.c.drawString(x_total*cm+0*cm, self.__y, "%s" % "OS")
+        self.c.drawString(x_total*cm+1*cm, self.__y, "%s" % "STD")
+        self.c.drawString(x_total*cm+2*cm, self.__y, "%s" % "ChB")
+        self.c.rotate(90)
+        # transport
+        self.c.drawString(self.__y, -x_transport*cm-0*(1.2*size), "na službu")
+        self.c.drawString(self.__y, -x_transport*cm-1*(1.2*size), "ze služby")
+        self.c.drawString(self.__y, -x_transport*cm-2*(1.2*size), "Ch > Mo")
+        self.c.drawString(self.__y, -x_transport*cm-3*(1.2*size), "Mo > Ch")
+        self.c.drawString(self.__y, -x_transport*cm-4*(1.2*size), "ostatní")
+        # diet
+        self.c.drawString(self.__y, -x_diet*cm-0*(1.2*size), "občerstvení Ch")
+        self.c.drawString(self.__y, -x_diet*cm-1*(1.2*size), "občerstvení Mo")
+        self.c.drawString(self.__y, -x_diet*cm-2*(1.2*size), "oběd Ch")
+        self.c.drawString(self.__y, -x_diet*cm-3*(1.2*size), "oběd Mo")
+        self.c.drawString(self.__y, -x_diet*cm-4*(1.2*size), "snídaně Mo")
+        self.c.drawString(self.__y, -x_diet*cm-5*(1.2*size), "večeře Mo")
+        self.c.drawString(self.__y, -x_diet*cm-6*(1.2*size), "ostatní")
+        # billet
+        self.c.drawString(self.__y, -x_billet*cm-0*(1.2*size), "ChB1")
+        self.c.drawString(self.__y, -x_billet*cm-1*(1.2*size), "ChB2")
+        self.c.drawString(self.__y, -x_billet*cm-2*(1.2*size), "ChB3")
+        self.c.drawString(self.__y, -x_billet*cm-3*(1.2*size), "OS")
+        self.c.drawString(self.__y, -x_billet*cm-4*(1.2*size), "ostatní")
+        self.c.rotate(-90)
+
+        self.__y -= size*0.5
+        # table header lines
+        self.c.setLineJoin(2)
+        self.c.setLineCap(2)
+        self.c.setLineWidth(0.5)
+        self.c.lines((
+            (1*cm, self.__y, width-cm, self.__y),
+            # 
+#            (x_date*cm-2*mm-0*(1.2*size), self.__y, x_date*cm-2*mm-0*(1.2*size), self.__y+1*cm),
+            (x_service*cm-2*mm-0*(1.2*size), self.__y, x_service*cm-2*mm-0*(1.2*size), self.__y+1*cm),
+            (x_total*cm-3*mm, self.__y, x_total*cm-3*mm, self.__y+1*cm),
+            (x_transport*cm-3*mm-1*(1.2*size), self.__y, x_transport*cm-3*mm-1*(1.2*size), self.__y+1*cm),
+            (x_diet*cm-3*mm-1*(1.2*size), self.__y, x_diet*cm-3*mm-1*(1.2*size), self.__y+1*cm),
+            (x_billet*cm-3*mm-1*(1.2*size), self.__y, x_billet*cm-3*mm-1*(1.2*size), self.__y+1*cm),
+            ))
+        self.__y -= size
+
+
     def summaryTable(self):
         """
         Summary table.
         """
-        self.__y -= 2*cm
+        ## table head ########################
+        self.summaryTableHeader()
+
+        ## table body ########################
         size = 10
-        # table header 
-        self.c.setFont('LinLibertine_Bd', size)
-        self.c.drawString(1*cm, self.__y, "%s" % "datum")
-        self.c.drawString(2.5*cm, self.__y, "%s" % "služba")
-        self.c.drawString(3.5*cm, self.__y, "%s" % "od")
-        self.c.drawString(4.5*cm, self.__y, "%s" % "do")
-        self.c.drawString(5.5*cm, self.__y, "%s" % "celkem")
+        self.c.setFont('LinLibertine_Re', size)
+        for record in self.summary.records:
+            # create new page?
+            if self.__y-(len(record.time_records)*size*1.2) < -table_max_page_y*cm:
+                # new page
+                self.anotherTablePage()
 
-        self.__y -= size*1.2
-        self.c.rotate(90)
-        self.c.drawString(self.__y, -7.7*cm, "%s" % "doprava")
-        self.c.drawString(self.__y,-10.7*cm, "%s" % "strava")
-        self.c.drawString(self.__y, -14.7*cm, "%s" % "ubytování")
-        self.c.rotate(-90)
-#        self.c.drawString(14*cm, self.__y, "%s" % "snídaně")
-#        self.c.drawString(16*cm, self.__y, "%s" % "večeře")
-#        self.c.drawString(18*cm, self.__y, "%s" % "stravování")
-        ##### -------------------------------------------
-#        self.c.drawString( 8.5*cm, self.__y, "%s" % "2XX")
-#        self.c.drawString( 9.5*cm, self.__y, "%s" % "3XX")
-#        self.c.drawString(10.5*cm, self.__y, "%s" % "4XX")
-#        self.c.drawString(11.5*cm, self.__y, "%s" % "5XX")
-#        self.c.drawString(12.5*cm, self.__y, "%s" % "6XX")
-#        self.c.drawString(13.5*cm, self.__y, "%s" % "7XX")
-#        self.c.drawString(14.5*cm, self.__y, "%s" % "8XX")
-#        self.c.drawString(15.5*cm, self.__y, "%s" % "9XX")
-#        self.c.drawString(16.5*cm, self.__y, "%s" % "10XX")
-#        self.c.drawString(17.5*cm, self.__y, "%s" % "11XX")
-#        self.c.drawString(18.5*cm, self.__y, "%s" % "12XX")
-        ##### -------------------------------------------
-        # table header 2nd line
-        size = 8
-        self.c.setFont('LinLibertine_It', size)
-        self.c.drawString(5.5*cm, self.__y, "%s" % "OS/STD/ChB")
-#        self.c.drawString( 8*cm, self.__y, "%s" % "na/ze/Mo/Ch/o")
-        self.c.rotate(90)
-        # transport
-        self.c.drawString(self.__y, -8*cm-0*(1.2*size), "na službu")
-        self.c.drawString(self.__y, -8*cm-1*(1.2*size), "ze služby")
-        self.c.drawString(self.__y, -8*cm-2*(1.2*size), "Ch > Mo")
-        self.c.drawString(self.__y, -8*cm-3*(1.2*size), "Mo > Ch")
-        self.c.drawString(self.__y, -8*cm-4*(1.2*size), "ostatní")
-        # diet
-        self.c.drawString(self.__y, -11*cm-0*(1.2*size), "občerstvení Ch")
-        self.c.drawString(self.__y, -11*cm-1*(1.2*size), "občerstvení Mo")
-        self.c.drawString(self.__y, -11*cm-2*(1.2*size), "oběd Ch")
-        self.c.drawString(self.__y, -11*cm-3*(1.2*size), "oběd Mo")
-        self.c.drawString(self.__y, -11*cm-4*(1.2*size), "snídaně Mo")
-        self.c.drawString(self.__y, -11*cm-5*(1.2*size), "večeře Mo")
-        self.c.drawString(self.__y, -11*cm-6*(1.2*size), "ostatní")
-        # billet
-        self.c.drawString(self.__y, -15*cm-0*(1.2*size), "ChB1")
-        self.c.drawString(self.__y, -15*cm-1*(1.2*size), "ChB2")
-        self.c.drawString(self.__y, -15*cm-2*(1.2*size), "ChB3")
-        self.c.drawString(self.__y, -15*cm-3*(1.2*size), "OS")
-        self.c.drawString(self.__y, -15*cm-4*(1.2*size), "ostatní")
-        self.c.rotate(-90)
+            self.c.drawString(1*cm, self.__y, "%s" % record.date)
 
-        self.__y -= size*0.5
-        # table header line
+            # time records sum
+#            self.__y += size*1.2*len(record.time_records)
+            time_sum = record.getTimeSumPretty()
+            self.c.drawString(x_total*cm+0*cm, self.__y, "%s" % \
+                    pfv(time_sum.get('OS', '0')))
+            self.c.drawString(x_total*cm+1*cm, self.__y, "%s" % \
+                    pfv(time_sum.get('STD', '0')))
+            self.c.drawString(x_total*cm+2*cm, self.__y, "%s" % \
+                    pfv(time_sum.get('ChB', '0')))
+
+            # transport
+            self.c.drawString(x_transport*cm+0*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord("TOS")))
+            self.c.drawString(x_transport*cm+1*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord("TFS")))
+            self.c.drawString(x_transport*cm+2*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord("TChMo")))
+            self.c.drawString(x_transport*cm+3*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord("TMoCh")))
+            self.c.drawString(x_transport*cm+4*(1.2*size)-size/2, self.__y, pkcv(record.getValueRecord("TSO")))
+
+            # diet
+            self.c.drawString(x_diet*cm+0*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DRCh')))
+            self.c.drawString(x_diet*cm+1*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DRM')))
+            self.c.drawString(x_diet*cm+2*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DLCh')))
+            self.c.drawString(x_diet*cm+3*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DLM')))
+            self.c.drawString(x_diet*cm+4*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DBM')))
+            self.c.drawString(x_diet*cm+5*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DDM')))
+            self.c.drawString(x_diet*cm+6*(1.2*size)-size/2, self.__y, pkcv(record.getValueRecord('DO')))
+
+            # billet
+            self.c.drawString(x_billet*cm+0*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('BChB1')))
+            self.c.drawString(x_billet*cm+1*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('BChB2')))
+            self.c.drawString(x_billet*cm+2*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('BChB3')))
+            self.c.drawString(x_billet*cm+3*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('BOS')))
+            self.c.drawString(x_billet*cm+4*(1.2*size)-size/2, self.__y, pkcv(record.getValueRecord('BO')))
+
+            # time records
+            for time_record in record.time_records:
+                self.c.drawString(x_service*cm+0*cm, self.__y, "%s" % \
+                        time_record.service_type)
+                self.c.drawString(x_service*cm+1*cm, self.__y, "%s" % \
+                        time_record.time_from)
+                self.c.drawString(x_service*cm+2*cm, self.__y, "%s" % \
+                        time_record.time_to)
+                self.__y -= size*1.2
+
+        ## table footer ########################
+        self.summaryTableFooter()
+
+    def summaryTableFooter(self):
+        """
+        Summary table footer.
+        """
+        size = 10
+        self.__y += size
+        # table header lines
         self.c.setLineJoin(2)
         self.c.setLineCap(2)
         self.c.setLineWidth(0.5)
@@ -368,55 +497,110 @@ class PdfClientSummary():
             (1*cm, self.__y, width-cm, self.__y),
             ))
         self.__y -= size
-        # table body
+
+
+    def summarySummary(self):
+        """
+        summary
+        """
+        log.debug("PdfClientSummary.summarySummary()")
+        # create new page?
+        if self.__y < -summary_max_page_y*cm:
+            # new page
+            pass
+#            self.anotherPage()
+        
+        # summary header
+        size = 9
+        self.__y -= size * 2
+        self.c.setFont('LinLibertine_Bd', size)
+        self.c.drawString(x_sum_item*cm, self.__y, "položka")
+        self.c.drawString(x_sum_total*cm, self.__y, "celkem")
+        self.c.drawRightString(x_sum_price*cm, self.__y, "cena")
+    
+        # summary
+        size = 10
+        self.__y -= 1.2*size
+        initial_y = self.__y
+        # items
         self.c.setFont('LinLibertine_Re', size)
-        for record in self.summary.records:
-            self.c.drawString(1*cm, self.__y, "%s" % record.date)
+        for item in ("Odlehčovací služba", "Chráněné bydlení", \
+                "Sociálně terapeutické dílny", "Doprava", "Stravování", \
+                "Ubytování"):
+            self.c.drawString(x_sum_item*cm, self.__y, item)
+            self.__y -= 1.2*size
+        self.c.setFont('LinLibertine_Bd', size)
+        self.c.drawString(x_sum_item*cm, self.__y, "CELKEM")
+        # total
+        self.__y = initial_y
+        self.c.setFont('LinLibertine_Re', size)
+        self.c.drawString(x_sum_total*cm, self.__y, \
+                "%s hodin" % minutesToHours(self.summary.time_sum.get('OS', 0)))
+        self.__y -= 1.2*size
+        self.c.drawString(x_sum_total*cm, self.__y, \
+                "%s hodin" % minutesToHours(self.summary.time_sum.get('ChB', 0)))
+        self.__y -= 1.2*size
+        self.c.drawString(x_sum_total*cm, self.__y, \
+                "%s hodin" % minutesToHours(self.summary.time_sum.get('STD', 0)))
+        self.__y -= 1.2*size
 
-            # time records sum
-#            self.__y += size*1.2*len(record.time_records)
-            time_sum = record.getTimeSumPretty()
-            self.c.drawString(5.5*cm, self.__y, "%s/%s/%s" % \
-                    (pfv(time_sum.get('OS', '0')), \
-                    pfv(time_sum.get('STD', '0')), \
-                    pfv(time_sum.get('ChB', '0'))))
+        # price
+        self.__y = initial_y
+        self.c.setFont('LinLibertine_Re', size)
+        for item in ("%s kč" % self.summary.time_price.get('OS', 0), \
+                "%s kč" % self.summary.time_price.get('ChB', 0), \
+                "-----", \
+                "%s kč" % self.summary.total_prices['transport'], \
+                "%s kč" % self.summary.total_prices['diet'], \
+                "%s kč" % self.summary.total_prices['billet']):
+            self.c.drawRightString(x_sum_price*cm, self.__y, item)
+            self.__y -= 1.2*size
 
-            # transport
-            self.c.drawString(8*cm+0*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord("TOS")))
-            self.c.drawString(8*cm+1*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord("TFS")))
-            self.c.drawString(8*cm+2*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord("TChMo")))
-            self.c.drawString(8*cm+3*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord("TMoCh")))
-            self.c.drawString(8*cm+4*(1.2*size)-size/2, self.__y, pkcv(record.getValueRecord("TSO")))
+        self.c.setFont('LinLibertine_Bd', size)
+        self.c.drawRightString(x_sum_price*cm, self.__y, \
+                "%s kč" % self.summary.total_prices['total'])
 
-            # diet
-            self.c.drawString(11*cm+0*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DRCh')))
-            self.c.drawString(11*cm+1*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DRM')))
-            self.c.drawString(11*cm+2*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DLCh')))
-            self.c.drawString(11*cm+3*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DLM')))
-            self.c.drawString(11*cm+4*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DBM')))
-            self.c.drawString(11*cm+5*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('DDM')))
-            self.c.drawString(11*cm+6*(1.2*size)-size/2, self.__y, pkcv(record.getValueRecord('DO')))
+        # Line
+        size = 10
+        self.__y -= 1.2*size
+        # table header lines
+        self.c.setLineJoin(2)
+        self.c.setLineCap(2)
+        self.c.setLineWidth(0.5)
+        self.c.lines((
+            (1*cm, self.__y, width-cm, self.__y),
+            ))
+        self.__y -= size
 
-            # billet
-            self.c.drawString(15*cm+0*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('BChB1')))
-            self.c.drawString(15*cm+1*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('BChB2')))
-            self.c.drawString(15*cm+2*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('BChB3')))
-            self.c.drawString(15*cm+3*(1.2*size)-size/2, self.__y, pbv(record.getValueRecord('BOS')))
-            self.c.drawString(15*cm+4*(1.2*size)-size/2, self.__y, pkcv(record.getValueRecord('BO')))
 
-            # time records
-            for time_record in record.time_records:
-                self.c.drawString(2.5*cm, self.__y, "%s" % \
-                        time_record.service_type)
-                self.c.drawString(3.5*cm, self.__y, "%s" % \
-                        time_record.time_from)
-                self.c.drawString(4.5*cm, self.__y, "%s" % \
-                        time_record.time_to)
-                self.__y -= size*1.2
-#            self.__y -= size*1.2
-#            self.__y -= size*1.2*len(record.time_records)
+    def footer(self):
+        """
+        Page footer.
+        """
+        log.debug("PdfClientSummary.footer()")
 
-#            self.__y -= size*1.2
+        size = 12
+        self.__y -= 1.5*size
+        self.c.setFont('LinLibertine_Re', size)
+        self.c.drawString(3*cm, self.__y, "Vystavil:")
+        self.c.setFont('LinLibertine_Bd', size)
+        self.c.drawString(5*cm, self.__y, self.summary.info.clerk_name)
+
+        self.c.setFont('LinLibertine_Re', size)
+        self.c.drawString(11*cm, self.__y, "Podpis odběratele:")
+
+        self.__y -= 2*size
+        if self.summary.info.document_type == "PPD":
+            self.c.drawString(3*cm, self.__y, "Podpis pokladníka:")
+        elif self.summary.info.document_type == "JV":
+            self.c.drawString(3*cm, self.__y, "Podpis:")
+
+
+
+
+
+
+
 
 def prettyBooleanValue(value):
     """
