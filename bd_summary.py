@@ -64,7 +64,8 @@ class Summary():
 
     def __init__(self, clients=None, year=None, month=None, \
             document_type=None, date_issue=None, date_payment=None, \
-            clerk_name=None, code_fixed=None, code_variable=None):
+            clerk_name=None, code_fixed=None, code_variable=None, \
+            output_file="summary"):
         self.start = time.time()
         self.year = year
         self.month = month
@@ -75,6 +76,7 @@ class Summary():
         self.clerk_name = clerk_name
         self.code_fixed = code_fixed
         self.code_variable = code_variable
+        self.output_file = output_file
 
         self.summaries = []
         for client in clients:
@@ -129,6 +131,7 @@ class ClientSummary():
         self.__timePrice()
         self.__valuesSum()
         self.__valuesPrice()
+        self.__totalPrice()
 #        print "===" * 30
 #        print self.records
 #        print "---" * 30
@@ -148,6 +151,7 @@ class ClientSummary():
         tmp += "Cena (ostatní): %s\n" % self.variables_price
         for record in self.records:
             tmp += "%s %s %s\n" % (record.date, record.getTimeSumPretty(), record.time_records)
+        tmp += "Ceny souhrn: %s\n" % self.total_prices
         return tmp
 
 
@@ -194,6 +198,38 @@ class ClientSummary():
             self.variables_price[key] = \
                     getattr(self, "_ClientSummary__price%s" % key, \
                     lambda:0)()
+
+    def __totalPrice(self):
+        """
+        Count price for particular type of service (transport, billet, diet, ...)
+        and total price.
+        """
+        self.total_prices = {}
+        self.total_prices["transport"] = \
+                self.variables_price.get('TOS', 0) + \
+                self.variables_price.get('TFS', 0) + \
+                self.variables_price.get('TChMo', 0) + \
+                self.variables_price.get('TMoCh', 0) + \
+                self.variables_price.get('TSO', 0)
+        self.total_prices["diet"] = \
+                self.variables_price.get('DRCh', 0) + \
+                self.variables_price.get('DRM', 0) + \
+                self.variables_price.get('DLCh', 0) + \
+                self.variables_price.get('DLM', 0) + \
+                self.variables_price.get('DBM', 0) + \
+                self.variables_price.get('DDM', 0) + \
+                self.variables_price.get('DO', 0)
+        self.total_prices["billet"] = \
+                self.variables_price.get('BChB1', 0) + \
+                self.variables_price.get('BChB2', 0) + \
+                self.variables_price.get('BChB3', 0) + \
+                self.variables_price.get('BOS', 0) + \
+                self.variables_price.get('BO', 0)
+        self.total_prices['total'] = self.time_price.get('OS', 0) + \
+                self.time_price.get('ChB', 0) + \
+                self.total_prices.get('transport', 0) + \
+                self.total_prices.get('diet', 0) + \
+                self.total_prices.get('billet', 0)
 
     def __priceOS(self):
         """
@@ -263,29 +299,29 @@ class ClientSummary():
         """
         Calculation of price for eTransportServiceOther. 
         """
-        value = self.variables_sum["TSO"]
+        value = float(self.variables_sum["TSO"])
         return value
 
     def __priceDO(self):
         """
         Calculation of price for eDietOther.
         """
-        value = self.variables_sum["DO"]
+        value = float(self.variables_sum["DO"])
         return value
 
     def __priceBO(self):
         """
         Calculation of price for eBilletOther.
         """
-        value = self.variables_sum["BO"]
+        value = float(self.variables_sum["BO"])
         return value
 
     def __priceTOS(self):
         """
         Calculation of price for chTransportOnService.
         """
-        value = self.variables_sum["TOS"]
-        price = self.__priceTransport()
+        value = float(self.variables_sum["TOS"])
+        price = float(self.__priceTransport())
 
         return value * price
 
@@ -293,104 +329,104 @@ class ClientSummary():
         """
         Calculation of price for chTransportFromService.
         """
-        value = self.variables_sum["TFS"]
-        price = self.__priceTransport()
+        value = float(self.variables_sum["TFS"])
+        price = float(self.__priceTransport())
         return value * price
 
     def __priceTChMo(self):
         """
         Calculation of price for chTransportChMo.
         """
-        value = self.variables_sum["TChMo"]
-        price = db.getConfVal("eTransportPriceChM", 0)
+        value = float(self.variables_sum["TChMo"])
+        price = float(db.getConfVal("eTransportPriceChM", 0))
         return value * price
 
     def __priceTMoCh(self):
         """
         Calculation of price for chTransportMoCh.
         """
-        value = self.variables_sum["TMoCh"]
-        price = db.getConfVal("eTransportPriceChM", 0)
+        value = float(self.variables_sum["TMoCh"])
+        price = float(db.getConfVal("eTransportPriceChM", 0))
         return value * price
 
     def __priceDRCh(self):
         """
         Calculation of price for chDietRefreshmentCh.
         """
-        value = self.variables_sum["DRCh"]
-        price = db.getConfVal("eDietRefreshmentCh", 0)
+        value = float(self.variables_sum["DRCh"])
+        price = float(db.getConfVal("eDietRefreshmentCh", 0))
         return value * price
 
     def __priceDRM(self):
         """
         Calculation of price for chDietRefreshmentM.
         """
-        value = self.variables_sum["DRM"]
-        price = db.getConfVal("eDietRefreshmentM", 0)
+        value = float(self.variables_sum["DRM"])
+        price = float(db.getConfVal("eDietRefreshmentM", 0))
         return value * price
 
     def __priceDLCh(self):
         """
         Calculation of price for chDietLunchCh.
         """
-        value = self.variables_sum["DLCh"]
-        price = db.getConfVal("eDietLunchCh", 0)
+        value = float(self.variables_sum["DLCh"])
+        price = float(db.getConfVal("eDietLunchCh", 0))
         return value * price
 
     def __priceDLM(self):
         """
         Calculation of price for chDietLunchM.
         """
-        value = self.variables_sum["DLM"]
-        price = db.getConfVal("eDietLunchM", 0)
+        value = float(self.variables_sum["DLM"])
+        price = float(db.getConfVal("eDietLunchM", 0))
         return value * price
 
     def __priceDBM(self):
         """
         Calculation of price for chDietBreakfastM.
         """
-        value = self.variables_sum["DBM"]
-        price = db.getConfVal("eDietBreakfastM", 0)
+        value = float(self.variables_sum["DBM"])
+        price = float(db.getConfVal("eDietBreakfastM", 0))
         return value * price
 
     def __priceDDM(self):
         """
         Calculation of price for chDietDinnerM.
         """
-        value = self.variables_sum["DDM"]
-        price = db.getConfVal("eDietDinnerM", 0)
+        value = float(self.variables_sum["DDM"])
+        price = float(db.getConfVal("eDietDinnerM", 0))
         return value * price
 
     def __priceBChB1(self):
         """
         Calculation of price for chBilletChB1.
         """
-        value = self.variables_sum["BChB1"]
-        price = db.getConfVal("eBilletChB1", 0)
+        value = float(self.variables_sum["BChB1"])
+        price = float(db.getConfVal("eBilletChB1", 0))
         return value * price
 
     def __priceBChB2(self):
         """
         Calculation of price for chBilletChB2.
         """
-        value = self.variables_sum["BChB2"]
-        price = db.getConfVal("eBilletChB2", 0)
+        value = float(self.variables_sum["BChB2"])
+        price = float(db.getConfVal("eBilletChB2", 0))
         return value * price
 
     def __priceBChB3(self):
         """
         Calculation of price for chBilletChB3.
         """
-        value = self.variables_sum["BChB3"]
-        price = db.getConfVal("eBilletChB3", 0)
+        value = float(self.variables_sum["BChB3"])
+        price = float(db.getConfVal("eBilletChB3", 0))
         return value * price
 
     def __priceBOS(self):
         """
         Calculation of price for chBilletOS.
         """
-        value = self.variables_sum["BOS"]
-        price = db.getConfVal("eBilletOS", 0)
+        value = float(self.variables_sum["BOS"])
+        price = float(db.getConfVal("eBilletOS", 0))
         return value * price
 
     def __priceTransport(self):

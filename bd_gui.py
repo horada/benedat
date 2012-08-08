@@ -2004,6 +2004,10 @@ class WSummary():
         if not self.clients:
             return
 
+        #TODO: show and process save dialog
+        # path to output file without extension
+        output_file = "hello"
+
         year = self.allWidgets['cbFilterYear'].get_active_text()
         month = self.allWidgets['cbFilterMonth'].get_active_text()
         document_type = self.allWidgets['cbDocumentType'].get_active_text()
@@ -2021,6 +2025,7 @@ class WSummary():
                 clerk_name=clerk_name,
                 code_fixed=code_fixed,
                 code_variable=code_variable,
+                output_file = output_file
                 )
 
         # TODO

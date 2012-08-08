@@ -146,6 +146,12 @@ def minutesToPretty(value):
     m = value % 60
     return "%2d:%02d" % (h, m)
 
+def minutesToHours(value):
+    """
+    Convert number of minutes to hours.
+    """
+    return value/float(60)
+
 class Date():
     """
     Class to represent and work with date.
