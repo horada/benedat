@@ -1756,7 +1756,6 @@ class WSummary():
         Set filter to "today".
         """
         log.debug("filterToday()")
-        #TODO
         this_year = "%s" % bd_datetime.Date().date.year
         self.fillComboBoxFilterYear(this_year)
         this_month = "%02d" % bd_datetime.Date().date.month
@@ -2004,10 +2003,6 @@ class WSummary():
         if not self.clients:
             return
 
-        #TODO: show and process save dialog
-        # path to output file without extension
-        output_file = "hello"
-
         year = self.allWidgets['cbFilterYear'].get_active_text()
         month = self.allWidgets['cbFilterMonth'].get_active_text()
         document_type = self.allWidgets['cbDocumentType'].get_active_text()
@@ -2016,6 +2011,20 @@ class WSummary():
         clerk_name = self.allWidgets['eClerkName'].get_text()
         code_fixed = self.allWidgets['eCodeFixed'].get_text()
         code_variable = self.allWidgets['eCodeVariable'].get_text()
+
+        file_name_suggestion = ""
+        # suggestion for name of output file
+        if document_type == "PPD":
+            file_name_suggestion = "Prijmovy_pokladni_doklad_%s_%s" % (month, year)
+        elif document_type == "JV":
+            file_name_suggestion = "Sestava_%s_%s" % (month, year)
+
+        # path to output file without extension
+        output_file = self.dialogSaveSummary(file_name_suggestion)
+        log.debug("Path for saving summary: %s" % output_file)
+        output_file = "hello"
+        if not output_file:
+            return
 
         summary = bd_summary.Summary(year=year, month=month, \
                 clients=self.clients, 
@@ -2028,7 +2037,6 @@ class WSummary():
                 output_file = output_file
                 )
 
-        # TODO
         print summary
         import bd_pdf
         pdf = bd_pdf.PdfSummary(summary)
@@ -2049,6 +2057,81 @@ class WSummary():
 
     def nothing(self, widget, parameters=None):
         log.debug("Do nothing (parameters: %s)"%parameters)
+
+
+    def dialogSaveSummary(self, file_name=None):
+        """
+        Open dialog for saving Summary.
+        Return File path (without extension) or None.
+        """
+        log.debug('WSummary.dialogSaveSummary()')
+
+        # filters for listed files in dialog
+        file_filter = {}
+        file_filter['pdf'] = gtk.FileFilter()
+        file_filter['pdf'].add_pattern('*.pdf')
+        file_filter['vse'] = gtk.FileFilter()
+        file_filter['vse'].add_pattern('*')
+
+        # change filter of listed files
+        def on_wSaveSummary_cbFileType_changed(widget, data=None):
+            if wSaveSummary_cbFileType.get_active() == 0:
+                self.wSaveSummary.set_filter(file_filter['pdf'])
+            else:
+                self.wSaveSummary.set_filter(file_filter['vse'])
+                
+
+        # xml tree for dialog
+        wSaveSummaryxml = gtk.glade.XML(GLADEFILE, "wSaveSummary")
+        self.wSaveSummary = wSaveSummaryxml.get_widget("wSaveSummary")
+        # box for chose type of file
+        wSaveSummary_cbFileType = \
+                wSaveSummaryxml.get_widget("wSaveSummary_cbFileType")
+        # fulfilment of box for file type selection
+        ls_model = gtk.ListStore(str)
+        ls_model.append(["PDF dokumenty(*.pdf)"])
+        ls_model.append(["Všechny soubory"])
+        wSaveSummary_cbFileType.set_model(ls_model)
+        cell = gtk.CellRendererText()
+        wSaveSummary_cbFileType.pack_start(cell)
+        wSaveSummary_cbFileType.add_attribute(cell,'text',0)
+        wSaveSummary_cbFileType.set_active(0)
+        # connect signal for change
+        wSaveSummary_cbFileType.connect('changed', \
+                on_wSaveSummary_cbFileType_changed)
+        # set default filter to 'pdf'
+        self.wSaveSummary.set_filter(file_filter['pdf'])   
+
+        # last path
+        last_summary_path = db.getConfVal('last_summary_path', '.')
+        self.wSaveSummary.set_current_folder(last_summary_path)
+
+        # suggested filename 
+        if file_name:
+            self.wSaveSummary.set_current_name(file_name)
+
+        # run dialog
+        returned_value = self.wSaveSummary.run()
+        
+        # check selected file
+        if returned_value == gtk.RESPONSE_OK and self.wSaveSummary.get_filename():
+            file_path = self.wSaveSummary.get_filename().decode("utf-8")
+            file_path = os.path.splitext(file_path)[0]
+
+            self.wSaveSummary.destroy()
+
+            # save last position in directories tree
+            db.setConf(name="last_summary_path", \
+                    value=os.path.split(file_path)[0], \
+                    note="Path to directory with last saved summary.")
+
+            return file_path
+        else:
+            self.wSaveSummary.destroy()
+            return None
+
+
+
 
 
 
@@ -2160,7 +2243,6 @@ class WSettings():
         """
         log.debug("saveSettings()")
         # save Editable fields
-        pprint(dir(self))
         for widget in self.ewidgets:
             log.debug("Saving configuration '%s' - %s." % \
                     (widget, eSettings[widget]))

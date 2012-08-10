@@ -4369,6 +4369,7 @@
     <property name="icon">Benedat.png</property>
     <property name="type_hint">normal</property>
     <property name="action">save</property>
+    <property name="do_overwrite_confirmation">True</property>
     <property name="show_hidden">True</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox15">
@@ -4376,7 +4377,27 @@
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
-          <placeholder/>
+          <widget class="GtkHButtonBox" id="hbuttonbox17">
+            <property name="visible">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <widget class="GtkComboBox" id="wSaveSummary_cbFileType">
+                <property name="visible">True</property>
+                <property name="button_sensitivity">on</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="pack_type">end</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">2</property>
+          </packing>
         </child>
         <child internal-child="action_area">
           <widget class="GtkHButtonBox" id="dialog-action_area15">
