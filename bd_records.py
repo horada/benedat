@@ -107,7 +107,7 @@ class Record():
         data = {}
         data['db_id'] = self['db_id']
         data['client_id'] = self['client']['db_id']
-        data['date'] = self['date'].get('rrrr-mm-dd')
+        data['date'] = self['date'].get('yyyy-mm-dd')
 #        data['preferences'] = self['preferences']
         return data
 

@@ -61,7 +61,7 @@ import bd_config
 import bd_clients
 import bd_database
 import bd_datetime
-from bd_datetime import Time
+from bd_datetime import Time, Date
 from bd_descriptions import eSettings,teSettings
 import bd_logging
 from bd_logging import rnl
@@ -1169,7 +1169,7 @@ class WRecords():
                     vrs['BChB3'].value,     # 20
                     vrs['BOS'].value,       # 21
                     vrs['BO'].value,        # 22
-                    "%s" % record.date.get('rrrr-mm-dd'),   # 23
+                    "%s" % record.date.get('yyyy-mm-dd'),   # 23
                     ])
         
 
@@ -1218,6 +1218,15 @@ class WRecords():
         client = db.getClient(name=self.allWidgets['eClient'].get_text())
         if not client:
             return
+        date = Date(self.allWidgets['eDate'].get_text())
+        if db.getRecords(client=client.db_id, date=date.get(format_='yyyy-mm-dd')):
+            result = dialogQuestion(text="Záznam s datem '%s' pro klienta '%s %s' již existuje.\n"
+                    "Přejete si přesto přidat tento záznam?" % \
+                    (date.get(), client.first_name, client.last_name), \
+                    title='[BeneDat] Dotaz - podobný záznam')
+            if gtk.RESPONSE_YES != result:
+                return
+
         # TODO: check filled fields
         
         # update existing or add new record

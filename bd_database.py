@@ -647,7 +647,7 @@ class Db():
         if commit:
             self.commit()
 
-    def getRecords(self, client=None, year=None, month=None):
+    def getRecords(self, client=None, year=None, month=None, day=None, date=None):
         """
         Get records.
         """
@@ -657,19 +657,29 @@ class Db():
         where_data = {}
         if client:
             if where:
-                where += " AND" 
+                where += " AND"
             where += " client=:client"
             where_data['client'] = client
+        if date:
+            if where:
+                where += " AND"
+            where += " date=:date"
+            where_data['date'] = date
         if year:
             if where:
-                where += " AND" 
+                where += " AND"
             where += " strftime('%Y', date)=:year"
             where_data['year'] = year
         if month:
             if where:
-                where += " AND" 
+                where += " AND"
             where += " strftime('%m', date)=:month"
             where_data['month'] = month
+        if day:
+            if where:
+                where += " AND"
+            where += " strftime('%d', date)=:day"
+            where_data['day'] = day
         if where:
             where = "WHERE %s" % where
         result = self.execute('''SELECT id, client, date FROM records %s
