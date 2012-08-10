@@ -61,6 +61,7 @@ import bd_config
 import bd_clients
 import bd_database
 import bd_datetime
+from bd_datetime import Time
 from bd_descriptions import eSettings,teSettings
 import bd_logging
 from bd_logging import rnl
@@ -1398,10 +1399,17 @@ class WRecords():
     def eDate_focus_out_event(self, widget, parameters):
         """
         """
-        log.debug("eDate_focus_out_event()")
+        log.debug("WRecords.eDate_focus_out_event()")
         self.actual_date.set(self.allWidgets['eDate'].get_text())
 
         self.allWidgets['eDate'].set_text(self.actual_date.get())
+
+    def eFromTo_focus_out_event(self, widget, parameters):
+        """
+        """
+        log.debug("WRecords.eFromTo_focus_out_event()")
+        d = Time(widget.get_text())
+        widget.set_text(d.get())
 
     def fillComboBoxService(self, cbwidget):
         """
@@ -1426,8 +1434,10 @@ class WRecords():
         Add widget for service ... (and fill time_record if present)
         """
         if self.services:
-            id_ = max(self.services.keys()) + 1
+            last_max_id = max(self.services.keys())
+            id_ = last_max_id + 1
         else:
+            last_max_id = None
             id_ = 0
         log.debug("Adding widgets for service (id=%s)."%id_)
         top_attach = id_+1
@@ -1436,6 +1446,7 @@ class WRecords():
         # service type
         service['type'] = gtk.ComboBox()
         self.fillComboBoxService(service['type'])
+        # add widget to the window
         self.allWidgets['tabServices'].attach(service['type'], \
                 0,1,top_attach, bottom_attach, \
                 xoptions=gtk.FILL, yoptions=gtk.FILL)
@@ -1444,6 +1455,11 @@ class WRecords():
         service['from'].set_width_chars(5)
         service['from'].set_max_length(5)
         service['from'].set_activates_default(True)
+        service['from'].connect('focus-out-event', self.eFromTo_focus_out_event)
+        # fill 'to' time from previous line
+        if last_max_id is not None:
+            service['from'].set_text(self.services[last_max_id]['to'].get_text())
+        # add widget to the window
         self.allWidgets['tabServices'].attach(service['from'], \
                 1,2,top_attach, bottom_attach, \
                 xoptions=gtk.FILL, yoptions=gtk.FILL)
@@ -1452,12 +1468,15 @@ class WRecords():
         service['to'].set_width_chars(5)
         service['to'].set_max_length(5)
         service['to'].set_activates_default(True)
+        service['to'].connect('focus-out-event', self.eFromTo_focus_out_event)
+        # add widget to the window
         self.allWidgets['tabServices'].attach(service['to'], \
                 2,3,top_attach, bottom_attach, \
                 xoptions=gtk.FILL, yoptions=gtk.FILL)
         # remove button
         service['remove'] = gtk.Button(label=" - ")
         service['remove'].connect('clicked', self.deleteService, id_, True)
+        # add widget to the window
         self.allWidgets['tabServices'].attach(service['remove'], \
                 3,4,top_attach, bottom_attach, \
                 xoptions=gtk.FILL, yoptions=gtk.FILL)
