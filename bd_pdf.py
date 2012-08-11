@@ -169,6 +169,9 @@ class PdfClientSummary():
         self.rightHeadInformation()
 
         self.__y = -6*cm
+        # subject of summary above table
+        self.summarySubject()
+
         # summary table
         self.summaryTable()
 
@@ -350,6 +353,17 @@ class PdfClientSummary():
         # Firma není plátce DPH.
         self.c.setFont('LinLibertine_Bd', 10)
         self.c.drawString(width/2+0.5*cm, self.__y, "Firma není plátce DPH.")
+
+    def summarySubject(self):
+        """
+        Subject of summary above table.
+        """
+        log.debug("PdfClientSummary.summarySubject()")
+        size = 12
+        self.c.setFont('LinLibertine_Bd', size)
+        self.c.drawString(1*cm, self.__y-(size*1.2), \
+                "Účtujeme Vám za odlehčovací službu - %s/%s." % \
+                (self.summary.info.month, self.summary.info.year))
 
     def summaryTableHeader(self):
         """
