@@ -1508,6 +1508,7 @@
                   <widget class="GtkEntry" id="wRecords_eDate">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip" translatable="yes">datum odebr&#xE1;n&#xED; slu&#x17E;by</property>
                     <property name="max_length">10</property>
                     <property name="invisible_char">&#x25CF;</property>
                     <property name="activates_default">True</property>
@@ -1652,6 +1653,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip" translatable="yes">P&#x159;idat dal&#x161;&#xED; &#x159;&#xE1;dek pro slu&#x17E;bu</property>
                     <signal name="clicked" handler="on_wRecords_btAddService_clicked"/>
                   </widget>
                   <packing>
@@ -1686,6 +1688,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">doprava klienta na soc.slu&#x17E;bu</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1698,6 +1701,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">doprava klienta ze soc.slu&#x17E;by zp&#x11B;t</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1710,6 +1714,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">doprava klienta na slu&#x17E;bu/ze slu&#x17E;by  nebo doprava zam&#x11B;stnance z/do zam&#x11B;stn&#xE1;n&#xED;</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1722,6 +1727,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">doprava klienta na slu&#x17E;bu/ze slu&#x17E;by  nebo doprava zam&#x11B;stnance z/do zam&#x11B;stn&#xE1;n&#xED;</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1736,6 +1742,7 @@
                               <widget class="GtkEntry" id="wRecords_eTransportServiceOther">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="tooltip" translatable="yes">doprava klienta v r&#xE1;mci slu&#x17E;by dle jeho individu&#xE1;ln&#xED; &#x17E;&#xE1;dosti</property>
                                 <property name="invisible_char">&#x25CF;</property>
                                 <property name="activates_default">True</property>
                                 <property name="width_chars">4</property>
@@ -1747,6 +1754,7 @@
                             <child>
                               <widget class="GtkLabel" id="transport_label_other">
                                 <property name="visible">True</property>
+                                <property name="tooltip" translatable="yes">doprava klienta v r&#xE1;mci slu&#x17E;by dle jeho individu&#xE1;ln&#xED; &#x17E;&#xE1;dosti</property>
                                 <property name="xalign">0.10000000149011612</property>
                                 <property name="label" translatable="yes">Doprava v r&#xE1;mci slu&#x17E;by</property>
                               </widget>
@@ -1792,6 +1800,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">odebran&#xFD; ob&#x11B;d uva&#x159;en&#xFD; v r&#xE1;mci aktivit Benediktu</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1804,6 +1813,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">odebran&#xFD; ob&#x11B;d uva&#x159;en&#xFD; v r&#xE1;mci aktivit Benediktu</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1816,6 +1826,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">objednan&#xFD; ob&#x11B;d dov&#xE1;&#x17E;en&#xFD; z restaurace</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1828,6 +1839,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">objednan&#xFD; ob&#x11B;d dov&#xE1;&#x17E;en&#xFD; z restaurace</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1840,6 +1852,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">odebran&#xE1; sn&#xED;dan&#x11B;</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1852,6 +1865,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">odebran&#xE1; ve&#x10D;e&#x159;e</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1866,6 +1880,7 @@
                               <widget class="GtkEntry" id="wRecords_eDietOther">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="tooltip" translatable="yes">&#x10D;&#xE1;stka za p&#x159;&#xED;padn&#xE9; Jin&#xE9; stravov&#xE1;n&#xED;</property>
                                 <property name="invisible_char">&#x25CF;</property>
                                 <property name="activates_default">True</property>
                                 <property name="width_chars">4</property>
@@ -1922,6 +1937,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">poskytnut&#xE9; ubytov&#xE1;n&#xED; (1 den) v r&#xE1;mci poskytov&#xE1;n&#xED; soci&#xE1;ln&#xED; slu&#x17E;by (poskytnut&#xFD; prostor a vybaven&#xED; pro bydlen&#xED;, energie, &#xFA;klid, pran&#xED; a drobn&#xE9; opravy lo&#x17E;n&#xED;ho a osobn&#xED;ho pr&#xE1;dla a o&#x161;acen&#xED;, &#x17E;ehlen&#xED;)</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1934,6 +1950,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">poskytnut&#xE9; ubytov&#xE1;n&#xED;2 (1 den) v r&#xE1;mci poskytov&#xE1;n&#xED; soci&#xE1;ln&#xED; slu&#x17E;by (poskytnut&#xFD; prostor a vybaven&#xED; pro bydlen&#xED;, energie, &#xFA;klid, pran&#xED; a drobn&#xE9; opravy lo&#x17E;n&#xED;ho a osobn&#xED;ho pr&#xE1;dla a o&#x161;acen&#xED;, &#x17E;ehlen&#xED;) - jin&#xFD; zp&#x16F;sob/kvalita ubytov&#xE1;n&#xED; - zat&#xED;m nedojasn&#x11B;no</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1946,6 +1963,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">poskytnut&#xE9; ubytov&#xE1;n&#xED; (1 den) v r&#xE1;mci poskytov&#xE1;n&#xED; soci&#xE1;ln&#xED; slu&#x17E;by (poskytnut&#xFD; prostor a vybaven&#xED; pro bydlen&#xED;, energie, &#xFA;klid, pran&#xED; a drobn&#xE9; opravy lo&#x17E;n&#xED;ho a osobn&#xED;ho pr&#xE1;dla a o&#x161;acen&#xED;, &#x17E;ehlen&#xED;)</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1958,6 +1976,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip" translatable="yes">poskytnut&#xE9; ubytov&#xE1;n&#xED; (1 den) v r&#xE1;mci poskytov&#xE1;n&#xED; soci&#xE1;ln&#xED; slu&#x17E;by (poskytnut&#xFD; prostor a vybaven&#xED; pro bydlen&#xED;, energie, &#xFA;klid, pran&#xED; a drobn&#xE9; opravy lo&#x17E;n&#xED;ho a osobn&#xED;ho pr&#xE1;dla a o&#x161;acen&#xED;, &#x17E;ehlen&#xED;)</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
@@ -1972,6 +1991,7 @@
                               <widget class="GtkEntry" id="wRecords_eBilletOther">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="tooltip" translatable="yes">poskytnut&#xE9; ubytov&#xE1;n&#xED; mimo poskytov&#xE1;n&#xED; soci&#xE1;ln&#xED; slu&#x17E;by</property>
                                 <property name="invisible_char">&#x25CF;</property>
                                 <property name="activates_default">True</property>
                                 <property name="width_chars">4</property>
@@ -2589,6 +2609,7 @@
                                   <widget class="GtkEntry" id="wSettings_eHoursLevelOS1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">limit po&#x10D;tu hodin, nad kter&#xFD; se po&#x10D;&#xED;t&#xE1; prvn&#xED; sn&#xED;&#x17E;en&#xE1; hodinov&#xE1; sazba</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -2622,6 +2643,7 @@
                                   <widget class="GtkEntry" id="wSettings_eHoursLevelOS2">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">limit po&#x10D;tu hodin, nad kter&#xFD; se po&#x10D;&#xED;t&#xE1; druh&#xE1; sn&#xED;&#x17E;en&#xE1; hodinov&#xE1; sazba</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -2655,6 +2677,7 @@
                                   <widget class="GtkEntry" id="wSettings_eHoursLevelChB1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">limit po&#x10D;tu hodin, nad kter&#xFD; se po&#x10D;&#xED;t&#xE1; prvn&#xED; sn&#xED;&#x17E;en&#xE1; hodinov&#xE1; sazba</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -2688,6 +2711,7 @@
                                   <widget class="GtkEntry" id="wSettings_eHoursLevelChB2">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">limit po&#x10D;tu hodin, nad kter&#xFD; se po&#x10D;&#xED;t&#xE1; druh&#xE1; sn&#xED;&#x17E;en&#xE1; hodinov&#xE1; sazba</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -2754,6 +2778,7 @@
                                   <widget class="GtkEntry" id="wSettings_eTransportPriceFuel">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">cena za litr PHM stanoven&#xE1; pro v&#xFD;po&#x10D;et p&#x159;&#xED;sp&#x11B;vku na dopravu na slu&#x17E;bu</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -2787,6 +2812,7 @@
                                   <widget class="GtkEntry" id="wSettings_eTransportExp">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">exponent do vzorce  v&#xFD;po&#x10D;tu p&#x159;&#xED;sp&#x11B;vku na dopravu</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -2821,6 +2847,7 @@
                                   <widget class="GtkEntry" id="wSettings_eTransportK">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">konstanta do vzorce v&#xFD;po&#x10D;tu p&#x159;&#xED;sp&#x11B;vku na dopravu</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -2854,6 +2881,7 @@
                                   <widget class="GtkEntry" id="wSettings_eTransportEntryRate">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">n&#xE1;stupn&#xED; sazba do vzorce v&#xFD;po&#x10D;tu p&#x159;&#xED;sp&#x11B;vku na dopravu</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -2887,6 +2915,7 @@
                                   <widget class="GtkEntry" id="wSettings_eTransportClientPart">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">pod&#xED;l klienta na vypo&#x10D;ten&#xFD;ch n&#xE1;kladech cesty</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -2952,6 +2981,7 @@
                                   <widget class="GtkEntry" id="wSettings_eTransportPriceChM">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">cena za cestu Chot&#x11B;bo&#x159; - Modlet&#xED;n nebo cestu Modlet&#xED;n - Chot&#x11B;bo&#x159;</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3034,6 +3064,7 @@
                                   <widget class="GtkEntry" id="wSettings_eDietRefreshmentCh">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">stanoven&#xE1; cena za 1 ob&#x11B;d uva&#x159;en&#xFD; v r&#xE1;mci aktivit Benediktu</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3067,6 +3098,7 @@
                                   <widget class="GtkEntry" id="wSettings_eDietRefreshmentM">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">stanoven&#xE1; cena za 1 ob&#x11B;d uva&#x159;en&#xFD; v r&#xE1;mci aktivit Benediktu</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3100,6 +3132,7 @@
                                   <widget class="GtkEntry" id="wSettings_eDietLunchCh">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">cena za ob&#x11B;d dov&#xE1;&#x17E;en&#xFD; z restaurace</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3133,6 +3166,7 @@
                                   <widget class="GtkEntry" id="wSettings_eDietLunchM">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">cena za ob&#x11B;d dov&#xE1;&#x17E;en&#xFD; z restaurace</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3166,6 +3200,7 @@
                                   <widget class="GtkEntry" id="wSettings_eDietBreakfastM">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">stanoven&#xE1; cena za odebranou sn&#xED;dani</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3199,6 +3234,7 @@
                                   <widget class="GtkEntry" id="wSettings_eDietDinnerM">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">stanoven&#xE1; cena za odebranou ve&#x10D;e&#x159;i</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3266,6 +3302,7 @@
                                   <widget class="GtkEntry" id="wSettings_eBilletChB1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">stanoven&#xE1; cena za 1 den ubytov&#xE1;n&#xED; (poskytnut&#xFD; prostor a vybaven&#xED; pro bydlen&#xED;, energie, &#xFA;klid, pran&#xED; a drobn&#xE9; opravy lo&#x17E;n&#xED;ho a osobn&#xED;ho pr&#xE1;dla a o&#x161;acen&#xED;, &#x17E;ehlen&#xED;)</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3299,6 +3336,7 @@
                                   <widget class="GtkEntry" id="wSettings_eBilletChB2">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">stanoven&#xE1; cena za 1 den ubytov&#xE1;n&#xED;2 (poskytnut&#xFD; prostor a vybaven&#xED; pro bydlen&#xED;, energie, &#xFA;klid, pran&#xED; a drobn&#xE9; opravy lo&#x17E;n&#xED;ho a osobn&#xED;ho pr&#xE1;dla a o&#x161;acen&#xED;, &#x17E;ehlen&#xED;) - jin&#xFD; zp&#x16F;sob/kvalita ubytov&#xE1;n&#xED; - zat&#xED;m nedojasn&#x11B;no</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3332,6 +3370,7 @@
                                   <widget class="GtkEntry" id="wSettings_eBilletChB3">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">stanoven&#xE1; cena za 1 den ubytov&#xE1;n&#xED;3 (poskytnut&#xFD; prostor a vybaven&#xED; pro bydlen&#xED;, energie, &#xFA;klid, pran&#xED; a drobn&#xE9; opravy lo&#x17E;n&#xED;ho a osobn&#xED;ho pr&#xE1;dla a o&#x161;acen&#xED;, &#x17E;ehlen&#xED;) - jin&#xFD; zp&#x16F;sob/kvalita ubytov&#xE1;n&#xED; - zat&#xED;m nedojasn&#x11B;no</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3365,6 +3404,7 @@
                                   <widget class="GtkEntry" id="wSettings_eBilletOS">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">stanoven&#xE1; cena za 1 den ubytov&#xE1;n&#xED; (poskytnut&#xFD; prostor a vybaven&#xED; pro bydlen&#xED;, energie, &#xFA;klid, pran&#xED; a drobn&#xE9; opravy lo&#x17E;n&#xED;ho a osobn&#xED;ho pr&#xE1;dla a o&#x161;acen&#xED;, &#x17E;ehlen&#xED;)</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3749,6 +3789,7 @@
                                   <widget class="GtkEntry" id="wSettings_eAccountOS">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">zp&#x16F;sob za&#xFA;&#x10D;tov&#xE1;n&#xED; &#x10D;&#xE1;stky</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3782,6 +3823,7 @@
                                   <widget class="GtkEntry" id="wSettings_eAccountOSBillet">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">zp&#x16F;sob za&#xFA;&#x10D;tov&#xE1;n&#xED; &#x10D;&#xE1;stky</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3815,6 +3857,7 @@
                                   <widget class="GtkEntry" id="wSettings_eAccountChB">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">zp&#x16F;sob za&#xFA;&#x10D;tov&#xE1;n&#xED; &#x10D;&#xE1;stky</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3848,6 +3891,7 @@
                                   <widget class="GtkEntry" id="wSettings_eAccountChBBillet">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">zp&#x16F;sob za&#xFA;&#x10D;tov&#xE1;n&#xED; &#x10D;&#xE1;stky</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3881,6 +3925,7 @@
                                   <widget class="GtkEntry" id="wSettings_eAccountBillet">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">zp&#x16F;sob za&#xFA;&#x10D;tov&#xE1;n&#xED; &#x10D;&#xE1;stky</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3914,6 +3959,7 @@
                                   <widget class="GtkEntry" id="wSettings_eAccountTransportClients">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">zp&#x16F;sob za&#xFA;&#x10D;tov&#xE1;n&#xED; &#x10D;&#xE1;stky</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3947,6 +3993,7 @@
                                   <widget class="GtkEntry" id="wSettings_eAccountRefreshment">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">zp&#x16F;sob za&#xFA;&#x10D;tov&#xE1;n&#xED; &#x10D;&#xE1;stky</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -3980,6 +4027,7 @@
                                   <widget class="GtkEntry" id="wSettings_eAccountLunch">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">zp&#x16F;sob za&#xFA;&#x10D;tov&#xE1;n&#xED; &#x10D;&#xE1;stky</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -4013,6 +4061,7 @@
                                   <widget class="GtkEntry" id="wSettings_eAccountBreakfast">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">zp&#x16F;sob za&#xFA;&#x10D;tov&#xE1;n&#xED; &#x10D;&#xE1;stky</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -4046,6 +4095,7 @@
                                   <widget class="GtkEntry" id="wSettings_eAccountDinner">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">zp&#x16F;sob za&#xFA;&#x10D;tov&#xE1;n&#xED; &#x10D;&#xE1;stky</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
@@ -4079,6 +4129,7 @@
                                   <widget class="GtkEntry" id="wSettings_eAccountDiet">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip" translatable="yes">zp&#x16F;sob za&#xFA;&#x10D;tov&#xE1;n&#xED; &#x10D;&#xE1;stky</property>
                                     <property name="invisible_char">&#x25CF;</property>
                                     <property name="activates_default">True</property>
                                   </widget>
