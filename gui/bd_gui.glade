@@ -692,7 +692,7 @@
                             <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkCheckButton" id="wClients_chOS">
-                                <property name="label" translatable="yes">Odleh&#x10D;ovac&#xED; slu&#x17E;ba</property>
+                                <property name="label" translatable="yes">Odleh&#x10D;ovac&#xED; slu&#x17E;ba [OS]</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -705,7 +705,7 @@
                             </child>
                             <child>
                               <widget class="GtkCheckButton" id="wClients_chSTD">
-                                <property name="label" translatable="yes">Soci&#xE1;ln&#x11B; terapeutick&#xE9; d&#xED;lny</property>
+                                <property name="label" translatable="yes">Soci&#xE1;ln&#x11B; terapeutick&#xE9; d&#xED;lny [STD]</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -717,7 +717,7 @@
                             </child>
                             <child>
                               <widget class="GtkCheckButton" id="wClients_chChB">
-                                <property name="label" translatable="yes">Chr&#xE1;n&#x11B;n&#xE9; bydlen&#xED;</property>
+                                <property name="label" translatable="yes">Chr&#xE1;n&#x11B;n&#xE9; bydlen&#xED; [ChB]</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -2579,7 +2579,7 @@
                                   <widget class="GtkLabel" id="label16">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.94999998807907104</property>
-                                    <property name="label" translatable="yes">OS - Doln&#xED; hranice</property>
+                                    <property name="label" translatable="yes">OS - Doln&#xED; hranice (limit 1)</property>
                                   </widget>
                                   <packing>
                                     <property name="position">0</property>
@@ -2612,7 +2612,7 @@
                                   <widget class="GtkLabel" id="label26">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.94999998807907104</property>
-                                    <property name="label" translatable="yes">OS - Horn&#xED; hranice</property>
+                                    <property name="label" translatable="yes">OS - Horn&#xED; hranice (limit 2)</property>
                                   </widget>
                                   <packing>
                                     <property name="position">0</property>
@@ -2645,7 +2645,7 @@
                                   <widget class="GtkLabel" id="label27">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.94999998807907104</property>
-                                    <property name="label" translatable="yes">ChB - Doln&#xED; hranice</property>
+                                    <property name="label" translatable="yes">ChB - Doln&#xED; hranice (limit 1)</property>
                                   </widget>
                                   <packing>
                                     <property name="position">0</property>
@@ -2678,7 +2678,7 @@
                                   <widget class="GtkLabel" id="label28">
                                     <property name="visible">True</property>
                                     <property name="xalign">0.94999998807907104</property>
-                                    <property name="label" translatable="yes">ChB - Horn&#xED; hranice</property>
+                                    <property name="label" translatable="yes">ChB - Horn&#xED; hranice (limit 2)</property>
                                   </widget>
                                   <packing>
                                     <property name="position">0</property>

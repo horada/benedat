@@ -1227,7 +1227,7 @@ class WRecords():
             if gtk.RESPONSE_YES != result:
                 return
 
-        # TODO: check filled fields
+        # TODO: check filled fields - is it necessary?
         
         # update existing or add new record
         if self.actual_record:
@@ -2050,7 +2050,6 @@ class WSummary():
         # path to output file without extension
         output_file = self.dialogSaveSummary(file_name_suggestion)
         log.debug("Path for saving summary: %s" % output_file)
-        output_file = "hello"
         if not output_file:
             return
 

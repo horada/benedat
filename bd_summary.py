@@ -81,7 +81,7 @@ class Summary():
         self.summaries = []
         for client in clients:
             if self.document_type == "PPD":
-                code="%s%s" % (self.code_fixed, self.code_variable),
+                code="%s%s" % (self.code_fixed, self.code_variable)
             else:
                 code=""
             self.summaries.append(ClientSummary(client=client, 
