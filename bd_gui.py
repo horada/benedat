@@ -2069,6 +2069,9 @@ class WSummary():
         pdf = bd_pdf.PdfSummary(summary)
         pdf.createPdfSummary()
 
+        import bd_csv
+        csv = bd_csv.CsvSummary(summary)
+        csv.createCsvSummary()
 
 
         self.clients = []
