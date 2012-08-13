@@ -52,9 +52,9 @@ class RecordsTest(unittest.TestCase):
         client1 = bd_clients.Client("Jan", "Novák")
 
         record1 = bd_records.Record(client1, '26.3.2012')
-        record1.addTimeRecord(service_type="OS", from_time="8:00", to_time="13:15")
-#        record1.addTimeRecord(service_type="STD", from_time="9,30", to_time="1700")
-        record1.addTimeRecord(service_type="ChB", from_time="8", to_time="14")
+        record1.addTimeRecord(service_type="OS", time_from="8:00", time_to="13:15")
+#        record1.addTimeRecord(service_type="STD", time_from="9,30", time_to="1700")
+        record1.addTimeRecord(service_type="ChB", time_from="8", time_to="14")
         record1.addValueRecord(service_type="TEST1", value="43")
         print record1
 
