@@ -309,7 +309,7 @@ class PdfClientSummary():
         # right name
         size = 10
         self.c.setFont('LinLibertine_Re', size)
-        self.c.drawString(width/2+0.5*cm, -2*cm, "Přijato od")
+        self.c.drawString(width/2+0.5*cm, -2*cm, "Přijato od  odběratele služby:")
         size = 14
         self.c.setFont('LinLibertine_Bd', size)
         name = "%s %s" % (self.summary.client.last_name, self.summary.client.first_name)
@@ -354,9 +354,9 @@ class PdfClientSummary():
         for line in information:
             self.c.drawString(width/2+4.5*cm, self.__y, line)
             self.__y -= size*1.2
-        # Firma není plátce DPH.
+        # Organizace není plátce DPH.
         self.c.setFont('LinLibertine_Bd', 10)
-        self.c.drawString(width/2+0.5*cm, self.__y, "Firma není plátce DPH.")
+        self.c.drawString(width/2+0.5*cm, self.__y, "Organizace není plátce DPH.")
 
     def summarySubject(self):
         """
@@ -565,18 +565,18 @@ class PdfClientSummary():
         # price
         self.__y = initial_y
         self.c.setFont('LinLibertine_Re', size)
-        for item in ("%s kč" % self.summary.time_price.get('OS', 0), \
-                "%s kč" % self.summary.time_price.get('ChB', 0), \
+        for item in ("%s Kč" % self.summary.time_price.get('OS', 0), \
+                "%s Kč" % self.summary.time_price.get('ChB', 0), \
                 "-----", \
-                "%s kč" % self.summary.total_prices['transport'], \
-                "%s kč" % self.summary.total_prices['diet'], \
-                "%s kč" % self.summary.total_prices['billet']):
+                "%s Kč" % self.summary.total_prices['transport'], \
+                "%s Kč" % self.summary.total_prices['diet'], \
+                "%s Kč" % self.summary.total_prices['billet']):
             self.c.drawRightString(x_sum_price*cm, self.__y, item)
             self.__y -= 1.2*size
 
         self.c.setFont('LinLibertine_Bd', size)
         self.c.drawRightString(x_sum_price*cm, self.__y, \
-                "%s kč" % self.summary.total_prices['total'])
+                "%s Kč" % self.summary.total_prices['total'])
 
         # Line
         size = 10
@@ -659,7 +659,7 @@ def prettyKCValue(value):
     """
     value = float(value)
     if value:
-        return "%0.2f kč" % value
+        return "%0.2f Kč" % value
     else:
         return '-'
     
