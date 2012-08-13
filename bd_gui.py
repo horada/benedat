@@ -1714,7 +1714,7 @@ class WSummary():
                 "on_wSummary_btFilterToday_clicked": self.filterToday,
                 "on_wSummary_cbDocumentType_changed": self.cbDocumentType_changed,
                 "on_wSummary_btDateIssue_clicked": self.calendarWindowIssue,
-                "on_wSummary_btDatePayment_clicked": self.calendarWindowPayment,
+                "on_wSummary_btDueDate_clicked": self.calendarWindowPayment,
                 "on_wSummary_btClose_clicked": self.closeWSummary,
                 "on_wSummary_btSave_clicked": self.saveSummary,
                 }
@@ -1730,8 +1730,8 @@ class WSummary():
                 "tvClientsTable",
                 "btDateIssue",
                 "eDateIssue",
-                "btDatePayment",
-                "eDatePayment",
+                "btDueDate",
+                "eDueDate",
                 "eClerkName",
                 "eCodeFixed",
                 "eCodeVariable",
@@ -1753,7 +1753,7 @@ class WSummary():
 
         # fill date fields
         self.allWidgets['eDateIssue'].set_text(bd_datetime.Date().get())
-        self.allWidgets['eDatePayment'].set_text(bd_datetime.Date().get())
+        self.fillDueDate()
 
         # fill clerk_name
         self.allWidgets['eClerkName'].set_text( \
@@ -1795,6 +1795,7 @@ class WSummary():
         """
         log.debug("filterChanged()")
         self.fillClientsTable()
+        self.fillDueDate()
 
     def filterChangedYear(self, widget):
         self.saveFilterYear()
@@ -1997,6 +1998,17 @@ class WSummary():
         self.clientsListStore.set_sort_column_id(1, gtk.SORT_ASCENDING)
         self.markClientsInClientsTable()
 
+    def fillDueDate(self):
+        """
+        Fill eDueDate with date of summary + 1 month.
+        """
+        year = self.allWidgets['cbFilterYear'].get_active_text()
+        month = self.allWidgets['cbFilterMonth'].get_active_text()
+        date = bd_datetime.Date("01.%s.%s" % (month, year))
+        date.lastDayOfNextMonth()
+        self.allWidgets['eDueDate'].set_text(date.get())
+
+
     def calendarWindowIssue(self, widget):
         """
         Open window with calendar.
@@ -2013,7 +2025,7 @@ class WSummary():
         log.debug("calendarWindowPayment()")
         date = dialogCalendar(self.w)
         if date:
-            self.allWidgets['eDatePayment'].set_text(date)
+            self.allWidgets['eDueDate'].set_text(date)
 
 
     def saveSummary(self, widget):
@@ -2035,7 +2047,7 @@ class WSummary():
         month = self.allWidgets['cbFilterMonth'].get_active_text()
         document_type = self.allWidgets['cbDocumentType'].get_active_text()
         date_issue = self.allWidgets['eDateIssue'].get_text()
-        date_payment = self.allWidgets['eDatePayment'].get_text()
+        due_date = self.allWidgets['eDueDate'].get_text()
         clerk_name = self.allWidgets['eClerkName'].get_text()
         code_fixed = self.allWidgets['eCodeFixed'].get_text()
         code_variable = self.allWidgets['eCodeVariable'].get_text()
@@ -2057,7 +2069,7 @@ class WSummary():
                 clients=self.clients, 
                 document_type=document_type,
                 date_issue=date_issue,
-                date_payment=date_payment,
+                due_date=due_date,
                 clerk_name=clerk_name,
                 code_fixed=code_fixed,
                 code_variable=code_variable,

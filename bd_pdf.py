@@ -327,11 +327,13 @@ class PdfClientSummary():
         if self.summary.info.document_type == "PPD":
             information = [
                     "Datum vystavení: ",
-                    "Datum platby:",
+                    "Datum splatnosti:",
                     "Pokladna:",]
         elif self.summary.info.document_type == "JV":
             information = [
-                    "Datum vystavení: ",]
+                    "Datum vystavení: ",
+                    "Datum splatnosti:",
+                    ]
         self.__y = -4*cm
         for line in information:
             self.c.drawString(width/2+0.5*cm, self.__y, line)
@@ -341,11 +343,13 @@ class PdfClientSummary():
         if self.summary.info.document_type == "PPD":
             information = [
                     self.summary.info.date_issue,
-                    self.summary.info.date_payment,
+                    self.summary.info.due_date,
                     db.getConfVal("eSummaryTill", ""),]
         elif self.summary.info.document_type == "JV":
             information = [
-                    self.summary.info.date_issue,]
+                    self.summary.info.date_issue,
+                    self.summary.info.due_date,
+                    ]
         self.__y = -4*cm
         for line in information:
             self.c.drawString(width/2+4.5*cm, self.__y, line)
@@ -603,11 +607,11 @@ class PdfClientSummary():
         self.c.setFont('LinLibertine_Re', size)
         self.c.drawString(11*cm, self.__y, "Podpis odběratele:")
 
-        self.__y -= 2*size
+        self.__y -= 1.5*size
         if self.summary.info.document_type == "PPD":
+            self.c.drawString(3*cm, self.__y, "Datum platby:")
+            self.__y -= 1.5*size
             self.c.drawString(3*cm, self.__y, "Podpis pokladníka:")
-        elif self.summary.info.document_type == "JV":
-            self.c.drawString(3*cm, self.__y, "Podpis:")
 
 
 

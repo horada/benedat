@@ -2367,14 +2367,14 @@
                         <property name="visible">True</property>
                         <property name="spacing">5</property>
                         <child>
-                          <widget class="GtkButton" id="wSummary_btDatePayment">
-                            <property name="label" translatable="yes">Datum platby:</property>
+                          <widget class="GtkButton" id="wSummary_btDueDate">
+                            <property name="label" translatable="yes">Datum splatnosti:</property>
                             <property name="width_request">150</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="xalign">0.89999997615814209</property>
-                            <signal name="clicked" handler="on_wSummary_btDatePayment_clicked"/>
+                            <signal name="clicked" handler="on_wSummary_btDueDate_clicked"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -2383,7 +2383,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkEntry" id="wSummary_eDatePayment">
+                          <widget class="GtkEntry" id="wSummary_eDueDate">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x25CF;</property>

@@ -63,7 +63,7 @@ class Summary():
     """
 
     def __init__(self, clients=None, year=None, month=None, \
-            document_type=None, date_issue=None, date_payment=None, \
+            document_type=None, date_issue=None, due_date=None, \
             clerk_name=None, code_fixed=None, code_variable=None, \
             output_file="summary"):
         self.start = time.time()
@@ -72,7 +72,7 @@ class Summary():
         self.clients = clients
         self.document_type = document_type
         self.date_issue = date_issue
-        self.date_payment = date_payment
+        self.due_date = due_date
         self.clerk_name = clerk_name
         self.code_fixed = code_fixed
         self.code_variable = code_variable
@@ -90,7 +90,7 @@ class Summary():
                     month=self.month,
                     document_type=self.document_type,
                     date_issue=self.date_issue,
-                    date_payment=self.date_payment,
+                    due_date=self.due_date,
                     clerk_name=self.clerk_name,
                     code=code,
                     )))
@@ -141,7 +141,7 @@ class ClientSummary():
         tmp = ""
         tmp += "Typ dokladu: %s\n" % self.info.document_type
         tmp += "Datum vystavení: %s\n" % self.info.date_issue
-        tmp += "Datum platby: %s\n" % self.info.date_payment
+        tmp += "Datum splatnosti: %s\n" % self.info.due_date
         tmp += "Vystavil: %s\n" % self.info.clerk_name
         tmp += "Client: %s %s\n" % (self.client.last_name, self.client.first_name)
         tmp += "Kód dokladu: %s\n" % (self.info.code)
@@ -459,18 +459,18 @@ class SummaryInfo():
         month,
         document_type,
         date_issue,
-        date_payment,
+        due_date,
         clerk_name,
         code,
     """
-    def __init__(self, year, month, document_type, date_issue, date_payment, clerk_name, code):
+    def __init__(self, year, month, document_type, date_issue, due_date, clerk_name, code):
         """
         """
         self.setYear(year)
         self.setMonth(month)
         self.setDocumentType(document_type)
         self.setDateIssue(date_issue)
-        self.setDatePayment(date_payment)
+        self.setDueDate(due_date)
         self.setClerkName(clerk_name)
         self.setCode(code)
 
@@ -498,11 +498,11 @@ class SummaryInfo():
         self.__date_issue = value
     date_issue = property(getDateIssue, setDateIssue)
 
-    def getDatePayment(self):
-        return self.__date_payment
-    def setDatePayment(self, value):
-        self.__date_payment = value
-    date_payment = property(getDatePayment, setDatePayment)
+    def getDueDate(self):
+        return self.__due_date
+    def setDueDate(self, value):
+        self.__due_date = value
+    due_date = property(getDueDate, setDueDate)
 
     def getClerkName(self):
         return self.__clerk_name
