@@ -92,6 +92,7 @@ CLASSES:
 
 
 import datetime
+import calendar
 import re
 from pprint import pprint
 
@@ -241,6 +242,18 @@ class Date():
         """
         self.set(datetime.date.fromordinal(self.date.toordinal()+days))
 
+    def lastDayOfNextMonth(self):
+        """
+        Return last date of next month.
+        """
+        month = self.date.month
+        year = self.date.year
+        month += 1
+        if month > 12:
+            month = 1
+            year += 1
+        day = max(calendar.Calendar().itermonthdays(year, month))
+        self.date = self.date.replace(day=day, month=month, year=year)
 
 class Time():
     """

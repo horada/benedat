@@ -167,6 +167,23 @@ class DatePublicInterfaceTest(unittest.TestCase):
         d.set("-")
         self.assertEqual(d.get(), "30.12.2011")
 
+    def test_lastDayOfNextMonth(self):
+        d = bd_datetime.Date()
+        d.set('1.1.2012')
+        d.lastDayOfNextMonth()
+        self.assertEqual(d.get(), "29.2.2012")
+        d.set('1.1.2011')
+        d.lastDayOfNextMonth()
+        self.assertEqual(d.get(), "28.2.2011")
+        d.set('13.8.2012')
+        d.lastDayOfNextMonth()
+        self.assertEqual(d.get(), "30.9.2012")
+        d.set('30.11.2012')
+        d.lastDayOfNextMonth()
+        self.assertEqual(d.get(), "31.12.2012")
+        d.set('31.12.2012')
+        d.lastDayOfNextMonth()
+        self.assertEqual(d.get(), "31.1.2013")
 
 
 
