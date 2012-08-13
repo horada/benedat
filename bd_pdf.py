@@ -115,8 +115,8 @@ class PdfSummary():
         # title
         if self.summary.document_type == "PPD":
             canvas.setTitle("Příjmový pokladní doklad")
-        elif self.summary.document_type == "JV":
-            canvas.setTitle("Výpis poskytnutých služeb")
+        elif self.summary.document_type == "VPS":
+            canvas.setTitle("Vyúčtování poskytnutých služeb")
         else:
             canvas.setTitle("UNKNOWN")
         # subject
@@ -240,7 +240,7 @@ class PdfClientSummary():
         log.debug("PdfClientSummary.topRightHeader()")
         if self.summary.info.document_type == "PPD":
             text = "Příjmový pokladní doklad č.%s" % self.summary.info.code
-        elif self.summary.info.document_type == "JV":
+        elif self.summary.info.document_type == "VPS":
             text = "Výpis poskytnutých služeb"
         size = 14
         self.c.setFont('LinLibertine_Bd', size)
@@ -329,7 +329,7 @@ class PdfClientSummary():
                     "Datum vystavení: ",
                     "Datum splatnosti:",
                     "Pokladna:",]
-        elif self.summary.info.document_type == "JV":
+        elif self.summary.info.document_type == "VPS":
             information = [
                     "Datum vystavení: ",
                     "Datum splatnosti:",
@@ -345,7 +345,7 @@ class PdfClientSummary():
                     self.summary.info.date_issue,
                     self.summary.info.due_date,
                     db.getConfVal("eSummaryTill", ""),]
-        elif self.summary.info.document_type == "JV":
+        elif self.summary.info.document_type == "VPS":
             information = [
                     self.summary.info.date_issue,
                     self.summary.info.due_date,

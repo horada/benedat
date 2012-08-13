@@ -434,7 +434,7 @@ class WClients():
         self.documentTypeListStore.clear()
         document_types = {
                 'PPD': "Příjmový pokladní doklad",
-                'JV': "Jednoduchý výpis",
+                'VPS': "Vyúčtování poskytnutých služeb",
                 }
         dkeys = document_types.keys()
         for type_ in dkeys:
@@ -1926,7 +1926,7 @@ class WSummary():
         self.documentTypeListStore.clear()
         document_types = {
                 'PPD': "Příjmový pokladní doklad",
-                'JV': "Jednoduchý výpis",
+                'VPS': "Vyúčtování poskytnutých služeb",
                 }
         dkeys = document_types.keys()
         for type_ in dkeys:
@@ -2056,8 +2056,8 @@ class WSummary():
         # suggestion for name of output file
         if document_type == "PPD":
             file_name_suggestion = "Prijmovy_pokladni_doklad_%s_%s" % (month, year)
-        elif document_type == "JV":
-            file_name_suggestion = "Sestava_%s_%s" % (month, year)
+        elif document_type == "VPS":
+            file_name_suggestion = "Vyuctovani_poskytnutych_sluzeb_%s_%s" % (month, year)
 
         # path to output file without extension
         output_file = self.dialogSaveSummary(file_name_suggestion)
