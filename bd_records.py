@@ -226,7 +226,7 @@ class Record():
         for value_record in self.__value_records.values():
             variables_sum[value_record.service_type] = \
                     variables_sum.get(value_record.service_type, 0) + \
-                    value_record.getValue()
+                    float(value_record.getValue())
         return variables_sum
 
 

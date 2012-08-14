@@ -1568,33 +1568,33 @@ class WRecords():
         self.allWidgets["eBilletOther"].set_text(
                 str(self.actual_record.value_records["BO"].value))
         self.allWidgets["chTransportOnService"].set_active(
-                self.actual_record.value_records["TOS"].value)
+                int(self.actual_record.value_records["TOS"].value))
         self.allWidgets["chTransportFromService"].set_active(
-                self.actual_record.value_records["TFS"].value)
+                int(self.actual_record.value_records["TFS"].value))
         self.allWidgets["chTransportChMo"].set_active(
-                self.actual_record.value_records["TChMo"].value)
+                int(self.actual_record.value_records["TChMo"].value))
         self.allWidgets["chTransportMoCh"].set_active(
-                self.actual_record.value_records["TMoCh"].value)
+                int(self.actual_record.value_records["TMoCh"].value))
         self.allWidgets["chDietRefreshmentCh"].set_active(
-                self.actual_record.value_records["DRCh"].value)
+                int(self.actual_record.value_records["DRCh"].value))
         self.allWidgets["chDietRefreshmentM"].set_active(
-                self.actual_record.value_records["DRM"].value)
+                int(self.actual_record.value_records["DRM"].value))
         self.allWidgets["chDietLunchCh"].set_active(
-                self.actual_record.value_records["DLCh"].value)
+                int(self.actual_record.value_records["DLCh"].value))
         self.allWidgets["chDietLunchM"].set_active(
-                self.actual_record.value_records["DLM"].value)
+                int(self.actual_record.value_records["DLM"].value))
         self.allWidgets["chDietBreakfastM"].set_active(
-                self.actual_record.value_records["DBM"].value)
+                int(self.actual_record.value_records["DBM"].value))
         self.allWidgets["chDietDinnerM"].set_active(
-                self.actual_record.value_records["DDM"].value)
+                int(self.actual_record.value_records["DDM"].value))
         self.allWidgets["chBilletChB1"].set_active(
-                self.actual_record.value_records["BChB1"].value)
+                int(self.actual_record.value_records["BChB1"].value))
         self.allWidgets["chBilletChB2"].set_active(
-                self.actual_record.value_records["BChB2"].value)
+                int(self.actual_record.value_records["BChB2"].value))
         self.allWidgets["chBilletChB3"].set_active(
-                self.actual_record.value_records["BChB3"].value)
+                int(self.actual_record.value_records["BChB3"].value))
         self.allWidgets["chBilletOS"].set_active(
-                self.actual_record.value_records["BOS"].value)
+                int(self.actual_record.value_records["BOS"].value))
 
     def clearRecordForm(self):
         log.debug("clearRecordForm()")
