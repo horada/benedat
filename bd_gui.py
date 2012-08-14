@@ -88,7 +88,6 @@ if _last_open_file:
 
 
 
-import bd_summary
 
 class WMain():
     """
@@ -2064,6 +2063,8 @@ class WSummary():
         log.debug("Path for saving summary: %s" % output_file)
         if not output_file:
             return
+
+        import bd_summary
 
         summary = bd_summary.Summary(year=year, month=month, \
                 clients=self.clients, 
