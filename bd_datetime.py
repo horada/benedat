@@ -231,7 +231,9 @@ class Date():
             ''
         """
         if format_ == 'd.m.yyyy':
-            return self.date.strftime('%-1d.%-1m.%Y')
+            #return self.date.strftime('%-1d.%-1m.%Y')
+            # workaround for windows 
+            return '%-1d.%-1d.%d' % (self.date.day, self.date.month, self.date.year)
         elif format_ == 'dd.mm.yyyy':
             return self.date.strftime('%d.%m.%Y')
         elif format_ == 'yyyy-mm-dd':
@@ -281,7 +283,8 @@ class Time():
             ''
         """
         if format_ == 'h:mm':
-            return self.time.strftime('%-1H:%M') if not self.midnight else '24:00'
+            return '%-1d:%0.2d' % (self.time.hour, self.time.minute) \
+                    if not self.midnight else '24:00'
         elif format_ == 'hh:mm':
             return self.time.strftime('%H:%M') if not self.midnight else '24:00'
 

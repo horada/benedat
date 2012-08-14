@@ -136,7 +136,8 @@ class WMain():
         """
         Exit BeneDat.
         """
-        db.commit()
+        if db:
+            db.commit()
         log.debug('gtk.main_quit()')
         gtk.main_quit()
 
