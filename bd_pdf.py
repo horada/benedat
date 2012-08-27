@@ -235,13 +235,13 @@ class PdfClientSummary():
         """
         Top left header:
             "Příjmový pokladní doklad č.XXXX0000"
-            "Výpis poskytnutých služeb"
+            "Vyúčtování poskytnutých služeb"
         """
         log.debug("PdfClientSummary.topRightHeader()")
         if self.summary.info.document_type == "PPD":
             text = "Příjmový pokladní doklad č.%s" % self.summary.info.code
         elif self.summary.info.document_type == "VPS":
-            text = "Výpis poskytnutých služeb"
+            text = "Vyúčtování poskytnutých služeb"
         size = 14
         self.c.setFont('LinLibertine_Bd', size)
         self.c.drawRightString(width-cm,-cm,text)
@@ -366,7 +366,7 @@ class PdfClientSummary():
         size = 12
         self.c.setFont('LinLibertine_Bd', size)
         self.c.drawString(1*cm, self.__y-(size*1.2), \
-                "Účtujeme Vám za odlehčovací službu - %s/%s." % \
+                "Účtujeme Vám za poskytnuté služby - %s/%s." % \
                 (self.summary.info.month, self.summary.info.year))
 
     def summaryTableHeader(self):
