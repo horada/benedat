@@ -1218,14 +1218,6 @@ class WRecords():
         client = db.getClient(name=self.allWidgets['eClient'].get_text())
         if not client:
             return
-        date = Date(self.allWidgets['eDate'].get_text())
-        if db.getRecords(client=client.db_id, date=date.get(format_='yyyy-mm-dd')):
-            result = dialogQuestion(text="Záznam s datem '%s' pro klienta '%s %s' již existuje.\n"
-                    "Přejete si přesto přidat tento záznam?" % \
-                    (date.get(), client.first_name, client.last_name), \
-                    title='[BeneDat] Dotaz - podobný záznam')
-            if gtk.RESPONSE_YES != result:
-                return
 
         # TODO: check filled fields - is it necessary?
         
@@ -1235,6 +1227,14 @@ class WRecords():
             self.actual_record.setClient(client)
             self.actual_record.setDate(self.allWidgets['eDate'].get_text())
         else:
+            date = Date(self.allWidgets['eDate'].get_text())
+            if db.getRecords(client=client.db_id, date=date.get(format_='yyyy-mm-dd')):
+                result = dialogQuestion(text="Záznam s datem '%s' pro klienta '%s %s' již existuje.\n"
+                        "Přejete si přesto přidat tento záznam?" % \
+                        (date.get(), client.first_name, client.last_name), \
+                        title='[BeneDat] Dotaz - podobný záznam')
+                if gtk.RESPONSE_YES != result:
+                    return
             # create (add) new record
             self.actual_record = bd_records.Record(
                     client = client,
