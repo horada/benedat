@@ -321,7 +321,7 @@
             <child>
               <widget class="GtkTreeView" id="wClients_tvClientsTable">
                 <property name="width_request">700</property>
-                <property name="height_request">200</property>
+                <property name="height_request">150</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="enable_grid_lines">both</property>
