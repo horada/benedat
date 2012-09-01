@@ -349,7 +349,7 @@ class ValueRecord():
             self.__value = int(self.__value)
         if self.__value == "":
             self.__value = 0
-        return self.__value
+        return int(self.__value)
     def setValue(self, value):
         self.__value = value
     value = property(getValue, setValue)
