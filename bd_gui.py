@@ -790,9 +790,6 @@ class WRecords():
                 "on_wRecords_btSaveRecord_clicked": self.saveRecord,
                 "on_wRecords_eDate_focus_out_event": self.eDate_focus_out_event,
                 "on_wRecords_eDate_key_release_event":self.eDate_key_release,
-                "on_wRecords_expTravel_activate":self.expTravel_activate,
-                "on_wRecords_expDiet_activate":self.expDiet_activate,
-                "on_wRecords_expBillet_activate":self.expBillet_activate,
                 }
         self.wxml.signal_autoconnect(signals)
 
@@ -1632,17 +1629,6 @@ class WRecords():
         #
         self.addService(widget=None)
         self.fillRecordsTable()
-
-    def expTravel_activate(self, widget):
-        self.allWidgets['expDiet'].set_expanded(False)
-        self.allWidgets['expBillet'].set_expanded(False)
-    def expDiet_activate(self, widget):
-        self.allWidgets['expTravel'].set_expanded(False)
-        self.allWidgets['expBillet'].set_expanded(False)
-    def expBillet_activate(self, widget):
-        self.allWidgets['expDiet'].set_expanded(False)
-        self.allWidgets['expTravel'].set_expanded(False)
-
 
     def filterChanged(self, widget=None):
         """

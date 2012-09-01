@@ -225,7 +225,6 @@
           <widget class="GtkExpander" id="expander1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="expanded">True</property>
             <child>
               <widget class="GtkHButtonBox" id="hbuttonbox6">
                 <property name="visible">True</property>
@@ -1443,20 +1442,98 @@
         <child>
           <widget class="GtkHBox" id="hbox5">
             <property name="visible">True</property>
-            <property name="spacing">5</property>
+            <property name="spacing">10</property>
             <child>
-              <widget class="GtkVBox" id="vbox26">
+              <widget class="GtkVBox" id="vbox31">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
+                <property name="spacing">10</property>
                 <child>
-                  <widget class="GtkButton" id="wRecords_btClient">
-                    <property name="label" translatable="yes">Klient</property>
+                  <widget class="GtkHBox" id="hbox54">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="relief">none</property>
-                    <property name="xalign">0.10000000149011612</property>
-                    <signal name="clicked" handler="on_wRecords_btClient_clicked"/>
+                    <child>
+                      <widget class="GtkVBox" id="vbox26">
+                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <widget class="GtkButton" id="wRecords_btClient">
+                            <property name="label" translatable="yes">Klient</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="relief">none</property>
+                            <property name="xalign">0.10000000149011612</property>
+                            <signal name="clicked" handler="on_wRecords_btClient_clicked"/>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkEntry" id="wRecords_eClient">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">&#x25CF;</property>
+                            <property name="activates_default">True</property>
+                            <property name="width_chars">20</property>
+                            <signal name="focus_out_event" handler="on_wRecords_eClient_focus_out_event"/>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkVBox" id="vbox27">
+                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <widget class="GtkButton" id="wRecords_btDate">
+                            <property name="label" translatable="yes">Datum	</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="relief">none</property>
+                            <property name="xalign">0.10000000149011612</property>
+                            <signal name="clicked" handler="on_wRecords_btDate_clicked"/>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkEntry" id="wRecords_eDate">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip" translatable="yes">datum odebr&#xE1;n&#xED; slu&#x17E;by</property>
+                            <property name="max_length">10</property>
+                            <property name="invisible_char">&#x25CF;</property>
+                            <property name="activates_default">True</property>
+                            <property name="width_chars">10</property>
+                            <signal name="focus_out_event" handler="on_wRecords_eDate_focus_out_event"/>
+                            <signal name="key_release_event" handler="on_wRecords_eDate_key_release_event"/>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -1465,17 +1542,176 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkEntry" id="wRecords_eClient">
+                  <widget class="GtkAlignment" id="alignment38">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x25CF;</property>
-                    <property name="activates_default">True</property>
-                    <property name="width_chars">20</property>
-                    <signal name="focus_out_event" handler="on_wRecords_eClient_focus_out_event"/>
+                    <child>
+                      <widget class="GtkFrame" id="frame38">
+                        <property name="visible">True</property>
+                        <property name="label_xalign">0</property>
+                        <property name="shadow_type">in</property>
+                        <child>
+                          <widget class="GtkHBox" id="hbox55">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkVBox" id="vbox25">
+                                <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <widget class="GtkHBox" id="hbox44">
+                                    <property name="visible">True</property>
+                                    <property name="border_width">6</property>
+                                    <property name="spacing">5</property>
+                                    <child>
+                                      <widget class="GtkLabel" id="label20">
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.10000000149011612</property>
+                                        <property name="label" translatable="yes">Slu&#x17E;ba</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkLabel" id="label21">
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.10000000149011612</property>
+                                        <property name="label" translatable="yes">&#x10C;as od</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkLabel" id="label71">
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.10000000149011612</property>
+                                        <property name="label" translatable="yes">&#x10C;as do</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkLabel" id="label92">
+                                        <property name="visible">True</property>
+                                        <property name="label" translatable="yes">  </property>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="position">3</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkTable" id="wRecords_tabServices">
+                                    <property name="visible">True</property>
+                                    <property name="n_rows">3</property>
+                                    <property name="n_columns">4</property>
+                                    <property name="column_spacing">5</property>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="padding">15</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkVBox" id="vbox21">
+                                <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
+                                <property name="homogeneous">True</property>
+                                <child>
+                                  <widget class="GtkButton" id="wRecords_btAddService">
+                                    <property name="label" translatable="yes">+</property>
+                                    <property name="width_request">30</property>
+                                    <property name="height_request">40</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="has_tooltip">True</property>
+                                    <property name="tooltip" translatable="yes">P&#x159;idat dal&#x161;&#xED; &#x159;&#xE1;dek pro slu&#x17E;bu</property>
+                                    <signal name="clicked" handler="on_wRecords_btAddService_clicked"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label67">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">Slu&#x17E;by</property>
+                          </widget>
+                          <packing>
+                            <property name="type">label_item</property>
+                          </packing>
+                        </child>
+                      </widget>
+                    </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="fill">False</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -1485,213 +1721,31 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox27">
+              <widget class="GtkAlignment" id="alignment39">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkButton" id="wRecords_btDate">
-                    <property name="label" translatable="yes">Datum	</property>
+                  <widget class="GtkFrame" id="frame39">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="receives_default">True</property>
-                    <property name="relief">none</property>
-                    <property name="xalign">0.10000000149011612</property>
-                    <signal name="clicked" handler="on_wRecords_btDate_clicked"/>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkEntry" id="wRecords_eDate">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="tooltip" translatable="yes">datum odebr&#xE1;n&#xED; slu&#x17E;by</property>
-                    <property name="max_length">10</property>
-                    <property name="invisible_char">&#x25CF;</property>
-                    <property name="activates_default">True</property>
-                    <property name="width_chars">10</property>
-                    <signal name="focus_out_event" handler="on_wRecords_eDate_focus_out_event"/>
-                    <signal name="key_release_event" handler="on_wRecords_eDate_key_release_event"/>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </widget>
-              <packing>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkVBox" id="vbox25">
-                <property name="visible">True</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <widget class="GtkHBox" id="hbox44">
-                    <property name="visible">True</property>
-                    <property name="border_width">6</property>
-                    <property name="spacing">5</property>
-                    <child>
-                      <widget class="GtkLabel" id="label19">
-                        <property name="visible">True</property>
-                        <property name="xalign">0.10000000149011612</property>
-                        <property name="label" translatable="yes">Slu&#x17E;ba</property>
-                      </widget>
-                      <packing>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label20">
-                        <property name="visible">True</property>
-                        <property name="xalign">0.10000000149011612</property>
-                        <property name="label" translatable="yes">&#x10C;as od</property>
-                      </widget>
-                      <packing>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label21">
-                        <property name="visible">True</property>
-                        <property name="xalign">0.10000000149011612</property>
-                        <property name="label" translatable="yes">&#x10C;as do</property>
-                      </widget>
-                      <packing>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label71">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">  </property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkTable" id="wRecords_tabServices">
-                    <property name="visible">True</property>
-                    <property name="n_rows">3</property>
-                    <property name="n_columns">4</property>
-                    <property name="column_spacing">5</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </widget>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkVBox" id="vbox21">
-                <property name="visible">True</property>
-                <property name="orientation">vertical</property>
-                <property name="homogeneous">True</property>
-                <child>
-                  <widget class="GtkButton" id="wRecords_btAddService">
-                    <property name="label" translatable="yes">+</property>
-                    <property name="width_request">30</property>
-                    <property name="height_request">40</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip" translatable="yes">P&#x159;idat dal&#x161;&#xED; &#x159;&#xE1;dek pro slu&#x17E;bu</property>
-                    <signal name="clicked" handler="on_wRecords_btAddService_clicked"/>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-              </widget>
-              <packing>
-                <property name="expand">False</property>
-                <property name="position">3</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkVBox" id="vbox11">
-                <property name="visible">True</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <widget class="GtkExpander" id="wRecords_expTravel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="expanded">True</property>
-                    <signal name="activate" handler="on_wRecords_expTravel_activate"/>
+                    <property name="label_xalign">0</property>
+                    <property name="shadow_type">in</property>
                     <child>
                       <widget class="GtkVBox" id="vbox22">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">1</property>
                         <child>
                           <widget class="GtkCheckButton" id="wRecords_chTransportOnService">
                             <property name="label" translatable="yes">Doprava na slu&#x17E;bu</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">doprava klienta na soc.slu&#x17E;bu</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
@@ -1701,10 +1755,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">doprava klienta ze soc.slu&#x17E;by zp&#x11B;t</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
@@ -1714,10 +1770,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">doprava klienta na slu&#x17E;bu/ze slu&#x17E;by  nebo doprava zam&#x11B;stnance z/do zam&#x11B;stn&#xE1;n&#xED;</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">2</property>
                           </packing>
                         </child>
@@ -1727,10 +1785,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">doprava klienta na slu&#x17E;bu/ze slu&#x17E;by  nebo doprava zam&#x11B;stnance z/do zam&#x11B;stn&#xE1;n&#xED;</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">3</property>
                           </packing>
                         </child>
@@ -1754,6 +1814,7 @@
                             <child>
                               <widget class="GtkLabel" id="transport_label_other">
                                 <property name="visible">True</property>
+                                <property name="has_tooltip">True</property>
                                 <property name="tooltip" translatable="yes">doprava klienta v r&#xE1;mci slu&#x17E;by dle jeho individu&#xE1;ln&#xED; &#x17E;&#xE1;dosti</property>
                                 <property name="xalign">0.10000000149011612</property>
                                 <property name="label" translatable="yes">Doprava v r&#xE1;mci slu&#x17E;by</property>
@@ -1764,46 +1825,55 @@
                             </child>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">4</property>
                           </packing>
                         </child>
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label45">
+                      <widget class="GtkLabel" id="label19">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Doprava</property>
+                        <property name="use_markup">True</property>
                       </widget>
                       <packing>
                         <property name="type">label_item</property>
                       </packing>
                     </child>
                   </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkAlignment" id="alignment40">
+                <property name="visible">True</property>
                 <child>
-                  <widget class="GtkExpander" id="wRecords_expDiet">
+                  <widget class="GtkFrame" id="frame40">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <signal name="activate" handler="on_wRecords_expDiet_activate"/>
+                    <property name="label_xalign">0</property>
+                    <property name="shadow_type">in</property>
                     <child>
                       <widget class="GtkVBox" id="vbox23">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">1</property>
                         <child>
                           <widget class="GtkCheckButton" id="wRecords_chDietRefreshmentCh">
                             <property name="label" translatable="yes">Ob&#x10D;erstven&#xED; Chot&#x11B;bo&#x159;</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">odebran&#xFD; ob&#x11B;d uva&#x159;en&#xFD; v r&#xE1;mci aktivit Benediktu</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
@@ -1813,10 +1883,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">odebran&#xFD; ob&#x11B;d uva&#x159;en&#xFD; v r&#xE1;mci aktivit Benediktu</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
@@ -1826,10 +1898,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">objednan&#xFD; ob&#x11B;d dov&#xE1;&#x17E;en&#xFD; z restaurace</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">2</property>
                           </packing>
                         </child>
@@ -1839,10 +1913,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">objednan&#xFD; ob&#x11B;d dov&#xE1;&#x17E;en&#xFD; z restaurace</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">3</property>
                           </packing>
                         </child>
@@ -1852,10 +1928,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">odebran&#xE1; sn&#xED;dan&#x11B;</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">4</property>
                           </packing>
                         </child>
@@ -1865,10 +1943,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">odebran&#xE1; ve&#x10D;e&#x159;e</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">5</property>
                           </packing>
                         </child>
@@ -1901,46 +1981,55 @@
                             </child>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">6</property>
                           </packing>
                         </child>
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label66">
+                      <widget class="GtkLabel" id="label45">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Stravov&#xE1;n&#xED;</property>
+                        <property name="use_markup">True</property>
                       </widget>
                       <packing>
                         <property name="type">label_item</property>
                       </packing>
                     </child>
                   </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkAlignment" id="alignment41">
+                <property name="visible">True</property>
                 <child>
-                  <widget class="GtkExpander" id="wRecords_expBillet">
+                  <widget class="GtkFrame" id="frame41">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <signal name="activate" handler="on_wRecords_expBillet_activate"/>
+                    <property name="label_xalign">0</property>
+                    <property name="shadow_type">in</property>
                     <child>
                       <widget class="GtkVBox" id="vbox24">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">1</property>
                         <child>
                           <widget class="GtkCheckButton" id="wRecords_chBilletChB1">
                             <property name="label" translatable="yes">Ubytov&#xE1;n&#xED; 1 v r&#xE1;mci ChB</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">poskytnut&#xE9; ubytov&#xE1;n&#xED; (1 den) v r&#xE1;mci poskytov&#xE1;n&#xED; soci&#xE1;ln&#xED; slu&#x17E;by (poskytnut&#xFD; prostor a vybaven&#xED; pro bydlen&#xED;, energie, &#xFA;klid, pran&#xED; a drobn&#xE9; opravy lo&#x17E;n&#xED;ho a osobn&#xED;ho pr&#xE1;dla a o&#x161;acen&#xED;, &#x17E;ehlen&#xED;)</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
@@ -1950,10 +2039,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">poskytnut&#xE9; ubytov&#xE1;n&#xED;2 (1 den) v r&#xE1;mci poskytov&#xE1;n&#xED; soci&#xE1;ln&#xED; slu&#x17E;by (poskytnut&#xFD; prostor a vybaven&#xED; pro bydlen&#xED;, energie, &#xFA;klid, pran&#xED; a drobn&#xE9; opravy lo&#x17E;n&#xED;ho a osobn&#xED;ho pr&#xE1;dla a o&#x161;acen&#xED;, &#x17E;ehlen&#xED;) - jin&#xFD; zp&#x16F;sob/kvalita ubytov&#xE1;n&#xED; - zat&#xED;m nedojasn&#x11B;no</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
@@ -1963,10 +2054,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">poskytnut&#xE9; ubytov&#xE1;n&#xED; (1 den) v r&#xE1;mci poskytov&#xE1;n&#xED; soci&#xE1;ln&#xED; slu&#x17E;by (poskytnut&#xFD; prostor a vybaven&#xED; pro bydlen&#xED;, energie, &#xFA;klid, pran&#xED; a drobn&#xE9; opravy lo&#x17E;n&#xED;ho a osobn&#xED;ho pr&#xE1;dla a o&#x161;acen&#xED;, &#x17E;ehlen&#xED;)</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">2</property>
                           </packing>
                         </child>
@@ -1976,10 +2069,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="has_tooltip">True</property>
                             <property name="tooltip" translatable="yes">poskytnut&#xE9; ubytov&#xE1;n&#xED; (1 den) v r&#xE1;mci poskytov&#xE1;n&#xED; soci&#xE1;ln&#xED; slu&#x17E;by (poskytnut&#xFD; prostor a vybaven&#xED; pro bydlen&#xED;, energie, &#xFA;klid, pran&#xED; a drobn&#xE9; opravy lo&#x17E;n&#xED;ho a osobn&#xED;ho pr&#xE1;dla a o&#x161;acen&#xED;, &#x17E;ehlen&#xED;)</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">3</property>
                           </packing>
                         </child>
@@ -2012,32 +2107,28 @@
                             </child>
                           </widget>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">4</property>
                           </packing>
                         </child>
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label67">
+                      <widget class="GtkLabel" id="label66">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Ubytov&#xE1;n&#xED;</property>
+                        <property name="use_markup">True</property>
                       </widget>
                       <packing>
                         <property name="type">label_item</property>
                       </packing>
                     </child>
                   </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">2</property>
-                  </packing>
                 </child>
               </widget>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">4</property>
+                <property name="position">3</property>
               </packing>
             </child>
             <child>
@@ -2065,7 +2156,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">5</property>
+                <property name="position">4</property>
               </packing>
             </child>
           </widget>
