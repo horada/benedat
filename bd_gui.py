@@ -1186,6 +1186,7 @@ class WRecords():
         log.debug("newRecord()")
         self.actual_record = None
         self.clearRecordForm()
+        self.prepareServicesListStore()
         # put cursor to the eClient field
         self.allWidgets['eClient'].grab_focus()
 
@@ -1452,6 +1453,7 @@ class WRecords():
         """
         Add widget for service ... (and fill time_record if present)
         """
+        log.debug("WRecords.addService()")
         if self.services:
             last_max_id = max(self.services.keys())
             id_ = last_max_id + 1
@@ -1569,6 +1571,7 @@ class WRecords():
         self.actual_date.set(self.actual_record.date.get())
         # fill time records
         self.deleteAllServices()
+        self.prepareServicesListStore()
         for time_record in self.actual_record.time_records:
             self.addService(widget=None, time_record=time_record)
         # fill value records
